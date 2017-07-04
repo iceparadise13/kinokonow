@@ -17,6 +17,10 @@ def extract_nouns(text):
     return nouns
 
 
+def remove_mention(text):
+    return re.sub('@.+?\s', '', text)
+
+
 def remove_url(text):
     return re.sub('(?:http|https)://.+?\s', '', text)
 
@@ -27,6 +31,7 @@ class Streamer(TwythonStreamer):
             print('%s %s: %s' % (str(datetime.now()), data['user']['screen_name'], data['text']))
             text = data['text']
             text = remove_url(text)
+            text = remove_mention(text)
             print(extract_nouns(text))
 
     def on_error(self, status_code, data):

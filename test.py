@@ -13,5 +13,15 @@ class TestRemoveUrl(unittest.TestCase):
         self.assertEqual(expected, main.remove_url('https://t.co/blahblah foo '))
 
 
+class TestRemoveMention(unittest.TestCase):
+    def test(self):
+        expected = 'foo foo'
+        self.assertEqual(expected, main.remove_mention('foo @blahblah foo'))
+
+    def test_greed(self):
+        expected = 'foo '
+        self.assertEqual(expected, main.remove_mention('@blahblah foo '))
+
+
 if __name__ == '__main__':
     unittest.main()
