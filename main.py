@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 import csv
 import yaml
@@ -16,11 +17,17 @@ def extract_nouns(text):
     return nouns
 
 
+def remove_url(text):
+    return re.sub('(?:http|https)://.+?\s', '', text)
+
+
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
             print('%s %s: %s' % (str(datetime.now()), data['user']['screen_name'], data['text']))
-            print(extract_nouns(data['text']))
+            text = data['text']
+            text = remove_url(text)
+            print(extract_nouns(text))
 
     def on_error(self, status_code, data):
         print(status_code)
