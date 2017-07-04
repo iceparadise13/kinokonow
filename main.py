@@ -13,7 +13,7 @@ def extract_nouns(text):
     for chunk in parsed.splitlines()[:-1]:
         split = chunk.split('\t')
         if split[3].startswith('名詞'):
-            nouns.append(split[0])
+            nouns.append((split[0], split[3]))
     return nouns
 
 
@@ -43,7 +43,8 @@ class Streamer(TwythonStreamer):
             text = remove_url(text)
             text = remove_mention(text)
             print('cleaned: %s' % text)
-            print('nouns: %s' % ' '.join(extract_nouns(text)))
+            print('nouns: %s' % ' '.join(['%s(%s)' % (noun, desc) for noun, desc in extract_nouns(text)]))
+            print()
 
     def on_error(self, status_code, data):
         print(status_code)
