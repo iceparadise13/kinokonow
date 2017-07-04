@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 import csv
 import yaml
 from twython import TwythonStreamer
@@ -8,10 +7,7 @@ from twython import TwythonStreamer
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
-            dumped = json.dumps({
-                'timestamp': str(datetime.now()),
-                'data': data,
-            })
+            dumped = json.dumps(data)
             open('out.txt', 'a').write(dumped + '\n')
 
     def on_error(self, status_code, data):
