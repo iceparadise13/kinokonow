@@ -2,12 +2,25 @@ from datetime import datetime
 import csv
 import yaml
 from twython import TwythonStreamer
+import MeCab
+
+
+def extract_nouns(text):
+    mecab = MeCab.Tagger('-Ochasen')
+    parsed = mecab.parse(text)
+    nouns = []
+    for chunk in parsed.splitlines()[:-1]:
+        split = chunk.split('\t')
+        if split[3].startswith('名詞'):
+            nouns.append(split[0])
+    return nouns
 
 
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
             print('%s %s: %s' % (str(datetime.now()), data['user']['screen_name'], data['text']))
+            print(extract_nouns(data['text']))
 
     def on_error(self, status_code, data):
         print(status_code)
