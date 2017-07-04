@@ -31,5 +31,11 @@ class TestRemoveMention(unittest.TestCase):
         self.assertEqual(expected, main.remove_mention('@bar foo '))
 
 
+class TestRemoveRtBoilerplate(unittest.TestCase):
+    def test(self):
+        expected = 'foo'
+        self.assertEqual(expected, main.remove_rt_boilerplate('RT @bar: foo'))
+
+
 if __name__ == '__main__':
     unittest.main()

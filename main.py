@@ -29,11 +29,17 @@ def remove_url(text):
     return remove_pattern('(?:http|https)://.+?', text)
 
 
+def remove_rt_boilerplate(text):
+    return remove_pattern('RT @.+:', text)
+
+
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
             print('%s %s: %s' % (str(datetime.now()), data['user']['screen_name'], data['text']))
             text = data['text']
+            # rt boilerplate should be removed before removing mentions
+            text = remove_rt_boilerplate(text)
             text = remove_url(text)
             text = remove_mention(text)
             print('cleaned: %s' % text)
