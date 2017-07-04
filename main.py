@@ -1,4 +1,5 @@
 from datetime import datetime
+import csv
 import yaml
 from twython import TwythonStreamer
 
@@ -6,7 +7,7 @@ from twython import TwythonStreamer
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
-            print('%s %s: %s' % (str(datetime.now()), data['user']['screen_name'], data['text'].encode('utf-8')))
+            print('%s %s: %s' % (str(datetime.now()), data['user']['screen_name'], data['text']))
 
     def on_error(self, status_code, data):
         print(status_code)
@@ -22,8 +23,14 @@ def get_streamer():
         cfg['access_token_secret'])
 
 
+def get_followers():
+    with open('follow.txt') as f:
+        for _, user_id, _ in csv.reader(f):
+            yield user_id
+
+
 if __name__ == '__main__':
-    users_to_follow = open('follow.txt').read().strip()
-    print('following %d users' % len(users_to_follow.split(',')))
+    users_to_follow = list(get_followers())
+    print('following %d users' % len(users_to_follow))
     stream = get_streamer()
-    stream.statuses.filter(follow=users_to_follow)
+    stream.statuses.filter(follow=','.join(users_to_follow))
