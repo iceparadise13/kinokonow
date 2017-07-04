@@ -18,7 +18,7 @@ def extract_nouns(text):
 
 
 def remove_pattern(pat, text):
-    return re.sub('%s\s' % pat, '', text)
+    return re.sub('%s(?:\s|$)' % pat, '', text)
 
 
 def remove_mention(text):
