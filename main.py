@@ -25,12 +25,11 @@ def get_streamer():
 
 def get_followers():
     with open('follow.txt') as f:
-        for _, user_id, _ in csv.reader(f):
-            yield user_id
+        return [user_id for _, user_id, _ in csv.reader(f)]
 
 
 if __name__ == '__main__':
-    users_to_follow = list(get_followers())
+    users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))
     stream = get_streamer()
     stream.statuses.filter(follow=','.join(users_to_follow))
