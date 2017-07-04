@@ -23,4 +23,4 @@ def get_streamer():
 
 if __name__ == '__main__':
     stream = get_streamer()
-    stream.statuses.filter()
+    stream.statuses.filter(follow=open('follow.txt').read().strip())
