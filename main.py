@@ -1,50 +1,18 @@
-import re
+import json
 from datetime import datetime
 import csv
 import yaml
 from twython import TwythonStreamer
-import MeCab
-
-
-def extract_nouns(text):
-    mecab = MeCab.Tagger('-Ochasen')
-    parsed = mecab.parse(text)
-    nouns = []
-    for chunk in parsed.splitlines()[:-1]:
-        split = chunk.split('\t')
-        if split[3].startswith('名詞'):
-            nouns.append((split[0], split[3]))
-    return nouns
-
-
-def remove_pattern(pat, text):
-    return re.sub('%s(?:\s|$)' % pat, '', text)
-
-
-def remove_mention(text):
-    return remove_pattern('@.+?', text)
-
-
-def remove_url(text):
-    return remove_pattern('(?:http|https)://.+?', text)
-
-
-def remove_rt_boilerplate(text):
-    return remove_pattern('RT @.+:', text)
 
 
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
-            print('%s %s: %s' % (str(datetime.now()), data['user']['screen_name'], data['text']))
-            text = data['text']
-            # rt boilerplate should be removed before removing mentions
-            text = remove_rt_boilerplate(text)
-            text = remove_url(text)
-            text = remove_mention(text)
-            print('cleaned: %s' % text)
-            print('nouns: %s' % ' '.join(['%s(%s)' % (noun, desc) for noun, desc in extract_nouns(text)]))
-            print()
+            dumped = json.dumps({
+                'timestamp': str(datetime.now()),
+                'data': data,
+            })
+            open('out.txt', 'a').write(dumped + '\n')
 
     def on_error(self, status_code, data):
         print(status_code)
