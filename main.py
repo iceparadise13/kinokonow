@@ -17,12 +17,16 @@ def extract_nouns(text):
     return nouns
 
 
+def remove_pattern(pat, text):
+    return re.sub('%s\s' % pat, '', text)
+
+
 def remove_mention(text):
-    return re.sub('@.+?\s', '', text)
+    return remove_pattern('@.+?', text)
 
 
 def remove_url(text):
-    return re.sub('(?:http|https)://.+?\s', '', text)
+    return remove_pattern('(?:http|https)://.+?', text)
 
 
 class Streamer(TwythonStreamer):
