@@ -36,7 +36,8 @@ class Streamer(TwythonStreamer):
             text = data['text']
             text = remove_url(text)
             text = remove_mention(text)
-            print(extract_nouns(text))
+            print('cleaned: %s' % text)
+            print('nouns: %s' % ' '.join(extract_nouns(text)))
 
     def on_error(self, status_code, data):
         print(status_code)
