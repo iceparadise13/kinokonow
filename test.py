@@ -43,15 +43,19 @@ class TestYahooApi(unittest.TestCase):
         self.session = mock.MagicMock()
         content = b'''{"bar": 60, "baz": 40}'''
         self.session.get.return_value = mock.MagicMock(content=content)
+
+    def extract_phrases(self):
         api = process.YahooApi('foo', self.session)
         self.result = api.extract_phrases('bar baz')
 
     def test_url_called(self):
+        self.extract_phrases()
         url = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?' \
               'appid=foo&output=json&sentence=bar baz'
         self.session.get.assert_called_once_with(url)
 
     def test_return_nouns(self):
+        self.extract_phrases()
         self.assertEqual(sorted(['bar', 'baz']), sorted(self.result))
 
 
