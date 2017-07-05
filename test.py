@@ -37,5 +37,10 @@ class TestRemoveRtBoilerplate(unittest.TestCase):
         self.assertEqual(expected, process.remove_rt_boilerplate('RT @bar: foo'))
 
 
+class TestYahooApi(unittest.TestCase):
+    def test(self):
+        pass
+
+
 if __name__ == '__main__':
     unittest.main()
