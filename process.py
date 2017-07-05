@@ -1,6 +1,7 @@
 import re
 import json
 import MeCab
+import wordcloud
 
 
 def extract_nouns(text):
@@ -37,6 +38,7 @@ def clean(text):
 
 
 if __name__ == '__main__':
+    frequencies = {}
     with open('out.txt') as f:
         while 1:
             line = f.readline()
@@ -47,5 +49,13 @@ if __name__ == '__main__':
             print(data['user']['screen_name'], ':', data['text'])
             text = clean(text)
             print('cleaned: ' + text)
-            print('nouns: %s' % ' '.join(['%s(%s)' % (noun, desc) for noun, desc in extract_nouns(text)]))
+            nouns = extract_nouns(text)
+            print('nouns: %s' % ' '.join(['%s(%s)' % (noun, desc) for noun, desc in nouns]))
+            for noun, desc in nouns:
+                if noun not in frequencies:
+                    frequencies[noun] = 0
+                frequencies[noun] += 1
             print()
+        cloud = wordcloud.WordCloud(font_path='font.ttf').generate_from_frequencies(frequencies)
+        img = cloud.to_image()
+        img.save('out.png')
