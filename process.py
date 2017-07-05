@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     api = YahooApi(sys.argv[1])
 
-    with open('out.txt') as f:
+    with open('tweets.txt') as f:
         while 1:
             line = f.readline()
             if not line:
