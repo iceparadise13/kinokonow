@@ -41,8 +41,6 @@ class YahooApi(object):
 
 
 if __name__ == '__main__':
-    frequencies = {}
-
     api = YahooApi(sys.argv[1])
 
     with open('tweets.txt') as in_file:
