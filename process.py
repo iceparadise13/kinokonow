@@ -2,7 +2,6 @@ import re
 import sys
 import json
 import requests
-import wordcloud
 
 
 def remove_pattern(pat, text):
@@ -46,23 +45,19 @@ if __name__ == '__main__':
 
     api = YahooApi(sys.argv[1])
 
-    with open('tweets.txt') as f:
-        while 1:
-            line = f.readline()
-            if not line:
-                break
-            data = json.loads(line)
-            text = data['text']
-            print(data['user']['screen_name'], ':', data['text'])
-            text = clean(text)
-            print('cleaned: ' + text)
-            nouns = api.extract_phrases(text)
-            print('nouns:', nouns)
-            for noun in nouns:
-                if noun not in frequencies:
-                    frequencies[noun] = 0
-                frequencies[noun] += 1
-            print()
-        cloud = wordcloud.WordCloud(font_path='font.ttf').generate_from_frequencies(frequencies)
-        img = cloud.to_image()
-        img.save('out.png')
+    with open('tweets.txt') as in_file:
+        with open('nouns.txt') as out_file:
+            while 1:
+                line = in_file.readline()
+                if not line:
+                    break
+                data = json.loads(line)
+                text = data['text']
+                cleaned_text = clean(text)
+                result = {
+                    'screen_name': data['user']['screen_name'],
+                    'tweet': text,
+                    'cleaned_tweet': cleaned_text,
+                    'nouns': api.extract_phrases(cleaned_text),
+                }
+                out_file.write(json.dumps(result) + '\n')
