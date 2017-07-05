@@ -53,7 +53,9 @@ if __name__ == '__main__':
 
     with open('tweets.txt', 'r') as in_file:
         with open('nouns.txt', 'w') as out_file:
-            for line in iterate_lines(in_file):
+            for i, line in enumerate(iterate_lines(in_file)):
+                if i % 30 == 0:
+                    print('processed %d' % i)
                 data = json.loads(line)
                 text = data['text']
                 cleaned_text = clean(text)
