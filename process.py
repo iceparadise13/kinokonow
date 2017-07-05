@@ -40,15 +40,20 @@ class YahooApi(object):
         return []
 
 
+def iterate_lines(f):
+    while 1:
+        line = f.readline()
+        if not line:
+            break
+        yield line
+
+
 if __name__ == '__main__':
     api = YahooApi(sys.argv[1])
 
     with open('tweets.txt', 'r') as in_file:
         with open('nouns.txt', 'w') as out_file:
-            while 1:
-                line = in_file.readline()
-                if not line:
-                    break
+            for line in iterate_lines(in_file):
                 data = json.loads(line)
                 text = data['text']
                 cleaned_text = clean(text)
