@@ -33,6 +33,8 @@ class YahooApi(object):
         self.session = session or requests.Session()
 
     def extract_phrases(self, text):
+        pat = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&sentence=%s'
+        self.session.get(pat % (self.api_key, text))
         return []
 
 

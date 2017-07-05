@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 import process
 
 
@@ -38,8 +39,13 @@ class TestRemoveRtBoilerplate(unittest.TestCase):
 
 
 class TestYahooApi(unittest.TestCase):
-    def test(self):
-        pass
+    def test_url_called(self):
+        session = mock.MagicMock()
+        api = process.YahooApi('foo', session)
+        api.extract_phrases('bar baz')
+        url = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?' \
+              'appid=foo&sentence=bar baz'
+        session.get.assert_called_once_with(url)
 
 
 if __name__ == '__main__':
