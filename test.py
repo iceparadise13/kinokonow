@@ -39,13 +39,15 @@ class TestRemoveRtBoilerplate(unittest.TestCase):
 
 
 class TestYahooApi(unittest.TestCase):
-    def test_url_called(self):
-        session = mock.MagicMock()
-        api = process.YahooApi('foo', session)
+    def setUp(self):
+        self.session = mock.MagicMock()
+        api = process.YahooApi('foo', self.session)
         api.extract_phrases('bar baz')
+
+    def test_url_called(self):
         url = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?' \
               'appid=foo&sentence=bar baz'
-        session.get.assert_called_once_with(url)
+        self.session.get.assert_called_once_with(url)
 
 
 if __name__ == '__main__':
