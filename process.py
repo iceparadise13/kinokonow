@@ -43,8 +43,8 @@ class YahooApi(object):
 if __name__ == '__main__':
     api = YahooApi(sys.argv[1])
 
-    with open('tweets.txt') as in_file:
-        with open('nouns.txt') as out_file:
+    with open('tweets.txt', 'r') as in_file:
+        with open('nouns.txt', 'w') as out_file:
             while 1:
                 line = in_file.readline()
                 if not line:
