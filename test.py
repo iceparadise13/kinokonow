@@ -41,7 +41,7 @@ class TestRemoveRtBoilerplate(unittest.TestCase):
 class TestYahooApi(unittest.TestCase):
     def setUp(self):
         self.session = mock.MagicMock()
-        content = '''{"bar": 60, "baz": 40}'''
+        content = b'''{"bar": 60, "baz": 40}'''
         self.session.get.return_value = mock.MagicMock(content=content)
         api = process.YahooApi('foo', self.session)
         self.result = api.extract_phrases('bar baz')
@@ -52,7 +52,7 @@ class TestYahooApi(unittest.TestCase):
         self.session.get.assert_called_once_with(url)
 
     def test_return_nouns(self):
-        self.assertEqual(['bar', 'baz'], self.result)
+        self.assertEqual(sorted(['bar', 'baz']), sorted(self.result))
 
 
 if __name__ == '__main__':
