@@ -35,7 +35,10 @@ class YahooApi(object):
     def extract_phrases(self, text):
         pat = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&output=json&sentence=%s'
         resp = self.session.get(pat % (self.api_key, text))
-        return list(json.loads(resp.content.decode('utf-8')).keys())
+        result = json.loads(resp.content.decode('utf-8'))
+        if type(result) == dict:
+            return list(result.keys())
+        return []
 
 
 if __name__ == '__main__':
