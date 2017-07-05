@@ -2,6 +2,7 @@ import re
 import sys
 import json
 import requests
+from util import iterate_json
 
 
 def remove_pattern(pat, text):
@@ -40,27 +41,18 @@ class YahooApi(object):
         return []
 
 
-def iterate_lines(f):
-    while 1:
-        line = f.readline()
-        if not line:
-            break
-        yield line
-
-
 if __name__ == '__main__':
     api = YahooApi(sys.argv[1])
 
     with open('tweets.txt', 'r') as in_file:
         with open('nouns.txt', 'w') as out_file:
-            for i, line in enumerate(iterate_lines(in_file)):
+            for i, line in enumerate(iterate_json(in_file)):
                 if i % 30 == 0:
                     print('processed %d' % i)
-                data = json.loads(line)
-                text = data['text']
+                text = line['text']
                 cleaned_text = clean(text)
                 result = {
-                    'screen_name': data['user']['screen_name'],
+                    'screen_name': line['user']['screen_name'],
                     'tweet': text,
                     'cleaned_tweet': cleaned_text,
                     'nouns': api.extract_phrases(cleaned_text),

@@ -1,22 +1,18 @@
-import json
 import wordcloud
-
-
-def iterate_lines(f):
-    while 1:
-        line = f.readline()
-        if not line:
-            break
-        yield line
+from util import iterate_json
 
 
 if __name__ == '__main__':
     frequencies = {}
 
+    with open('blacklist.txt') as f:
+        black_list = f.read().split()
+
     with open('nouns.txt') as f:
-        for line in iterate_lines(f):
-            data = json.loads(line)
-            for n in data['nouns']:
+        for line in iterate_json(f):
+            for n in line['nouns']:
+                if n in black_list:
+                    continue
                 if n not in frequencies:
                     frequencies[n] = 0
                 frequencies[n] += 1
