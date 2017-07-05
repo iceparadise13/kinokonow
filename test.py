@@ -50,7 +50,7 @@ class TestYahooApi(unittest.TestCase):
         self.result = api.extract_phrases('bar baz')
 
     def test_url_called(self):
-        self.set_content(b'''{}''')
+        self.set_content(b'{}')
         self.extract_phrases()
         url = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?' \
               'appid=foo&output=json&sentence=bar baz'
