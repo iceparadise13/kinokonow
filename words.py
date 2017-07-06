@@ -1,9 +1,6 @@
 import pprint
 from operator import itemgetter
-
 import wordcloud
-
-from draw import frequencies
 
 
 def print_frequencies(frequencies):
