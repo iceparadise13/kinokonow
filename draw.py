@@ -1,5 +1,6 @@
 import pprint
 from operator import itemgetter
+from datetime import datetime, timedelta
 import wordcloud
 import pymongo
 
@@ -26,7 +27,7 @@ if __name__ == '__main__':
 
     client = pymongo.MongoClient(host='localhost', port=27017)
     db = client.get_database('kinokonow')
-    frequencies = get_noun_frequencies(db.nouns)
+    frequencies = get_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(days=1))
 
     print_frequencies(frequencies)
 
