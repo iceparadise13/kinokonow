@@ -46,7 +46,7 @@ if __name__ == '__main__':
     api = YahooApi(sys.argv[1])
 
     redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
-    client = pymongo.MongoClient(localhost='localhost', port=27017)
+    client = pymongo.MongoClient(host='localhost', port=27017)
     db = client.get_database('kinokonow')
 
     while 1:
