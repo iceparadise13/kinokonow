@@ -30,8 +30,8 @@ def get_filtered_noun_frequencies(nouns, starting_at, black_list):
     return remove_nouns_in_blacklist(frequencies, black_list)
 
 
-def generate_word_cloud(**kwargs):
-    return wordcloud.WordCloud(**kwargs).generate_from_frequencies(frequencies).to_img()
+def generate_word_cloud(frequencies, **kwargs):
+    return wordcloud.WordCloud(**kwargs).generate_from_frequencies(frequencies).to_image()
 
 
 def read_black_list():
