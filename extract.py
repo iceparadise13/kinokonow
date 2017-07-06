@@ -1,6 +1,7 @@
 import re
 import sys
 import json
+from datetime import datetime
 import requests
 import redis
 import pymongo
@@ -63,4 +64,4 @@ if __name__ == '__main__':
         print('cleaned_text: ', cleaned_text)
         nouns = api.extract_phrases(cleaned_text)
         print('nouns :', nouns)
-        db.nouns.insert_many([{'text': n} for n in nouns])
+        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
