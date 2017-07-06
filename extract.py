@@ -1,8 +1,9 @@
 import re
 import sys
 import json
+import pprint
 import requests
-from util import iterate_json
+import redis
 
 
 def remove_pattern(pat, text):
@@ -44,17 +45,23 @@ class YahooApi(object):
 if __name__ == '__main__':
     api = YahooApi(sys.argv[1])
 
-    with open('tweets.txt', 'r') as in_file:
-        with open('nouns.txt', 'w') as out_file:
-            for i, line in enumerate(iterate_json(in_file)):
-                if i % 30 == 0:
-                    print('processed %d' % i)
-                text = line['text']
-                cleaned_text = clean(text)
-                result = {
-                    'screen_name': line['user']['screen_name'],
-                    'tweet': text,
-                    'cleaned_tweet': cleaned_text,
-                    'nouns': api.extract_phrases(cleaned_text),
-                }
-                out_file.write(json.dumps(result) + '\n')
+    redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+    with open('nouns.txt', 'w') as out_file:
+        while 1:
+            result = redis_client.brpop('tweets', timeout=10)
+            if not result:
+                # the queue was not populated within `timeout` seconds
+                continue
+            key, value = result
+            tweet_data = json.loads(value.decode('utf-8'))
+            text = tweet_data['text']
+            cleaned_text = clean(text)
+            result = {
+                'screen_name': tweet_data['user']['screen_name'],
+                'tweet': text,
+                'cleaned_tweet': cleaned_text,
+                'nouns': api.extract_phrases(cleaned_text),
+            }
+            pprint.pprint(result)
+            out_file.write(json.dumps(result) + '\n')
