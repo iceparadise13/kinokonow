@@ -84,10 +84,7 @@ class TestGetNounFrequencies(unittest.TestCase):
             {'text': 'b', 'created_at': created_at},
             {'text': 'b', 'created_at': created_at},
         ])
-        expected = {
-            'a': 1,
-            'b': 2,
-        }
+        expected = {'a': 1, 'b': 2}
         result = draw.get_noun_frequencies(collection, created_at)
         self.assertEqual(expected, result)
 
@@ -98,9 +95,7 @@ class TestGetNounFrequencies(unittest.TestCase):
             {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
             {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
         ])
-        expected = {
-            'a': 2,
-        }
+        expected = {'a': 2}
         result = draw.get_noun_frequencies(collection, datetime(2017, 1, 1, 1, 0, 1))
         self.assertEqual(expected, result)
 
