@@ -27,6 +27,11 @@ def remove_nouns_in_blacklist(nouns, blacklist):
     return filtered
 
 
+def get_filtered_noun_frequencies(nouns, starting_at, black_list):
+    frequencies = get_noun_frequencies(nouns, starting_at)
+    return remove_nouns_in_blacklist(frequencies, black_list)
+
+
 if __name__ == '__main__':
     frequencies = {}
 
@@ -35,8 +40,8 @@ if __name__ == '__main__':
 
     client = pymongo.MongoClient(host='localhost', port=27017)
     db = client.get_database('kinokonow')
-    frequencies = get_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(hours=1))
-    frequencies = remove_nouns_in_blacklist(frequencies, black_list)
+
+    frequencies = get_filtered_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(hours=1), black_list)
     print_frequencies(frequencies)
     cloud = wordcloud.WordCloud(font_path='font.ttf').generate_from_frequencies(frequencies)
     img = cloud.to_image()
