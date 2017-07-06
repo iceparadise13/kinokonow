@@ -11,7 +11,10 @@ def print_frequencies(frequencies):
 
 
 def get_noun_frequencies(nouns):
-    pass
+    resp = nouns.aggregate([
+        {'$group': {'_id': '$text', 'frequency': {'$sum': 1}}}
+    ])
+    return dict([(r['_id'], r['frequency']) for r in resp])
 
 
 if __name__ == '__main__':
