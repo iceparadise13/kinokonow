@@ -48,6 +48,7 @@ if __name__ == '__main__':
             db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
         words.print_frequencies(frequencies)
         if not frequencies:
+            time.sleep(60)
             continue
         img = words.generate_word_cloud(frequencies, font_path='font.ttf')
         # Instantiate every time to avoid connection reset
