@@ -36,16 +36,16 @@ def generate_word_cloud(**kwargs):
     return wordcloud.WordCloud(**kwargs).generate_from_frequencies(frequencies).to_img()
 
 
-if __name__ == '__main__':
-    frequencies = {}
-
+def read_black_list():
     with open('blacklist.txt') as f:
-        black_list = f.read().split()
+        return f.read().split()
 
+
+if __name__ == '__main__':
     client = pymongo.MongoClient(host='localhost', port=27017)
     db = client.get_database('kinokonow')
-
-    frequencies = get_filtered_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(hours=1), black_list)
+    frequencies = get_filtered_noun_frequencies(
+        db.nouns, datetime.utcnow() - timedelta(hours=1), read_black_list())
     print_frequencies(frequencies)
     img = generate_word_cloud(font_path='font.ttf')
     img.save('out.png')
