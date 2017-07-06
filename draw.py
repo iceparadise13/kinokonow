@@ -5,7 +5,9 @@ from util import iterate_json
 
 
 def print_frequencies(frequencies):
-    pprint.pprint(sorted(list(frequencies.items()), key=itemgetter(1)))
+    frequencies = list(frequencies.items())
+    pprint.pprint(sorted(frequencies, key=itemgetter(1)))
+    print('%d nouns' % len(frequencies))
 
 
 if __name__ == '__main__':
