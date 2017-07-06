@@ -76,7 +76,7 @@ class TestYahooApi(unittest.TestCase):
 
 
 class TestGetNounFrequencies(unittest.TestCase):
-    def test(self):
+    def test_frequency(self):
         collection = mongomock.MongoClient().db.collection
         created_at = datetime(2017, 1, 1, 1, 0, 0)
         collection.insert_many([
@@ -88,7 +88,20 @@ class TestGetNounFrequencies(unittest.TestCase):
             'a': 1,
             'b': 2,
         }
-        result = draw.get_noun_frequencies(collection, datetime(2017, 1, 1, 1, 0, 0))
+        result = draw.get_noun_frequencies(collection, created_at)
+        self.assertEqual(expected, result)
+
+    def test_starting_at(self):
+        collection = mongomock.MongoClient().db.collection
+        collection.insert_many([
+            {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 0)},
+            {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
+            {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
+        ])
+        expected = {
+            'a': 2,
+        }
+        result = draw.get_noun_frequencies(collection, datetime(2017, 1, 1, 1, 0, 1))
         self.assertEqual(expected, result)
 
 

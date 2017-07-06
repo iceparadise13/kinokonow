@@ -12,6 +12,7 @@ def print_frequencies(frequencies):
 
 def get_noun_frequencies(nouns, starting_at):
     cusor = nouns.aggregate([
+        {'$match': {'created_at': {'$gte': starting_at}}},
         {'$group': {'_id': '$text', 'frequency': {'$sum': 1}}}
     ])
     return dict([(c['_id'], c['frequency']) for c in cusor])
