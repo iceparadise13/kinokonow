@@ -1,5 +1,6 @@
 import unittest
 from unittest import mock
+from datetime import datetime
 import mongomock
 import extract
 import draw
@@ -77,16 +78,18 @@ class TestYahooApi(unittest.TestCase):
 class TestGetNounFrequencies(unittest.TestCase):
     def test(self):
         collection = mongomock.MongoClient().db.collection
+        created_at = datetime(2017, 1, 1, 1, 0, 0)
         collection.insert_many([
-            {'text': 'a'},
-            {'text': 'b'},
-            {'text': 'b'},
+            {'text': 'a', 'created_at': created_at},
+            {'text': 'b', 'created_at': created_at},
+            {'text': 'b', 'created_at': created_at},
         ])
         expected = {
             'a': 1,
             'b': 2,
         }
-        self.assertEqual(expected, draw.get_noun_frequencies(collection))
+        result = draw.get_noun_frequencies(collection, datetime(2017, 1, 1, 1, 0, 0))
+        self.assertEqual(expected, result)
 
 
 if __name__ == '__main__':

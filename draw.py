@@ -10,7 +10,7 @@ def print_frequencies(frequencies):
     print('%d nouns' % len(frequencies))
 
 
-def get_noun_frequencies(nouns):
+def get_noun_frequencies(nouns, starting_at):
     cusor = nouns.aggregate([
         {'$group': {'_id': '$text', 'frequency': {'$sum': 1}}}
     ])
