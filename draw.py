@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     client = pymongo.MongoClient(host='localhost', port=27017)
     db = client.get_database('kinokonow')
-    frequencies = get_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(seconds=300))
+    frequencies = get_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(hours=1))
     frequencies = remove_nouns_in_blacklist(frequencies, black_list)
     print_frequencies(frequencies)
     cloud = wordcloud.WordCloud(font_path='font.ttf').generate_from_frequencies(frequencies)
