@@ -52,4 +52,4 @@ if __name__ == '__main__':
         with ImageFileContext(img) as image_file:
             media_id = api.upload_media(media=image_file)['media_id']
         api.update_status(status='a', media_ids=[media_id])
-        time.sleep(600)
+        time.sleep(3600)
