@@ -1,6 +1,8 @@
 import unittest
 from unittest import mock
+import mongomock
 import extract
+import draw
 
 
 class TestRemoveUrl(unittest.TestCase):
@@ -70,6 +72,21 @@ class TestYahooApi(unittest.TestCase):
         self.set_content(b'["Error"]')
         self.extract_phrases()
         self.assertEqual([], self.result)
+
+
+class TestGetNounFrequencies(unittest.TestCase):
+    def test(self):
+        collection = mongomock.MongoClient().db.collection
+        collection.insert_many([
+            {'text': 'a'},
+            {'text': 'b'},
+            {'text': 'b'},
+        ])
+        expected = {
+            'a': 1,
+            'b': 2,
+        }
+        self.assertEqual(expected, draw.get_noun_frequencies(collection))
 
 
 if __name__ == '__main__':

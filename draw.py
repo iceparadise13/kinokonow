@@ -1,7 +1,7 @@
 import pprint
 from operator import itemgetter
 import wordcloud
-from util import iterate_json
+import pymongo
 
 
 def print_frequencies(frequencies):
@@ -10,20 +10,19 @@ def print_frequencies(frequencies):
     print('%d nouns' % len(frequencies))
 
 
+def get_noun_frequencies(nouns):
+    pass
+
+
 if __name__ == '__main__':
     frequencies = {}
 
     with open('blacklist.txt') as f:
         black_list = f.read().split()
 
-    with open('nouns.txt') as f:
-        for line in iterate_json(f):
-            for n in line['nouns']:
-                if n in black_list:
-                    continue
-                if n not in frequencies:
-                    frequencies[n] = 0
-                frequencies[n] += 1
+    client = pymongo.MongoClient(host='localhost', port=27017)
+    db = client.get_database('kinokonow')
+    frequencies = get_noun_frequencies(db.nouns)
 
     print_frequencies(frequencies)
 
