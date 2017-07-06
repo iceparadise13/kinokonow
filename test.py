@@ -3,7 +3,6 @@ from unittest import mock
 from datetime import datetime
 import mongomock
 import extract
-import draw
 import words
 
 
