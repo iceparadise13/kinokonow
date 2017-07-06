@@ -1,16 +1,19 @@
 import json
 import csv
 import yaml
+import redis
 from twython import TwythonStreamer
+
+
+redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
             dumped = json.dumps(data)
-            print(data['user']['screen_name'], ':', data['text'])
-            print()
-            open('tweets.txt', 'a').write(dumped + '\n')
+            print(data['user']['screen_name'], ':', data['text'], '\n')
+            redis.lpush('tweets', dumped)
 
     def on_error(self, status_code, data):
         print(status_code)
