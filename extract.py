@@ -1,9 +1,9 @@
 import re
 import sys
 import json
-import pprint
 import requests
 import redis
+import pymongo
 
 
 def remove_pattern(pat, text):
@@ -46,22 +46,21 @@ if __name__ == '__main__':
     api = YahooApi(sys.argv[1])
 
     redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+    client = pymongo.MongoClient(localhost='localhost', port=27017)
+    db = client.get_database('kinokonow')
 
-    with open('nouns.txt', 'w') as out_file:
-        while 1:
-            result = redis_client.brpop('tweets', timeout=10)
-            if not result:
-                # the queue was not populated within `timeout` seconds
-                continue
-            key, value = result
-            tweet_data = json.loads(value.decode('utf-8'))
-            text = tweet_data['text']
-            cleaned_text = clean(text)
-            result = {
-                'screen_name': tweet_data['user']['screen_name'],
-                'tweet': text,
-                'cleaned_tweet': cleaned_text,
-                'nouns': api.extract_phrases(cleaned_text),
-            }
-            pprint.pprint(result)
-            out_file.write(json.dumps(result) + '\n')
+    while 1:
+        result = redis_client.brpop('tweets', timeout=10)
+        if not result:
+            # the queue was not populated within `timeout` seconds
+            continue
+        key, value = result
+        tweet_data = json.loads(value.decode('utf-8'))
+        text = tweet_data['text']
+        cleaned_text = clean(text)
+        print('screen_name: ', tweet_data['user']['screen_name'])
+        print('tweet: ', text)
+        print('cleaned_text: ', cleaned_text)
+        nouns = api.extract_phrases(cleaned_text)
+        print('nouns :', nouns)
+        db.nouns.insert_many([{'text': n} for n in nouns])
