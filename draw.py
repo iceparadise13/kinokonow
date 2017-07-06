@@ -19,6 +19,14 @@ def get_noun_frequencies(nouns, starting_at):
     return dict([(c['_id'], c['frequency']) for c in cusor])
 
 
+def remove_nouns_in_blacklist(nouns, blacklist):
+    filtered = {}
+    for k, v in nouns.items():
+        if k not in blacklist:
+            filtered[k] = v
+    return filtered
+
+
 if __name__ == '__main__':
     frequencies = {}
 

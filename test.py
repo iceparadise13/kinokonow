@@ -108,7 +108,7 @@ class TestRemoveNounsInBlacklist(unittest.TestCase):
             'c': 3,
         }
         blacklist = ['a', 'b']
-        expected = [{'c': 3}]
+        expected = {'c': 3}
         self.assertEqual(expected, draw.remove_nouns_in_blacklist(frequencies, blacklist))
 
 
