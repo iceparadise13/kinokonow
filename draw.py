@@ -32,6 +32,10 @@ def get_filtered_noun_frequencies(nouns, starting_at, black_list):
     return remove_nouns_in_blacklist(frequencies, black_list)
 
 
+def generate_word_cloud(**kwargs):
+    return wordcloud.WordCloud(**kwargs).generate_from_frequencies(frequencies).to_img()
+
+
 if __name__ == '__main__':
     frequencies = {}
 
@@ -43,6 +47,5 @@ if __name__ == '__main__':
 
     frequencies = get_filtered_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(hours=1), black_list)
     print_frequencies(frequencies)
-    cloud = wordcloud.WordCloud(font_path='font.ttf').generate_from_frequencies(frequencies)
-    img = cloud.to_image()
+    img = generate_word_cloud(font_path='font.ttf')
     img.save('out.png')
