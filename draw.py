@@ -37,9 +37,7 @@ if __name__ == '__main__':
     db = client.get_database('kinokonow')
     frequencies = get_noun_frequencies(db.nouns, datetime.utcnow() - timedelta(days=1))
     remove_nouns_in_blacklist(frequencies, black_list)
-
     print_frequencies(frequencies)
-
     cloud = wordcloud.WordCloud(font_path='font.ttf').generate_from_frequencies(frequencies)
     img = cloud.to_image()
     img.save('out.png')
