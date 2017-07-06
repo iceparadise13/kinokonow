@@ -64,4 +64,5 @@ if __name__ == '__main__':
         print('cleaned_text: ', cleaned_text)
         nouns = api.extract_phrases(cleaned_text)
         print('nouns :', nouns)
-        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+        if nouns:
+            db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
