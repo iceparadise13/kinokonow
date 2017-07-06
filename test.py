@@ -100,5 +100,17 @@ class TestGetNounFrequencies(unittest.TestCase):
         self.assertEqual(expected, result)
 
 
+class TestRemoveNounsInBlacklist(unittest.TestCase):
+    def test(self):
+        frequencies = {
+            'a': 1,
+            'b': 2,
+            'c': 3,
+        }
+        blacklist = ['a', 'b']
+        expected = [{'c': 3}]
+        self.assertEqual(expected, draw.remove_nouns_in_blacklist(frequencies, blacklist))
+
+
 if __name__ == '__main__':
     unittest.main()
