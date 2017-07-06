@@ -42,13 +42,14 @@ class ImageFileContext(object):
 if __name__ == '__main__':
     client = pymongo.MongoClient(host='localhost', port=27017)
     db = client.get_database('kinokonow')
-    api = get_api()
 
     while 1:
         frequencies = words.get_filtered_noun_frequencies(
             db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
         words.print_frequencies(frequencies)
         img = words.generate_word_cloud(frequencies, font_path='font.ttf')
+        # Instantiate every time to avoid connection reset
+        api = get_api()
         with ImageFileContext(img) as image_file:
             media_id = api.upload_media(media=image_file)['media_id']
         api.update_status(status='a', media_ids=[media_id])
