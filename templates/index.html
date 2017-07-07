@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="{{ url_for('static', filename='wordcloud2.js') }}"></script>
 </head>
-<body>
-    {{ frequencies }}
+<body onload="updateWordCloud({{frequencies}})">
+    <canvas id="my_canvas"></canvas>
 </body>
+<script>
+    function updateWordCloud(frequencies){
+        WordCloud(document.getElementById('my_canvas'), { list: frequencies } );
+    }
+</script>
 </html>
