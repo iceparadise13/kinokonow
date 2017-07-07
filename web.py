@@ -1,6 +1,7 @@
 import pymongo
 from datetime import datetime, timedelta
 from flask import Flask, render_template
+from operator import itemgetter
 import words
 
 
@@ -14,6 +15,7 @@ def home():
     frequencies = words.get_filtered_noun_frequencies(
         db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
     frequencies = [[k, v] for k, v in frequencies.items()]
+    frequencies = sorted(frequencies, key=itemgetter(1), reverse=True)[:50]
     return render_template('index.html', frequencies=frequencies)
 
 
