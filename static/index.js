@@ -327,4 +327,6 @@ jQuery(function($) {
   } else {
     hashChanged();
   }
+
+  loadExampleData('red-chamber');
 });
