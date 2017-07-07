@@ -1,7 +1,5 @@
 import pymongo
-from datetime import datetime, timedelta
 from flask import Flask, render_template
-import words
 
 
 app = Flask(__name__, template_folder='templates')
