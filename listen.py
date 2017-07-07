@@ -1,5 +1,6 @@
 import json
 import csv
+from datetime import datetime
 import yaml
 import redis
 import pymongo
@@ -11,14 +12,19 @@ client = pymongo.MongoClient(host='localhost', port=27017)
 db = client.kinokonow
 
 
+def save_tweet(data):
+    # shallow copy suffices
+    data = dict(data)
+    data['created_at'] = datetime.utcnow()
+    db.tweets.insert_one(data)
+
+
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
             print(data['user']['screen_name'], ':', data['text'], '\n')
+            save_tweet(data)
             redis.lpush('tweets', json.dumps(data))
-            # this call seems to modify `data` making it impossible to json serialize
-            # should be executed after the above
-            db.tweets.insert_one(data)
 
     def on_error(self, status_code, data):
         print(status_code)
