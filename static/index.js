@@ -10,7 +10,6 @@ jQuery(function($) {
   var $htmlCanvas = $('#html-canvas');
   var $canvasContainer = $('#canvas-container');
   var $loading = $('#loading');
-  var $dppx = $('#config-dppx');
   var $css = $('#config-css');
   var $webfontLink = $('#link-webfont');
 
@@ -29,8 +28,6 @@ jQuery(function($) {
       return;
     }
 
-    var dppx = $dppx.val();
-
     $box.prop('hidden', false);
     $box.css({
       left: dimension.x / dppx + 'px',
@@ -39,12 +36,6 @@ jQuery(function($) {
       height: dimension.h / dppx + 'px'
     });
   };
-
-  // Update the default value if we are running in a hdppx device
-  if (('devicePixelRatio' in window) &&
-      window.devicePixelRatio !== 1) {
-    $dppx.val(window.devicePixelRatio);
-  }
 
   $canvas.on('wordcloudstop', function wordcloudstopped(evt) {
     $loading.prop('hidden', true);
@@ -63,7 +54,7 @@ jQuery(function($) {
     $webfontLink.prop('href', $css.val());
 
     // devicePixelRatio
-    var devicePixelRatio = parseFloat($dppx.val());
+    var devicePixelRatio = 1.1;
 
     // Set the width and height
     var width = $('#canvas-container').width();

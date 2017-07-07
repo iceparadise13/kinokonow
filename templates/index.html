@@ -28,6 +28,8 @@
     overflow-x: auto;
     overflow-y: visible;
     position: relative;
+	width: 100%;
+	height: 100%;
   }
   .canvas {
     display: block;
@@ -75,11 +77,9 @@
       <strong>Your browser is not supported.</strong>
     </div>
     <form id="form" method="get" action="">
-      <div class="row">
-        <div class="span12" id="canvas-container">
-          <canvas id="canvas" class="canvas hide"></canvas>
-          <div id="html-canvas" class="canvas"></div>
-        </div>
+      <div id="canvas-container">
+        <canvas id="canvas" class="canvas hide"></canvas>
+        <div id="html-canvas" class="canvas"></div>
       </div>
       <div class="tabbable">
         <div class="tab-content">
@@ -100,10 +100,6 @@
             </div>
             <span class="help-block">Leave blank to use 0.65x of the width.</span>
             <label for="config-height">Device pixel density (<span title="Dots per 'px' unit">dppx</span>)</label>
-            <div class="input-append">
-              <input type="number" id="config-dppx" class="input-mini" min="1" value="1" required>
-              <span class="add-on">x</span>
-            </div>
             <span class="help-block">Adjust the weight, grid size, and canvas pixel size for high pixel density displays.</span>
           </div>
           <div class="tab-pane" id="tab-mask">
