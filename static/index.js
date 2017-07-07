@@ -142,14 +142,6 @@ jQuery(function($) {
     $mask.trigger('change');
   }
 
-  var $examples = $('#examples');
-  $examples.on('change', function loadExample(evt) {
-    changeHash(this.value);
-
-    this.selectedIndex = 0;
-    $examples.blur();
-  });
-
   var run = function run() {
     $loading.prop('hidden', false);
 
