@@ -1,27 +1,6 @@
 'use strict';
 
 var examples = {
-  'web-tech': {
-    list: '26 Web Technologies\n20 HTML\n20 <canvas>\n' +
-          '15 CSS\n15 JavaScript\n12 Document Object Model\n12 <audio>\n12 <video>\n12 Web Workers\n12 XMLHttpRequest\n12 SVG\n' +
-          '9 JSON.parse()\n9 Geolocation\n9 data attribute\n9 transform\n9 transition\n9 animation\n' +
-          '7 setTimeout\n7 @font-face\n7 Typed Arrays\n7 FileReader API\n7 FormData\n7 IndexedDB\n' +
-          '7 getUserMedia()\n7 postMassage()\n7 CORS\n6 strict mode\n6 calc()\n6 supports()\n' +
-          '6 media queries\n6 full screen\n6 notification\n6 orientation\n6 requestAnimationFrame\n' +
-          '5 border-radius\n5 box-sizing\n5 rgba()\n5 text-shadow\n5 box-shadow\n5 flexbox\n5 viewpoint',
-    option: '{\n' +
-            '  gridSize: 18,\n' +
-            '  weightFactor: 3,\n' +
-            '  fontFamily: \'Finger Paint, cursive, sans-serif\',\n' +
-            '  color: \'#f0f0c0\',\n' +
-            '  hover: window.drawBox,\n' +
-            '  click: function(item) {\n' +
-            '    alert(item[0] + \': \' + item[1]);\n' +
-            '  },\n' +
-            '  backgroundColor: \'#001f00\'\n' +
-            '}',
-    fontCSS: 'https://fonts.googleapis.com/css?family=Finger+Paint'
-  },
   'red-chamber': {
     list: '6 紅樓夢\n3 賈寶玉\n3 林黛玉\n3 薛寶釵\n3 王熙鳳\n3 李紈\n3 賈元春\n3 賈迎春\n' +
           '3 賈探春\n3 賈惜春\n3 秦可卿\n3 賈巧姐\n3 史湘雲\n3 妙玉\n2 賈政\n2 賈赦\n' +
