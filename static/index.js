@@ -4,18 +4,12 @@ var examples = {
   'red-chamber': {}
 };
 
-var maskCanvas;
-
 jQuery(function($) {
   var $form = $('#form');
   var $canvas = $('#canvas');
   var $htmlCanvas = $('#html-canvas');
   var $canvasContainer = $('#canvas-container');
   var $loading = $('#loading');
-
-  var $width = $('#config-width');
-  var $height = $('#config-height');
-  var $mask = $('#config-mask');
   var $dppx = $('#config-dppx');
   var $css = $('#config-css');
   var $webfontLink = $('#link-webfont');
@@ -62,71 +56,6 @@ jQuery(function($) {
     changeHash('');
   });
 
-  $('#config-mask-clear').on('click', function() {
-    maskCanvas = null;
-    // Hack!
-    $mask.wrap('<form>').closest('form').get(0).reset();
-    $mask.unwrap();
-  });
-
-  // Load the local image file, read it's pixels and transform it into a
-  // black-and-white mask image on the canvas.
-  $mask.on('change', function() {
-    maskCanvas = null;
-
-    var file = $mask[0].files[0];
-
-    if (!file) {
-      return;
-    }
-
-    var url = window.URL.createObjectURL(file);
-    var img = new Image();
-    img.src = url;
-
-    img.onload = function readPixels() {
-      window.URL.revokeObjectURL(url);
-
-      maskCanvas = document.createElement('canvas');
-      maskCanvas.width = img.width;
-      maskCanvas.height = img.height;
-
-      var ctx = maskCanvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, img.width, img.height);
-
-      var imageData = ctx.getImageData(
-        0, 0, maskCanvas.width, maskCanvas.height);
-      var newImageData = ctx.createImageData(imageData);
-
-      for (var i = 0; i < imageData.data.length; i += 4) {
-        var tone = imageData.data[i] +
-          imageData.data[i + 1] +
-          imageData.data[i + 2];
-        var alpha = imageData.data[i + 3];
-
-        if (alpha < 128 || tone > 128 * 3) {
-          // Area not to draw
-          newImageData.data[i] =
-            newImageData.data[i + 1] =
-            newImageData.data[i + 2] = 255;
-          newImageData.data[i + 3] = 0;
-        } else {
-          // Area to draw
-          newImageData.data[i] =
-            newImageData.data[i + 1] =
-            newImageData.data[i + 2] = 0;
-          newImageData.data[i + 3] = 255;
-        }
-      }
-
-      ctx.putImageData(newImageData, 0, 0);
-    };
-  });
-
-  if ($mask[0].files.length) {
-    $mask.trigger('change');
-  }
-
   var run = function run() {
     $loading.prop('hidden', false);
 
@@ -137,8 +66,8 @@ jQuery(function($) {
     var devicePixelRatio = parseFloat($dppx.val());
 
     // Set the width and height
-    var width = $width.val() ? $width.val() : $('#canvas-container').width();
-    var height = $height.val() ? $height.val() : Math.floor(width * 0.65);
+    var width = $('#canvas-container').width();
+    var height = Math.floor(width * 0.65);
     var pixelWidth = width;
     var pixelHeight = height;
 
@@ -211,8 +140,6 @@ jQuery(function($) {
     var example = examples[name];
 
     $css.val(example.fontCSS || '');
-    $width.val(example.width || '');
-    $height.val(example.height || '');
   };
 
   var changeHash = function changeHash(name) {
