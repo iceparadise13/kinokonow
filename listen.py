@@ -13,6 +13,7 @@ db = client.kinokonow
 
 
 def convert_tweet_date(tweet_date):
+    """Convert str datetime provided by twitter api to utc datetime object"""
     dt = datetime.strptime(tweet_date, '%a %b %d %H:%M:%S %z %Y')
     return (dt - dt.utcoffset()).replace(tzinfo=timezone.utc)
 
