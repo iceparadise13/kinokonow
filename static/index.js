@@ -221,19 +221,7 @@ jQuery(function($) {
       }
     }
 
-    // Put the word list into options
-    if ($list.val()) {
-      var list = [];
-      $.each($list.val().split('\n'), function each(i, line) {
-        if (!$.trim(line))
-          return;
-
-        var lineArr = line.split(' ');
-        var count = parseFloat(lineArr.shift()) || 0;
-        list.push([lineArr.join(' '), count]);
-      });
-      options.list = list;
-    }
+    options.list = [["紅夢", 6], ["賈寶玉", 3], ["林黛玉", 3], ["薛寶釵", 3], ["王熙鳳", 3], ["李紈", 3], ["賈元春", 3], ["賈迎春", 3], ["賈探春", 3], ["賈惜春", 3], ["秦可卿", 3], ["賈巧姐", 3], ["史湘雲", 3], ["妙玉", 3], ["賈政", 2], ["賈赦", 2], ["賈璉", 2], ["賈珍", 2], ["賈環", 2], ["賈母", 2], ["王夫人", 2], ["薛姨媽", 2], ["尤氏", 2], ["平兒", 2], ["鴛鴦", 2], ["襲人", 2], ["晴雯", 2], ["香菱", 2], ["紫鵑", 2], ["麝月", 2], ["小紅", 2], ["金釧", 2], ["甄士隱", 2], ["賈雨村", 2]];
 
     if (maskCanvas) {
       options.clearCanvas = false;
