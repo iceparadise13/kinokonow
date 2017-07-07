@@ -265,17 +265,6 @@ jQuery(function($) {
     $mask.trigger('change');
   }
 
-  $('#btn-save').on('click', function save(evt) {
-    var url = $canvas[0].toDataURL();
-    if ('download' in document.createElement('a')) {
-      this.href = url;
-    } else {
-      evt.preventDefault();
-      alert('Please right click and choose "Save As..." to save the generated image.');
-      window.open(url, '_blank', 'width=500,height=300,menubar=yes');
-    }
-  });
-
   var $examples = $('#examples');
   $examples.on('change', function loadExample(evt) {
     changeHash(this.value);
