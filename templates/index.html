@@ -18,12 +18,14 @@
 </head>
 
 <body>
-
 <div id="canvas_cloud"></div>
 
 <script>
     function run(){
-        document.getElementById('canvas_cloud').width = $(window).width();
+        var height = $(window).height();
+        // hide the scroll bar
+        height = height * 0.95;
+        document.getElementById('canvas_cloud').style.height = height + "px";
         var options =
         {
           shuffle: false,
@@ -38,7 +40,6 @@
     }
     run();
     window.onresize = function(){
-        document.getElementById('canvas_cloud').style.height = $(window).height() + "px";
         run();
     }
 </script>
