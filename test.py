@@ -1,9 +1,10 @@
 import unittest
 from unittest import mock
-from datetime import datetime
+from datetime import datetime, timezone
 import mongomock
 import extract
 import words
+import listen
 
 
 class TestRemoveUrl(unittest.TestCase):
@@ -110,6 +111,16 @@ class TestRemoveNounsInBlacklist(unittest.TestCase):
         blacklist = ['a', 'b']
         expected = {'c': 3}
         self.assertEqual(expected, words.remove_nouns_in_blacklist(frequencies, blacklist))
+
+
+class ConvertTweetTime(unittest.TestCase):
+    def test_date_time_converted(self):
+        expected = datetime(year=2017, month=7, day=7, hour=11, minute=35, second=39, tzinfo=timezone.utc)
+        self.assertEqual(expected, listen.convert_tweet_date('Fri Jul 07 11:35:39 +0000 2017'))
+
+    def test_timezone_converted(self):
+        expected = datetime(year=2017, month=1, day=1, hour=1, minute=1, second=1, tzinfo=timezone.utc)
+        self.assertEqual(expected, listen.convert_tweet_date('Fri Jan 01 10:01:01 +0900 2017'))
 
 
 if __name__ == '__main__':

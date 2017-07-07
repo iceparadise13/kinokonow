@@ -1,6 +1,6 @@
 import json
 import csv
-from datetime import datetime
+from datetime import datetime, timezone
 import yaml
 import redis
 import pymongo
@@ -12,10 +12,15 @@ client = pymongo.MongoClient(host='localhost', port=27017)
 db = client.kinokonow
 
 
+def convert_tweet_date(tweet_date):
+    dt = datetime.strptime(tweet_date, '%a %b %d %H:%M:%S %z %Y')
+    return (dt - dt.utcoffset()).replace(tzinfo=timezone.utc)
+
+
 def save_tweet(data):
     # shallow copy suffices
     data = dict(data)
-    data['created_at'] = datetime.utcnow()
+    data['created_at'] = convert_tweet_date(data['created_at'])
     db.tweets.insert_one(data)
 
 
