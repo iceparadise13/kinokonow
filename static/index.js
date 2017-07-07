@@ -5,15 +5,7 @@ var examples = {
     list: '6 紅樓夢\n3 賈寶玉\n3 林黛玉\n3 薛寶釵\n3 王熙鳳\n3 李紈\n3 賈元春\n3 賈迎春\n' +
           '3 賈探春\n3 賈惜春\n3 秦可卿\n3 賈巧姐\n3 史湘雲\n3 妙玉\n2 賈政\n2 賈赦\n' +
           '2 賈璉\n2 賈珍\n2 賈環\n2 賈母\n2 王夫人\n2 薛姨媽\n2 尤氏\n2 平兒\n2 鴛鴦\n' +
-          '2 襲人\n2 晴雯\n2 香菱\n2 紫鵑\n2 麝月\n2 小紅\n2 金釧\n2 甄士隱\n2 賈雨村',
-    option: '{\n' +
-            '  gridSize: 8,\n' +
-            '  weightFactor: 16,\n' +
-            '  fontFamily: \'Hiragino Mincho Pro, serif\',\n' +
-            '  color: \'random-dark\',\n' +
-            '  backgroundColor: \'#f0f0f0\',\n' +
-            '  rotateRatio: 0\n' +
-            '}'
+          '2 襲人\n2 晴雯\n2 香菱\n2 紫鵑\n2 麝月\n2 小紅\n2 金釧\n2 甄士隱\n2 賈雨村'
   }
 };
 
@@ -171,18 +163,13 @@ jQuery(function($) {
     $htmlCanvas.css({'width': pixelWidth + 'px', 'height': pixelHeight + 'px'});
 
     // Set the options object
-    var options = {};
-    if ($options.val()) {
-      options = (function evalOptions() {
-        try {
-          return eval('(' + $options.val() + ')');
-        } catch (error) {
-          alert('The following Javascript error occurred in the option definition; all option will be ignored: \n\n' +
-            error.toString());
-          return {};
-        }
-      })();
-    }
+    var options = {
+        gridSize: 8,
+        weightFactor: 16,
+        fontFamily: 'Hiragino Mincho Pro, serif',
+        color: 'random-dark',
+        backgroundColor: '#f0f0f0',
+        rotateRatio: 0};
 
     // Set devicePixelRatio options
     if (devicePixelRatio !== 1) {
