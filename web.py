@@ -11,9 +11,7 @@ db = client.get_database('kinokonow')
 
 @app.route('/')
 def home():
-    frequencies = words.get_filtered_noun_frequencies(
-        db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
-    return render_template('index.html', frequencies=[[k, v] for k, v in frequencies.items()])
+    return render_template('index.html', frequencies=[])
 
 
 if __name__ == '__main__':
