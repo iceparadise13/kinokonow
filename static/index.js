@@ -26,7 +26,6 @@ jQuery(function($) {
   var $canvasContainer = $('#canvas-container');
   var $loading = $('#loading');
 
-  var $list = $('#input-list');
   var $options = $('#config-option');
   var $width = $('#config-width');
   var $height = $('#config-height');
@@ -277,7 +276,6 @@ jQuery(function($) {
     var example = examples[name];
 
     $options.val(example.option || '');
-    $list.val(example.list || '');
     $css.val(example.fontCSS || '');
     $width.val(example.width || '');
     $height.val(example.height || '');
