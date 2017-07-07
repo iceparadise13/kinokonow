@@ -1,116 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8">
-  <title>wordcloud2.js - tag cloud/Wordle presentation on 2D canvas or HTML</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <!-- Le styles -->
-  <link href="//netdna.bootstrapcdn.com/bootstrap/2.2.2/css/bootstrap.min.css" rel="stylesheet">
-  <link href="//netdna.bootstrapcdn.com/bootstrap/2.2.2/css/bootstrap-responsive.min.css" rel="stylesheet">
-  <link href="//fonts.googleapis.com/css?family=Finger+Paint" id="link-webfont" rel="stylesheet">
-  <script defer src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-  <script defer src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>
-  <script defer src="{{ url_for('static', filename='wordcloud2.js') }}"></script>
-  <script defer src="{{ url_for('static', filename='index.js') }}"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>canvas</title>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<script src="{{ url_for('static', filename='wordcloud2.js') }}"></script>
 
-  <style>
-  @media (min-width: 980px) {
-    body { padding-top: 60px; }
-  }
+<style type="text/css">
+#canvas_cloud{
+width: 100%;
+height: 500px;
+}
+</style>
 
-  *[hidden] {
-    display: none;
-  }
-
-  #canvas-container {
-    overflow-x: auto;
-    overflow-y: visible;
-    position: relative;
-	width: 100%;
-	height: 100%;
-  }
-  .canvas {
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .canvas.hide {
-    display: none;
-  }
-
-  #html-canvas > span {
-    transition: text-shadow 1s ease, opacity 1s ease;
-    -webkit-transition: text-shadow 1s ease, opacity 1s ease;
-    -ms-transition: text-shadow 1s ease, opacity 1s ease;
-  }
-
-  #html-canvas > span:hover {
-    text-shadow: 0 0 10px, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
-    opacity: 0.5;
-  }
-
-  textarea {
-    height: 20em;
-  }
-  #config-option {
-    font-family: monospace;
-  }
-  select { width: 100%; }
-
-  @-webkit-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-  @keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-
-  </style>
 </head>
+
 <body>
-  <div class="container">
-    <div id="not-supported" class="alert" hidden>
-      <strong>Your browser is not supported.</strong>
-    </div>
-    <form id="form" method="get" action="">
-      <div id="canvas-container">
-        <canvas id="canvas" class="canvas hide"></canvas>
-        <div id="html-canvas" class="canvas"></div>
-      </div>
-      <div class="tabbable">
-        <div class="tab-content">
-          <div class="tab-pane" id="tab-config">
-            <textarea id="config-option" placeholder="Put your literal option object here." rows="2" cols="30" class="span12"></textarea>
-          </div>
-          <div class="tab-pane" id="tab-dim">
-            <label for="config-width">Width</label>
-            <div class="input-append">
-              <input type="number" id="config-width" class="input-small" min="1">
-              <span class="add-on">px</span>
-            </div>
-            <span class="help-block">Leave blank to use page width.</span>
-            <label for="config-height">Height</label>
-            <div class="input-append">
-              <input type="number" id="config-height" class="input-small" min="1">
-              <span class="add-on">px</span>
-            </div>
-            <span class="help-block">Leave blank to use 0.65x of the width.</span>
-            <label for="config-height">Device pixel density (<span title="Dots per 'px' unit">dppx</span>)</label>
-            <span class="help-block">Adjust the weight, grid size, and canvas pixel size for high pixel density displays.</span>
-          </div>
-          <div class="tab-pane" id="tab-mask">
-            <label for="config-mask">Image mask</label>
-            <input type="file" id="config-mask"><button id="config-mask-clear" class="btn" type="button">Clear</button>
-            <span class="help-block">A silhouette image which the white area will be excluded from drawing texts. The <code>shape</code> option will continue to apply as the shape of the cloud to grow.</span>
-            <span class="help-block">When there is an image set, <code>clearCanvas</code> will be set to <code>false</code>.</span>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
+
+<div id="canvas_cloud"></div>
+
+<script>
+    function run(){
+        document.getElementById('canvas_cloud').width = $(window).width();
+
+        var options =
+        {
+          shuffle: false,
+          rotateRatio: 0,
+          list : [
+          ["Pear", "9"],
+          ["Grape", "3"],
+          ["Pineapple", "8"],
+          ["Apple", "5"]
+          ],
+          gridSize: Math.round(16 * document.getElementById('canvas_cloud').offsetWidth / 1024),
+          weightFactor: function (size) {
+            return Math.pow(size, 1.9) * document.getElementById('canvas_cloud').offsetWidth / 1024;
+          }
+        };
+        WordCloud(document.getElementById('canvas_cloud'), options);
+    }
+    run();
+    window.onresize = run;
+</script>
+
 </body>
 </html>
