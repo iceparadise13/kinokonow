@@ -11,7 +11,11 @@
 <style type="text/css">
 #canvas_cloud{
     height: 500px;
-    overflow: hidden;
+    overflow: scroll;
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 </style>
 
@@ -22,10 +26,7 @@
 
 <script>
     function run(){
-        var height = window.innerHeight;
-        // hide the scroll bar
-        height = height * 0.95;
-        document.getElementById('canvas_cloud').style.height = height + "px";
+        document.getElementById('canvas_cloud').style.height = window.innerHeight + "px";
         var options =
         {
           rotateRatio: 0,
