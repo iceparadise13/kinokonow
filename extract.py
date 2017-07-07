@@ -62,7 +62,10 @@ if __name__ == '__main__':
         print('screen_name: ', tweet_data['user']['screen_name'])
         print('tweet: ', text)
         print('cleaned_text: ', cleaned_text)
-        nouns = api.extract_phrases(cleaned_text)
-        print('nouns :', nouns)
-        if nouns:
-            db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+        try:
+            nouns = api.extract_phrases(cleaned_text)
+            print('nouns :', nouns)
+            if nouns:
+                db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+        except requests.exceptions.RequestException as e:
+            print(str(e))
