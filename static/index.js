@@ -1,38 +1,6 @@
 'use strict';
 
 var examples = {
-  'taiwan': {
-    list: (function() {
-      var names = ['台灣', '台湾', 'Taiwan', '臺灣'];
-
-      var str = ['40 台灣'];
-      var i = 20;
-      while (--i) {
-        names.forEach(function(name) {
-          str.push(i + ' ' + name);
-        });
-      }
-
-      return str.join('\n');
-    }()),
-
-    option: '{\n' +
-            '  gridSize: 4,\n' +
-            '  weightFactor: 1,\n' +
-            '  fontFamily: \'Hiragino Mincho Pro, serif\',\n' +
-            '  color: \'random-dark\',\n' +
-            '  backgroundColor: \'#f0f0f0\',\n' +
-            '  rotateRatio: 0.5,\n' +
-            '  rotationSteps: 2\n,' +
-            '  ellipticity: 1,\n' +
-            '  shape: function(theta) {\n' +
-            '    /' + '/ Function for simple shapes can be generated manually with http://timdream.org/wordcloud2.js/shape-generator.html.\n' +
-            '    var max = 1026;\n' +
-            '    var leng = [290,296,299,301,305,309,311,313,315,316,318,321,325,326,327,328,330,330,331,334,335,338,340,343,343,343,346,349,353,356,360,365,378,380,381,381,381,391,394,394,395,396,400,400,408,405,400,400,400,401,401,403,404,405,408,410,413,414,414,415,416,418,420,423,425,430,435,440,446,456,471,486,544,541,533,532,533,537,540,537,535,535,533,546,543,539,531,529,530,533,529,528,529,522,521,520,509,520,520,533,522,523,526,528,527,532,537,539,539,540,539,538,533,532,524,523,513,503,482,467,443,438,435,431,429,427,426,422,422,426,426,423,419,414,410,407,404,401,396,393,393,395,392,389,388,383,379,378,376,375,372,369,368,359,343,335,332,327,323,314,308,300,294,290,288,289,290,282,275,269,263,257,242,244,237,235,235,232,231,225,224,221,219,218,218,217,217,215,215,214,214,214,214,214,215,215,216,213,213,212,211,209,207,205,204,206,205,205,205,205,204,203,203,201,200,199,197,195,193,192,192,190,189,187,186,186,183,183,182,182,181,179,180,179,178,178,177,177,176,176,176,176,175,175,175,175,175,175,174,174,175,175,175,175,176,177,176,177,177,177,180,179,179,180,179,179,179,178,178,178,178,177,178,177,179,179,179,180,180,181,181,181,183,183,184,184,186,187,189,189,192,195,193,194,193,194,194,191,189,196,195,196,199,200,201,200,200,200,200,202,203,204,205,210,210,210,211,210,214,218,219,226,231,233,235,235,235,235,236,238,240,241,243,245,246,249,249,249,255,257,264,271,272,274,275,276,276,278,285,292,294,296,301,304,313,320,330,333,337,342,345,348,352,358,363,376,386,379,386,387,387,399,402,402,410,415,420,425,430,429,436,435,438,442,447,451,454,455,474,477,481,484,492,486,488,501,509,544,553,552,553,564,579,593,600,627,637,644,644,643,641,640,641,641,643,643,648,651,653,659,671,678,685,690,698,705,711,715,722,729,738,760,770,777,780,788,792,796,800,803,806,808,810,809,815,819,821,823,826,828,830,834,838,849,854,861,884,891,909,932,996,1026,1016,1011,1015,1018,999,987,827,806,779,754,734,727,700,690,686,682,677,675,672,668,665,664,658,641,614,610,609,609,608,596,591,583,577,576,570,561,553,547,539,531,526,525,524,519,513,502,484,480,478,470,464,458,453,450,448,448,445,441,435,431,423,420,411,408,405,398,388,385,385,385,383,379,372,370,369,368,366,367,371,370,367,365,345,343,342,340,336,334,331,329,326,323,323,322,321,321,319,318,315,313,312,309,308,307,306,305,304,303,303,302,302,300,299,299,297,296,294,292,291,290,289,290,291,291,289,289,285,285,286,287,287,288,288,288,288,288,289,288,287,279,275,273,272,272,272,274,274,274,275,275,277,281,284,285,286,286,286,283,280,279,279,280,281,283,284,288,291];\n\n' +
-            '    return leng[(theta / (2 * Math.PI)) * leng.length | 0] / max;\n' +
-            '  }\n'+
-            '}'
-  },
   'web-tech': {
     list: '26 Web Technologies\n20 HTML\n20 <canvas>\n' +
           '15 CSS\n15 JavaScript\n12 Document Object Model\n12 <audio>\n12 <video>\n12 Web Workers\n12 XMLHttpRequest\n12 SVG\n' +
@@ -54,23 +22,6 @@ var examples = {
             '}',
     fontCSS: 'https://fonts.googleapis.com/css?family=Finger+Paint'
   },
-  'les-miz': {
-    list: '30 Les Misérables\n20 Victor Hugo\n15 Jean Valjean\n15 Javert\n15 Fantine\n' +
-          '15 Cosette\n12 Éponine\n12 Marius\n12 Enjolras\n10 Thénardiers\n10 Gavroche\n' +
-          '10 Bishop Myriel\n10 Patron-Minette\n10 God\n8 ABC Café\n8 Paris\n8 Digne\n' +
-          '8 Elephant of the Bastille\n5 silverware\n5 Bagne of Toulon\n5 loaf of bread\n' +
-          '5 Rue Plumet\n5 revolution\n5 barricade\n4 sewers\n4 Fex urbis lex orbis',
-    option: '{\n' +
-          '  gridSize: 18,\n' +
-          '  weightFactor: 3,\n' +
-          '  fontFamily: \'Average, Times, serif\',\n' +
-          '  color: function() {\n' +
-          '    return ([\'#d0d0d0\', \'#e11\', \'#44f\'])[Math.floor(Math.random() * 3)]\n' +
-          '  },\n' +
-          '  backgroundColor: \'#333\'\n' +
-          '}',
-    fontCSS: 'https://fonts.googleapis.com/css?family=Average'
-  },
   'red-chamber': {
     list: '6 紅樓夢\n3 賈寶玉\n3 林黛玉\n3 薛寶釵\n3 王熙鳳\n3 李紈\n3 賈元春\n3 賈迎春\n' +
           '3 賈探春\n3 賈惜春\n3 秦可卿\n3 賈巧姐\n3 史湘雲\n3 妙玉\n2 賈政\n2 賈赦\n' +
@@ -84,59 +35,6 @@ var examples = {
             '  backgroundColor: \'#f0f0f0\',\n' +
             '  rotateRatio: 0\n' +
             '}'
-  },
-  'quick-fox': {
-    list: '2 The\n2 quick\n3 brown\n5 fox\n3 jumps\n3 over\n3.5 the\n3 lazy\n6 dog\n',
-    option: '{\n' +
-            '  gridSize: 16,\n' +
-            '  weightFactor: 16,\n' +
-            '  origin: [90, 0],\n' +
-            '  fontFamily: \'Times, serif\',\n' +
-            '  color: \'random-light\',\n' +
-            '  backgroundColor: \'#000\',\n' +
-            '  shuffle: false,\n' +
-            '  rotateRatio: 0\n' +
-            '}',
-    width: 180,
-    height: 480
-  },
-  'love' : {
-    list: (function generateLoveList() {
-      var list = ['12 Love'];
-      var nums = [5, 4, 3, 2, 2];
-      // This list of the word "Love" in language of the world was taken from
-      // the Language links of entry "Love" in English Wikipedia, with duplicate
-      // spelling removed.
-      var words = ('Liebe,ፍቅር,Lufu,حب,Aimor,Amor,Heyran,ভালোবাসা,Каханне,Любоў,Любов,བརྩེ་དུང་།,' +
-        'Ljubav,Karantez,Юрату,Láska,Amore,Cariad,Kærlighed,Armastus,Αγάπη,Amo,Amol,Maitasun,' +
-        'عشق,Pyar,Amour,Leafde,Gràdh,愛,爱,પ્રેમ,사랑,Սեր,Ihunanya,Cinta,ᑕᑯᑦᓱᒍᓱᑉᐳᖅ,Ást,אהבה,' +
-        'ಪ್ರೀತಿ,სიყვარული,Махаббат,Pendo,Сүйүү,Mīlestība,Meilė,Leefde,Bolingo,Szerelem,' +
-        'Љубов,സ്നേഹം,Imħabba,प्रेम,Ái,Хайр,အချစ်,Tlazohtiliztli,Liefde,माया,मतिना,' +
-        'Kjærlighet,Kjærleik,ପ୍ରେମ,Sevgi,ਪਿਆਰ,پیار,Miłość,Leevde,Dragoste,' +
-        'Khuyay,Любовь,Таптал,Dashuria,Amuri,ආදරය,Ljubezen,Jaceyl,خۆشەویستی,Љубав,Rakkaus,' +
-        'Kärlek,Pag-ibig,காதல்,ప్రేమ,ความรัก,Ишқ,Aşk,محبت,Tình yêu,Higugma,ליבע').split(',');
-
-      nums.forEach(function(n) {
-        words.forEach(function(w) {
-          list.push(n + ' ' + w);
-        });
-      });
-
-      return list.join('\n');
-    })(),
-    option: '{\n' +
-      '  gridSize: Math.round(16 * $(\'#canvas\').width() / 1024),\n' +
-      '  weightFactor: function (size) {\n' +
-      '    return Math.pow(size, 2.3) * $(\'#canvas\').width() / 1024;\n' +
-      '  },\n' +
-      '  fontFamily: \'Times, serif\',\n' +
-      '  color: function (word, weight) {\n' +
-      '    return (weight === 12) ? \'#f02222\' : \'#c09292\';\n' +
-      '  },\n' +
-      '  rotateRatio: 0.5,\n' +
-      '  rotationSteps: 2,\n' +
-      '  backgroundColor: \'#ffe0e0\'\n' +
-      '}'
   }
 };
 
