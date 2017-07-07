@@ -13,7 +13,6 @@ jQuery(function($) {
   var $canvasContainer = $('#canvas-container');
   var $loading = $('#loading');
 
-  var $options = $('#config-option');
   var $width = $('#config-width');
   var $height = $('#config-height');
   var $mask = $('#config-mask');
@@ -257,7 +256,6 @@ jQuery(function($) {
   var loadExampleData = function loadExampleData(name) {
     var example = examples[name];
 
-    $options.val(example.option || '');
     $css.val(example.fontCSS || '');
     $width.val(example.width || '');
     $height.val(example.height || '');
