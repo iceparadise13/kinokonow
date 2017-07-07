@@ -195,52 +195,6 @@ jQuery(function($) {
 
     options.list = [["紅夢", 6], ["賈寶玉", 3], ["林黛玉", 3], ["薛寶釵", 3], ["王熙鳳", 3], ["李紈", 3], ["賈元春", 3], ["賈迎春", 3], ["賈探春", 3], ["賈惜春", 3], ["秦可卿", 3], ["賈巧姐", 3], ["史湘雲", 3], ["妙玉", 3], ["賈政", 2], ["賈赦", 2], ["賈璉", 2], ["賈珍", 2], ["賈環", 2], ["賈母", 2], ["王夫人", 2], ["薛姨媽", 2], ["尤氏", 2], ["平兒", 2], ["鴛鴦", 2], ["襲人", 2], ["晴雯", 2], ["香菱", 2], ["紫鵑", 2], ["麝月", 2], ["小紅", 2], ["金釧", 2], ["甄士隱", 2], ["賈雨村", 2]];
 
-    if (maskCanvas) {
-      options.clearCanvas = false;
-
-      /* Determine bgPixel by creating
-         another canvas and fill the specified background color. */
-      var bctx = document.createElement('canvas').getContext('2d');
-
-      bctx.fillStyle = options.backgroundColor || '#fff';
-      bctx.fillRect(0, 0, 1, 1);
-      var bgPixel = bctx.getImageData(0, 0, 1, 1).data;
-
-      var maskCanvasScaled =
-        document.createElement('canvas');
-      maskCanvasScaled.width = $canvas[0].width;
-      maskCanvasScaled.height = $canvas[0].height;
-      var ctx = maskCanvasScaled.getContext('2d');
-
-      ctx.drawImage(maskCanvas,
-        0, 0, maskCanvas.width, maskCanvas.height,
-        0, 0, maskCanvasScaled.width, maskCanvasScaled.height);
-
-      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      var newImageData = ctx.createImageData(imageData);
-      for (var i = 0; i < imageData.data.length; i += 4) {
-        if (imageData.data[i + 3] > 128) {
-          newImageData.data[i] = bgPixel[0];
-          newImageData.data[i + 1] = bgPixel[1];
-          newImageData.data[i + 2] = bgPixel[2];
-          newImageData.data[i + 3] = bgPixel[3];
-        } else {
-          // This color must not be the same w/ the bgPixel.
-          newImageData.data[i] = bgPixel[0];
-          newImageData.data[i + 1] = bgPixel[1];
-          newImageData.data[i + 2] = bgPixel[2];
-          newImageData.data[i + 3] = bgPixel[3] ? (bgPixel[3] - 1) : 0;
-        }
-      }
-
-      ctx.putImageData(newImageData, 0, 0);
-
-      ctx = $canvas[0].getContext('2d');
-      ctx.drawImage(maskCanvasScaled, 0, 0);
-
-      maskCanvasScaled = ctx = imageData = newImageData = bctx = bgPixel = undefined;
-    }
-
     // Always manually clean up the html output
     if (!options.clearCanvas) {
       $htmlCanvas.empty();
