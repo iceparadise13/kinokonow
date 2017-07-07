@@ -23,17 +23,11 @@
 <script>
     function run(){
         document.getElementById('canvas_cloud').width = $(window).width();
-
         var options =
         {
           shuffle: false,
           rotateRatio: 0,
-          list : [
-          ["Pear", "9"],
-          ["Grape", "3"],
-          ["Pineapple", "8"],
-          ["Apple", "5"]
-          ],
+          list : {{frequencies |tojson }},
           gridSize: Math.round(16 * document.getElementById('canvas_cloud').offsetWidth / 1024),
           weightFactor: function (size) {
             return Math.pow(size, 1.9) * document.getElementById('canvas_cloud').offsetWidth / 1024;
