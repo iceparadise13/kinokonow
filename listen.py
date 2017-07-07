@@ -2,18 +2,23 @@ import json
 import csv
 import yaml
 import redis
+import pymongo
 from twython import TwythonStreamer
 
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+client = pymongo.MongoClient(host='localhost', port=27017)
+db = client.kinokonow
 
 
 class Streamer(TwythonStreamer):
     def on_success(self, data):
         if 'text' in data:
-            dumped = json.dumps(data)
             print(data['user']['screen_name'], ':', data['text'], '\n')
-            redis.lpush('tweets', dumped)
+            redis.lpush('tweets', json.dumps(data))
+            # this call seems to modify `data` making it impossible to json serialize
+            # should be executed after the above
+            db.tweets.insert_one(data)
 
     def on_error(self, status_code, data):
         print(status_code)
