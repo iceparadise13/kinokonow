@@ -33,7 +33,7 @@
           list : {{frequencies |tojson }},
           gridSize: Math.round(16 * document.getElementById('canvas_cloud').offsetWidth / 1024),
           weightFactor: function (size) {
-            return Math.pow(size, 2.5) * document.getElementById('canvas_cloud').offsetWidth / 1024;
+            return Math.pow(size, 1.9) * document.getElementById('canvas_cloud').offsetWidth / 1024;
           }
         };
         WordCloud(document.getElementById('canvas_cloud'), options);
