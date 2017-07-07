@@ -11,6 +11,7 @@
 <style type="text/css">
 #canvas_cloud{
     height: 500px;
+    overflow: hidden;
 }
 </style>
 
@@ -36,7 +37,10 @@
         WordCloud(document.getElementById('canvas_cloud'), options);
     }
     run();
-    window.onresize = run;
+    window.onresize = function(){
+        document.getElementById('canvas_cloud').style.height = $(window).height() + "px";
+        run();
+    }
 </script>
 
 </body>
