@@ -22,13 +22,12 @@
 
 <script>
     function run(){
-        var height = $(window).height();
+        var height = window.innerHeight;
         // hide the scroll bar
         height = height * 0.95;
         document.getElementById('canvas_cloud').style.height = height + "px";
         var options =
         {
-          shuffle: false,
           rotateRatio: 0,
           list : {{frequencies |tojson }},
           gridSize: Math.round(16 * document.getElementById('canvas_cloud').offsetWidth / 1024),
