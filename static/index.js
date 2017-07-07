@@ -276,23 +276,6 @@ jQuery(function($) {
     }
   });
 
-  $('#btn-canvas').on('click', function showCanvas(evt) {
-    $canvas.removeClass('hide');
-    $htmlCanvas.addClass('hide');
-    $('#btn-canvas').prop('disabled', true);
-    $('#btn-html-canvas').prop('disabled', false);
-  });
-
-  $('#btn-html-canvas').on('click', function showCanvas(evt) {
-    $canvas.addClass('hide');
-    $htmlCanvas.removeClass('hide');
-    $('#btn-canvas').prop('disabled', false);
-    $('#btn-html-canvas').prop('disabled', true);
-  });
-
-  $('#btn-canvas').prop('disabled', true);
-  $('#btn-html-canvas').prop('disabled', false);
-
   var $examples = $('#examples');
   $examples.on('change', function loadExample(evt) {
     changeHash(this.value);
