@@ -84,6 +84,6 @@ def extract_nouns(api_key, corpus):
         db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
 
 
-def create_root_task(yahoo_api_key, tweet):
+def create_noun_extraction_task(yahoo_api_key, tweet):
     return chain(clean_tweet.s(tweet),
                  extract_nouns.s(yahoo_api_key))

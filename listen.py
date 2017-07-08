@@ -53,7 +53,7 @@ if __name__ == '__main__':
         if 'text' in data:
             print(data['user']['screen_name'], ':', data['text'], '\n')
             save_tweet(data)
-            tasks.create_root_task(yahoo_api_key, data['text']).delay()
+            tasks.create_noun_extraction_task(yahoo_api_key, data['text']).delay()
 
     stream = get_streamer()
     stream.on_success = on_success
