@@ -4,8 +4,13 @@ services:
   listener:
     image: kinokonow_listener
     environment:
-      - YAHOO_API_KEY=${YAHOO_API_KEY}
       - PYTHONUNBUFFERED=0
     volumes:
       - ${FOLLOW_DIR}:/usr/src/app/follow.txt
     network_mode: host
+    secrets:
+      - yahoo_api_key
+
+secrets:
+  yahoo_api_key:
+    external: true
