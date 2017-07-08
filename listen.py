@@ -1,10 +1,10 @@
-import json
 import csv
 from datetime import datetime, timezone
 import yaml
 import redis
 import pymongo
 from twython import TwythonStreamer
+import tasks
 
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -30,7 +30,7 @@ class Streamer(TwythonStreamer):
         if 'text' in data:
             print(data['user']['screen_name'], ':', data['text'], '\n')
             save_tweet(data)
-            redis.lpush('tweets', json.dumps(data))
+            tasks.extract_nouns.delay(data)
 
     def on_error(self, status_code, data):
         print(status_code)

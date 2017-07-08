@@ -26,5 +26,5 @@ celery = make_celery(flask_app)
 
 
 @celery.task()
-def add_together(a, b):
-    return a + b
+def extract_nouns(data):
+    print(data)
