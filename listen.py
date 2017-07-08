@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 import yaml
 import pymongo
 from twython import TwythonStreamer
-from celery import chain
 import tasks
 
 
@@ -54,8 +53,7 @@ if __name__ == '__main__':
         if 'text' in data:
             print(data['user']['screen_name'], ':', data['text'], '\n')
             save_tweet(data)
-            chain(tasks.clean_tweet.s(data['text']),
-                  tasks.extract_nouns.s(yahoo_api_key)).delay()
+            tasks.create_root_task(yahoo_api_key, data['text']).delay()
 
     stream = get_streamer()
     stream.on_success = on_success

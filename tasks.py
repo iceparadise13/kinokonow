@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 import requests
 import redis
-from celery import Celery
+from celery import Celery, chain
 import pymongo
 from web import flask_app
 
@@ -82,3 +82,8 @@ def extract_nouns(api_key, corpus):
     nouns = api.extract_phrases(corpus)
     if nouns:
         db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+
+
+def create_root_task(yahoo_api_key, tweet):
+    return chain(clean_tweet.s(tweet),
+                 extract_nouns.s(yahoo_api_key))
