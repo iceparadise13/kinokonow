@@ -9,4 +9,3 @@ services:
     volumes:
       - ${FOLLOW_DIR}:/usr/src/app/follow.txt
     network_mode: host
-
