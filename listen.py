@@ -1,3 +1,4 @@
+import sys
 import csv
 from datetime import datetime, timezone
 import yaml
@@ -25,14 +26,6 @@ def save_tweet(data):
 
 
 class Streamer(TwythonStreamer):
-    def on_success(self, data):
-        if 'text' in data:
-            print(data['user']['screen_name'], ':', data['text'], '\n')
-            save_tweet(data)
-            api_key = ''
-            chain(tasks.clean_tweet.s(data['text']),
-                  tasks.extract_nouns.s(api_key)).delay()
-
     def on_error(self, status_code, data):
         print(status_code)
         self.disconnect()
@@ -53,7 +46,17 @@ def get_followers():
 
 
 if __name__ == '__main__':
+    yahoo_api_key = sys.argv[1]
     users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))
+
+    def on_success(data):
+        if 'text' in data:
+            print(data['user']['screen_name'], ':', data['text'], '\n')
+            save_tweet(data)
+            chain(tasks.clean_tweet.s(data['text']),
+                  tasks.extract_nouns.s(yahoo_api_key)).delay()
+
     stream = get_streamer()
+    stream.on_success = on_success
     stream.statuses.filter(follow=','.join(users_to_follow))
