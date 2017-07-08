@@ -1,3 +1,3 @@
-FROM python:2-onbuild
+FROM python:3-onbuild
 
-ENTRYPOINT ['python', '-m', 'listen.py']
+ENTRYPOINT python -m listen.py
