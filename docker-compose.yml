@@ -1,10 +1,12 @@
 version: "3.3"
 
 services:
-  kinokonow_listener:
+  listener:
     image: kinokonow_listener
     environment:
       - YAHOO_API_KEY=${YAHOO_API_KEY}
+      - PYTHONUNBUFFERED=0
     volumes:
       - ${FOLLOW_DIR}:/usr/src/app/follow.txt
     network_mode: host
+
