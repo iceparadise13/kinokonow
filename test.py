@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 from datetime import datetime, timezone
 import mongomock
-import extract
+import tasks
 import words
 import listen
 
@@ -10,36 +10,36 @@ import listen
 class TestRemoveUrl(unittest.TestCase):
     def test(self):
         expected = 'foo foo'
-        self.assertEqual(expected, extract.remove_url('foo https://t.co/bar foo'))
+        self.assertEqual(expected, tasks.remove_url('foo https://t.co/bar foo'))
 
     def test_eol(self):
         expected = 'foo '
-        self.assertEqual(expected, extract.remove_url('foo https://t.co/bar'))
+        self.assertEqual(expected, tasks.remove_url('foo https://t.co/bar'))
 
     def test_greed(self):
         expected = 'foo '
         # `foo` will also be replaced if the regex engine is greedy
-        self.assertEqual(expected, extract.remove_url('https://t.co/bar foo '))
+        self.assertEqual(expected, tasks.remove_url('https://t.co/bar foo '))
 
 
 class TestRemoveMention(unittest.TestCase):
     def test(self):
         expected = 'foo foo'
-        self.assertEqual(expected, extract.remove_mention('foo @bar foo'))
+        self.assertEqual(expected, tasks.remove_mention('foo @bar foo'))
 
     def test_eol(self):
         expected = 'foo '
-        self.assertEqual(expected, extract.remove_mention('foo @bar'))
+        self.assertEqual(expected, tasks.remove_mention('foo @bar'))
 
     def test_greed(self):
         expected = 'foo '
-        self.assertEqual(expected, extract.remove_mention('@bar foo '))
+        self.assertEqual(expected, tasks.remove_mention('@bar foo '))
 
 
 class TestRemoveRtBoilerplate(unittest.TestCase):
     def test(self):
         expected = 'foo'
-        self.assertEqual(expected, extract.remove_rt_boilerplate('RT @bar: foo'))
+        self.assertEqual(expected, tasks.remove_rt_boilerplate('RT @bar: foo'))
 
 
 class TestYahooApi(unittest.TestCase):
@@ -50,7 +50,7 @@ class TestYahooApi(unittest.TestCase):
         self.session.get.return_value = mock.MagicMock(content=content)
 
     def extract_phrases(self):
-        api = extract.YahooApi('foo', self.session)
+        api = tasks.YahooApi('foo', self.session)
         self.result = api.extract_phrases('bar baz')
 
     def test_url_called(self):

@@ -1,13 +1,12 @@
-import json
+import sys
 import csv
 from datetime import datetime, timezone
 import yaml
-import redis
 import pymongo
 from twython import TwythonStreamer
+import tasks
 
 
-redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 client = pymongo.MongoClient(host='localhost', port=27017)
 db = client.kinokonow
 
@@ -26,12 +25,6 @@ def save_tweet(data):
 
 
 class Streamer(TwythonStreamer):
-    def on_success(self, data):
-        if 'text' in data:
-            print(data['user']['screen_name'], ':', data['text'], '\n')
-            save_tweet(data)
-            redis.lpush('tweets', json.dumps(data))
-
     def on_error(self, status_code, data):
         print(status_code)
         self.disconnect()
@@ -52,7 +45,16 @@ def get_followers():
 
 
 if __name__ == '__main__':
+    yahoo_api_key = sys.argv[1]
     users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))
+
+    def on_success(data):
+        if 'text' in data:
+            print(data['user']['screen_name'], ':', data['text'], '\n')
+            save_tweet(data)
+            tasks.create_noun_extraction_task(yahoo_api_key, data['text']).delay()
+
     stream = get_streamer()
+    stream.on_success = on_success
     stream.statuses.filter(follow=','.join(users_to_follow))
