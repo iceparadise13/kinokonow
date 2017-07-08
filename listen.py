@@ -1,4 +1,4 @@
-import sys
+import os
 import csv
 from datetime import datetime, timezone
 import yaml
@@ -45,7 +45,7 @@ def get_followers():
 
 
 if __name__ == '__main__':
-    yahoo_api_key = sys.argv[1]
+    yahoo_api_key = os.environ['YAHOO_API_KEY']
     users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))
 

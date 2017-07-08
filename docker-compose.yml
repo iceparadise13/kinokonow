@@ -3,3 +3,5 @@ version: "3.3"
 services:
   kinokonow_listener:
     image: kinokonow_listener
+    environment:
+      - YAHOO_API_KEY=${YAHOO_API_KEY}
