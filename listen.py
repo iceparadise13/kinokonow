@@ -4,6 +4,7 @@ import yaml
 import redis
 import pymongo
 from twython import TwythonStreamer
+from celery import chain
 import tasks
 
 
@@ -30,7 +31,7 @@ class Streamer(TwythonStreamer):
         if 'text' in data:
             print(data['user']['screen_name'], ':', data['text'], '\n')
             save_tweet(data)
-            tasks.clean_tweet.delay(data['text'])
+            chain(tasks.clean_tweet.s(data['text'])).delay()
 
     def on_error(self, status_code, data):
         print(status_code)
