@@ -1,6 +1,10 @@
 import re
+import json
+from datetime import datetime
+import requests
 import redis
 from celery import Celery
+import pymongo
 from web import flask_app
 
 
@@ -26,6 +30,8 @@ def make_celery(app):
 
 
 celery = make_celery(flask_app)
+mongo_client = pymongo.MongoClient(host='localhost', port=27017)
+db = mongo_client.get_database('kinokonow')
 
 
 def remove_pattern(pat, text):
@@ -54,3 +60,25 @@ def clean(text):
 def clean_tweet(tweet):
     cleaned_tweet = clean(tweet)
     redis_client.lpush('cleaned_tweets', cleaned_tweet)
+
+
+class YahooApi(object):
+    def __init__(self, api_key, session=None):
+        self.api_key = api_key
+        self.session = session or requests.Session()
+
+    def extract_phrases(self, text):
+        pat = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&output=json&sentence=%s'
+        resp = self.session.get(pat % (self.api_key, text))
+        result = json.loads(resp.content.decode('utf-8'))
+        if type(result) == dict:
+            return list(result.keys())
+        return []
+
+
+@celery.task()
+def extract_nouns(api_key, corpus):
+    api = YahooApi(api_key)
+    nouns = api.extract_phrases(corpus)
+    if nouns:
+        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])

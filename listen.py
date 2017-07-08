@@ -31,7 +31,9 @@ class Streamer(TwythonStreamer):
         if 'text' in data:
             print(data['user']['screen_name'], ':', data['text'], '\n')
             save_tweet(data)
-            chain(tasks.clean_tweet.s(data['text'])).delay()
+            api_key = ''
+            chain(tasks.clean_tweet.s(data['text']),
+                  tasks.extract_nouns.s(api_key)).delay()
 
     def on_error(self, status_code, data):
         print(status_code)
