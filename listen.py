@@ -1,14 +1,12 @@
 import csv
 from datetime import datetime, timezone
 import yaml
-import redis
 import pymongo
 from twython import TwythonStreamer
 from celery import chain
 import tasks
 
 
-redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 client = pymongo.MongoClient(host='localhost', port=27017)
 db = client.kinokonow
 
