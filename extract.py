@@ -51,16 +51,12 @@ if __name__ == '__main__':
     db = client.get_database('kinokonow')
 
     while 1:
-        result = redis_client.brpop('tweets', timeout=10)
+        result = redis_client.brpop('cleaned_tweets', timeout=10)
         if not result:
             # the queue was not populated within `timeout` seconds
             continue
         key, value = result
-        tweet_data = json.loads(value.decode('utf-8'))
-        text = tweet_data['text']
-        cleaned_text = clean(text)
-        print('screen_name: ', tweet_data['user']['screen_name'])
-        print('tweet: ', text)
+        cleaned_text = value.decode('utf-8')
         print('cleaned_text: ', cleaned_text)
         try:
             nouns = api.extract_phrases(cleaned_text)
