@@ -10,7 +10,7 @@ services:
     secrets:
       - yahoo_api_key
 
-  mongodb:
+  mongo:
     image: mongo
 
   redis:
