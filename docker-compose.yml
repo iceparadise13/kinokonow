@@ -9,6 +9,9 @@ services:
       sleep 1000000
     secrets:
       - yahoo_api_key
+    depends_on:
+      - mongo
+      - redis
 
   mongo:
     image: mongo
