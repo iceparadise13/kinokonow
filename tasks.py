@@ -2,7 +2,6 @@ import re
 import json
 from datetime import datetime
 import requests
-import redis
 from celery import Celery, chain
 import pymongo
 from web import flask_app
@@ -12,7 +11,6 @@ flask_app.config.update(
     CELERY_BROKER_URL='redis://localhost:6379',
     CELERY_RESULT_BACKEND='redis://localhost:6379'
 )
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 def make_celery(app):
@@ -58,8 +56,7 @@ def clean(text):
 
 @celery.task()
 def clean_tweet(tweet):
-    cleaned_tweet = clean(tweet)
-    redis_client.lpush('cleaned_tweets', cleaned_tweet)
+    return clean(tweet)
 
 
 class YahooApi(object):
@@ -77,7 +74,7 @@ class YahooApi(object):
 
 
 @celery.task()
-def extract_nouns(api_key, corpus):
+def extract_nouns(corpus, api_key):
     api = YahooApi(api_key)
     nouns = api.extract_phrases(corpus)
     if nouns:
