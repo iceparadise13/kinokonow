@@ -6,6 +6,7 @@ from celery import Celery, chain
 import pymongo
 from web import flask_app
 
+
 redis_host = 'redis'
 redis_url = 'redis://%s:6379' % redis_host
 flask_app.config.update(
