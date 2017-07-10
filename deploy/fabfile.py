@@ -1,5 +1,6 @@
 import os
 from fabric.api import run, put
+from fabric.context_managers import cd
 
 
 def copy_files(fab_files, remote_path):
@@ -11,6 +12,7 @@ def copy_files(fab_files, remote_path):
         put(src, dest)
 
 
-def deploy(app_name, cmd):
-    run('screen -S %s -X quit' % app_name, warn_only=True)
-    run('screen -LS %s -dm bash -c "%s"' % (app_name, cmd))
+def deploy(app_name, work_dir, cmd):
+    with cd(work_dir):
+        run('screen -S %s -X quit' % app_name, warn_only=True)
+        run('screen -LS %s -dm bash -c "%s"' % (app_name, cmd))
