@@ -15,4 +15,6 @@ def copy_files(fab_files, remote_path):
 def deploy(app_name, work_dir, cmd):
     with cd(work_dir):
         run('screen -S %s -X quit' % app_name, warn_only=True)
+        # removing the -d flag and purposely attaching for debugging purposes
+        # Ctrl+C in the script terminal will detach the session
         run('screen -LS %s -m bash -c "%s"' % (app_name, cmd))
