@@ -1,10 +1,16 @@
+import os
 import re
 import json
-from datetime import datetime
+import tempfile
+import uuid
+from datetime import datetime, timedelta
 import requests
+import yaml
 from celery import Celery, chain
+from twython import Twython
 import pymongo
 from web import flask_app
+import words
 
 
 flask_app.config.update(
@@ -84,3 +90,48 @@ def extract_nouns(corpus, api_key):
 def create_noun_extraction_task(yahoo_api_key, tweet):
     return chain(clean_tweet.s(tweet),
                  extract_nouns.s(yahoo_api_key))
+
+
+def get_api():
+    cfg = yaml.load(open('twitter.yml', 'rb'))
+    return Twython(
+        cfg['consumer_key'],
+        cfg['consumer_secret'],
+        cfg['access_token_key'],
+        cfg['access_token_secret'])
+
+
+def generate_temp_file_name():
+    return os.path.join(tempfile.gettempdir(), str(uuid.uuid4()))
+
+
+class ImageFileContext(object):
+    """
+    Context that takes an image, saves it as a temp file and returns the file object
+    It'd be better if I could just derive a BytesIO object from `image` but I can't get it to upload
+    """
+    def __init__(self, image):
+        image_file_name = generate_temp_file_name()
+        image.save(image_file_name, format='png')
+        self.image_file = open(image_file_name, 'rb')
+
+    def __enter__(self):
+        return self.image_file
+
+    def __exit__(self, *args, **kwargs):
+        return self.image_file.close()
+
+
+@celery.task
+def tweet_word_cloud():
+    frequencies = words.get_filtered_noun_frequencies(
+        db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
+    words.print_frequencies(frequencies)
+    if not frequencies:
+        return
+    img = words.generate_word_cloud(frequencies, font_path='font.ttf')
+    # Instantiate every time to avoid connection reset
+    api = get_api()
+    with ImageFileContext(img) as image_file:
+        media_id = api.upload_media(media=image_file)['media_id']
+    api.update_status(status='a', media_ids=[media_id])
