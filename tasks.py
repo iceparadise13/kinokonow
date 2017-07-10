@@ -126,7 +126,6 @@ class ImageFileContext(object):
 def tweet_word_cloud():
     frequencies = words.get_filtered_noun_frequencies(
         db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
-    words.print_frequencies(frequencies)
     if not frequencies:
         return
     img = words.generate_word_cloud(frequencies, font_path='font.ttf')
