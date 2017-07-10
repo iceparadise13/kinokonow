@@ -9,3 +9,8 @@ def copy_files(fab_files, remote_path):
         dest = os.path.join(remote_path, src)
         run('mkdir -p %s' % os.path.dirname(dest))
         put(src, dest)
+
+
+def deploy(app_name, cmd):
+    run('screen -S %s -X quit' % app_name)
+    run('screen -S %s -dm bash -c "%s"' % cmd)
