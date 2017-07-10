@@ -1,2 +1,3 @@
+DEST_HOST=pi@192.168.0.14
 DEST_DIR=/home/pi/kinokonow
-fab -H pi@192.168.0.14 copy_files:.fabfiles,${DEST_DIR}
+fab -H ${DEST_HOST} copy_files:.fabfiles,${DEST_DIR}
