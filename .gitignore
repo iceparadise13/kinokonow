@@ -7,4 +7,5 @@ tweets.txt
 nouns.txt
 blacklist.txt
 secrets
-deploy_env.sh
+env.sh
+
