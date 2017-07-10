@@ -5,3 +5,4 @@ font.ttf
 out.png
 blacklist.txt
 secrets
+env.sh
