@@ -9,9 +9,3 @@ def copy_files(fab_files, remote_path):
         dest = os.path.join(remote_path, src)
         run('mkdir -p %s' % os.path.dirname(dest))
         put(src, dest)
-
-
-def sync_requirements(requirements_file, remote_path):
-    remote_requirements_file = os.path.join(remote_path, requirements_file)
-    put(requirements_file, remote_requirements_file)
-    run('pip3 install -r ' + remote_requirements_file)
