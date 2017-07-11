@@ -1,4 +1,4 @@
 FROM python:3-onbuild
 ENV USER_NAME celery
 RUN adduser --disabled-password --gecos '' ${USER_NAME}
-ENTRYPOINT su -m ${USER_NAME} -c "celery --concurrency=1 -l INFO -A api.tasks.app worker"
+ENTRYPOINT su -m ${USER_NAME} -c "celery --concurrency=1 -l INFO -A tasks.celery worker"
