@@ -6,7 +6,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=0
     entrypoint:
-      sleep 1000000
+      ls -ls
     configs:
       - yahoo_api_key
     depends_on:
