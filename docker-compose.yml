@@ -14,6 +14,9 @@ services:
       - source: follows
         target: /usr/src/app/follow.txt
 
+  mongo:
+    image: mongo
+
 secrets:
   yahoo_api_key:
     file: secrets/yahoo_api_key
