@@ -9,15 +9,6 @@ services:
       ls -ls
     configs:
       - yahoo_api_key
-    depends_on:
-      - mongo
-      - redis
-
-  mongo:
-    image: mongo
-
-  redis:
-    image: redis
 
 configs:
   yahoo_api_key:
