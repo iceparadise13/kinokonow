@@ -22,4 +22,3 @@ services:
 configs:
   yahoo_api_key:
     file: secrets/yahoo_api_key
-
