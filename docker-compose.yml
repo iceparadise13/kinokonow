@@ -7,6 +7,8 @@ services:
       - PYTHONUNBUFFERED=0
     entrypoint:
       sleep 1000000
+    configs:
+      - yahoo_api_key
     depends_on:
       - mongo
       - redis
@@ -16,3 +18,8 @@ services:
 
   redis:
     image: redis
+
+  configs:
+    yahoo_api_key:
+      file: secrets/yahoo_api_key
+
