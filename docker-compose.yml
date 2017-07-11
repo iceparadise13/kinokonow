@@ -5,11 +5,15 @@ services:
     image: k8tems/kinokonow_listener
     environment:
       - PYTHONUNBUFFERED=0
-    entrypoint:
-      sleep 1000
     secrets:
-      - yahoo_api_key
+      - source: yahoo_api_key
+        target: /usr/src/app/yahoo_api_key
+    configs:
+      - source: follows
+        target: /usr/src/app/follow.txt
 
 secrets:
   yahoo_api_key:
     file: secrets/yahoo_api_key
+  follows:
+    file: follow.txt
