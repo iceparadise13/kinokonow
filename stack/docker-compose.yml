@@ -5,14 +5,10 @@ services:
     image: k8tems/kinokonow_listener
     environment:
       - PYTHONUNBUFFERED=0
-    secrets:
-      - source: yahoo_api_key
-        target: /usr/src/app/yahoo_api_key
-      - source: twitter_key
-        target: /usr/src/app/twitter.yml
-    configs:
-      - source: follows
-        target: /usr/src/app/follow.txt
+    volumes:
+      - ./secrets/yahoo_api_key:/usr/src/app/yahoo_api_key
+    entrypoint:
+      cat /usr/src/app/yahoo_api_key
     depends_on:
       - mongo
       - redis
@@ -30,13 +26,3 @@ services:
 
   redis:
     image: redis
-
-secrets:
-  yahoo_api_key:
-    file: secrets/yahoo_api_key
-  twitter_key:
-    file: secrets/twitter.yml
-
-configs:
-  follows:
-    file: follow.txt
