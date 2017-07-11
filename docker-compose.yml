@@ -6,10 +6,10 @@ services:
     environment:
       - PYTHONUNBUFFERED=0
     entrypoint:
-      ls -ls
-    configs:
+      sleep 1000
+    secrets:
       - yahoo_api_key
 
-configs:
+secrets:
   yahoo_api_key:
     file: secrets/yahoo_api_key
