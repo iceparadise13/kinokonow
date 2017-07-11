@@ -6,9 +6,8 @@ services:
     environment:
       - PYTHONUNBUFFERED=0
     volumes:
-      - ./secrets/yahoo_api_key:/usr/src/app/yahoo_api_key
-    entrypoint:
-      cat /usr/src/app/yahoo_api_key
+      - ../secrets/yahoo_api_key:/usr/src/app/yahoo_api_key
+      - ../secrets/twitter.yml:/usr/src/app/twitter.yml
     depends_on:
       - mongo
       - redis
