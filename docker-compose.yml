@@ -13,9 +13,15 @@ services:
     configs:
       - source: follows
         target: /usr/src/app/follow.txt
+    depends_on:
+      - mongo
+      - redis
 
   mongo:
     image: mongo
+
+  redis:
+    image: redis
 
 secrets:
   yahoo_api_key:
