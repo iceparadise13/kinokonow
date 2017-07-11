@@ -8,6 +8,7 @@ services:
     volumes:
       - ../secrets/yahoo_api_key:/usr/src/app/yahoo_api_key
       - ../secrets/twitter.yml:/usr/src/app/twitter.yml
+      - ../follow.txt:/usr/src/app/follow.txt
     depends_on:
       - mongo
       - redis
