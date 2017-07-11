@@ -1,6 +1,22 @@
 version: "3.3"
 
 services:
+  listener:
+    image: k8tems/kinokonow_listener
+    environment:
+      - PYTHONUNBUFFERED=0
+    secrets:
+      - source: yahoo_api_key
+        target: /usr/src/app/yahoo_api_key
+      - source: twitter_key
+        target: /usr/src/app/twitter.yml
+    configs:
+      - source: follows
+        target: /usr/src/app/follow.txt
+    depends_on:
+      - mongo
+      - redis
+
   worker:
     image: k8tems/kinokonow_worker
     environment:
