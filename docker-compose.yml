@@ -12,6 +12,7 @@ services:
     depends_on:
       - mongo
       - redis
+    restart: no
 
   mongo:
     image: mongo
