@@ -15,5 +15,6 @@ services:
 secrets:
   yahoo_api_key:
     file: secrets/yahoo_api_key
+configs:
   follows:
     file: follow.txt
