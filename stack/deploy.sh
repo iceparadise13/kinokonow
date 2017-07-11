@@ -1,1 +1,1 @@
-docker stack deploy --compose-file docker-compose.yml kinokonow
+docker stack deploy --compose-file $(dirname $0)/docker-compose.yml kinokonow
