@@ -44,7 +44,7 @@ def get_followers():
 
 
 if __name__ == '__main__':
-    yahoo_api_key = open('/run/secrets/yahoo_api_key').read()
+    yahoo_api_key = open('yahoo_api_key').read()
     users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))
 
