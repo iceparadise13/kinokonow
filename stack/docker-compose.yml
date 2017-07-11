@@ -13,14 +13,6 @@ services:
       - mongo
       - redis
 
-  worker:
-    image: k8tems/kinokonow_worker
-    environment:
-      - PYTHONUNBUFFERED=0
-    depends_on:
-      - mongo
-      - redis
-
   mongo:
     image: mongo
 
