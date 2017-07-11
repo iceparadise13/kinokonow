@@ -36,7 +36,7 @@ def make_celery(app):
 
 
 celery = make_celery(flask_app)
-mongo_client = pymongo.MongoClient(host='localhost', port=27017)
+mongo_client = pymongo.MongoClient(host='mongo', port=27017)
 db = mongo_client.get_database('kinokonow')
 
 
