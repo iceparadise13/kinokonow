@@ -20,7 +20,7 @@ services:
   redis:
     image: redis
 
-  configs:
-    yahoo_api_key:
-      file: secrets/yahoo_api_key
+configs:
+  yahoo_api_key:
+    file: secrets/yahoo_api_key
 
