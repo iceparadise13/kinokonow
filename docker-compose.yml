@@ -19,6 +19,7 @@ secrets:
     file: secrets/yahoo_api_key
   twitter_key:
     file: secrets/twitter.yml
+
 configs:
   follows:
     file: follow.txt
