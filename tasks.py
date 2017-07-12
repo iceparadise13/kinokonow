@@ -40,99 +40,15 @@ mongo_client = pymongo.MongoClient(host='mongo', port=27017)
 db = mongo_client.get_database('kinokonow')
 
 
-def remove_pattern(pat, text):
-    return re.sub('%s(?:\s|$)' % pat, '', text)
-
-
-def remove_mention(text):
-    return remove_pattern('@.+?', text)
-
-
-def remove_url(text):
-    return remove_pattern('(?:http|https)://.+?', text)
-
-
-def remove_rt_boilerplate(text):
-    return remove_pattern('RT @.+:', text)
-
-
-def clean(text):
-    text = remove_rt_boilerplate(text)
-    text = remove_url(text)
-    return remove_mention(text)
-
-
-@celery.task()
-def clean_tweet(tweet):
-    return clean(tweet)
-
-
-class YahooApi(object):
-    def __init__(self, api_key, session=None):
-        self.api_key = api_key
-        self.session = session or requests.Session()
-
-    def extract_phrases(self, text):
-        pat = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&output=json&sentence=%s'
-        resp = self.session.get(pat % (self.api_key, text))
-        result = json.loads(resp.content.decode('utf-8'))
-        if type(result) == dict:
-            return list(result.keys())
-        return []
-
-
-@celery.task()
-def extract_nouns(corpus, api_key):
-    api = YahooApi(api_key)
-    nouns = api.extract_phrases(corpus)
-    if nouns:
-        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
-
-
-def create_noun_extraction_task(yahoo_api_key, tweet):
-    return chain(clean_tweet.s(tweet),
-                 extract_nouns.s(yahoo_api_key))
-
-
-def get_api():
-    cfg = yaml.load(open('twitter.yml', 'rb'))
-    return Twython(
-        cfg['consumer_key'],
-        cfg['consumer_secret'],
-        cfg['access_token_key'],
-        cfg['access_token_secret'])
-
-
-def generate_temp_file_name():
-    return os.path.join(tempfile.gettempdir(), str(uuid.uuid4()))
-
-
-class ImageFileContext(object):
-    """
-    Context that takes an image, saves it as a temp file and returns the file object
-    It'd be better if I could just derive a BytesIO object from `image` but I can't get it to upload
-    """
-    def __init__(self, image):
-        image_file_name = generate_temp_file_name()
-        image.save(image_file_name, format='png')
-        self.image_file = open(image_file_name, 'rb')
-
-    def __enter__(self):
-        return self.image_file
-
-    def __exit__(self, *args, **kwargs):
-        return self.image_file.close()
-
-
 @celery.task
-def tweet_word_cloud():
-    frequencies = words.get_filtered_noun_frequencies(
-        db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
-    if not frequencies:
-        return
-    img = words.generate_word_cloud(frequencies, font_path='font.ttf')
-    # Instantiate every time to avoid connection reset
-    api = get_api()
-    with ImageFileContext(img) as image_file:
-        media_id = api.upload_media(media=image_file)['media_id']
-    api.update_status(status='a', media_ids=[media_id])
+def tweet_word_cloud(msg):
+    print(msg)
+
+
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    # Calls test('hello') every 10 seconds.
+    sender.add_periodic_task(10.0, tweet_word_cloud.s('hello'), name='add every 10')
+
+    # Calls test('world') every 30 seconds
+    sender.add_periodic_task(30.0, tweet_word_cloud.s('world'), expires=10)
