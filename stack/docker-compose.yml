@@ -1,8 +1,26 @@
 version: "3.3"
 
 services:
+  listener:
+    image: k8tems/kinokonow_listener
+    environment:
+      - PYTHONUNBUFFERED=0
+    logging: &logging
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "5"
+    volumes:
+      - /usr/share/kinokonow/yahoo_api_key:/usr/src/app/yahoo_api_key
+      - /usr/share/kinokonow/follow.txt:/usr/src/app/follow.txt
+      - /usr/share/kinokonow/twitter.yml:/usr/src/app/twitter.yml
+    depends_on:
+      - mongo
+      - redis
+
   beat:
     image: k8tems/kinokonow_beat
+    logging: *logging
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
@@ -10,6 +28,7 @@ services:
 
   worker:
     image: k8tems/kinokonow_worker
+    logging: *logging
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
