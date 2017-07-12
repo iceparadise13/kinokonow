@@ -141,4 +141,4 @@ def tweet_word_cloud():
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(crontab(minute=0), tweet_word_cloud.s('hello'), name='tweet every hour')
+    sender.add_periodic_task(crontab(minute=0), tweet_word_cloud.s(), name='tweet every hour')
