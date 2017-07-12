@@ -20,6 +20,7 @@ services:
 
   beat:
     image: k8tems/kinokonow_beat
+    logging: *logging
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
@@ -27,6 +28,7 @@ services:
 
   worker:
     image: k8tems/kinokonow_worker
+    logging: *logging
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
@@ -35,3 +37,8 @@ services:
 
   redis:
     image: redis
+
+  mongo:
+    image: mongo
+    volumes:
+      - /usr/share/kinokonow/mongo:/data/db
