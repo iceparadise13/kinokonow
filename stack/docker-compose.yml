@@ -29,6 +29,8 @@ services:
 
   mongo:
     image: mongo
+    volumes:
+      - /usr/share/kinokonow/mongo:/data/db
 
   redis:
     image: redis
