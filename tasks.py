@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import requests
 import yaml
 from celery import Celery, chain
+from celery.schedules import crontab
 from twython import Twython
 import pymongo
 from web import flask_app
@@ -140,8 +141,4 @@ def tweet_word_cloud():
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    # Calls test('hello') every 10 seconds.
-    sender.add_periodic_task(10.0, tweet_word_cloud.s('hello'), name='add every 10')
-
-    # Calls test('world') every 30 seconds
-    sender.add_periodic_task(30.0, tweet_word_cloud.s('world'), expires=10)
+    sender.add_periodic_task(crontab(minute=0), tweet_word_cloud.s('hello'), name='tweet every hour')
