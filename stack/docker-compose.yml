@@ -5,7 +5,7 @@ services:
     image: k8tems/kinokonow_listener
     environment:
       - PYTHONUNBUFFERED=0
-    logging:
+    logging: &logging
       driver: "json-file"
       options:
         max-size: "10M"
@@ -22,11 +22,7 @@ services:
     image: k8tems/kinokonow_worker
     environment:
       - PYTHONUNBUFFERED=0
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10M"
-        max-file: "5"
+    logging: *logging
     depends_on:
       - mongo
       - redis
