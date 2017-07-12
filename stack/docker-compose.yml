@@ -3,7 +3,6 @@ version: "3.3"
 services:
   beat:
     image: k8tems/kinokonow_beat
-    logging: *logging
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
@@ -11,7 +10,6 @@ services:
 
   worker:
     image: k8tems/kinokonow_worker
-    logging: *logging
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
