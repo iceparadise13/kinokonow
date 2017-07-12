@@ -6,3 +6,5 @@ out.png
 blacklist.txt
 secrets
 env.sh
+celerybeat-schedule
+celerybeat.pid
