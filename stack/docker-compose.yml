@@ -13,7 +13,6 @@ services:
     volumes:
       - /usr/share/kinokonow/yahoo_api_key:/usr/src/app/yahoo_api_key
       - /usr/share/kinokonow/follow.txt:/usr/src/app/follow.txt
-      - /usr/share/kinokonow/twitter.yml:/usr/src/app/twitter.yml
     depends_on:
       - mongo
       - redis
@@ -31,6 +30,8 @@ services:
     logging: *logging
     environment:
       - PYTHONUNBUFFERED=0
+    volumes:
+      - /usr/share/kinokonow/twitter.yml:/usr/src/app/twitter.yml
     depends_on:
       - mongo
       - redis
