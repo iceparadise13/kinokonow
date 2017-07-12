@@ -2,14 +2,14 @@ version: "3.3"
 
 services:
   beat:
-    image: k8tems/kinokonow_expl_beat
+    image: k8tems/kinokonow_beat
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
       - redis
 
   worker:
-    image: k8tems/kinokonow_expl_worker
+    image: k8tems/kinokonow_worker
     environment:
       - PYTHONUNBUFFERED=0
     depends_on:
