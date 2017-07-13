@@ -8,10 +8,10 @@ import requests
 from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
-import pymongo
 from web import flask_app
 import words
 from util import load_yaml
+import mongo
 
 
 redis_host = 'redis'
@@ -37,8 +37,8 @@ def make_celery(app):
 
 
 celery = make_celery(flask_app)
-mongo_client = pymongo.MongoClient(host='mongo', port=27017)
-db = mongo_client.get_database('kinokonow')
+settings = load_yaml('settings.yml')
+
 
 
 def remove_pattern(pat, text):
@@ -87,6 +87,7 @@ def extract_nouns(corpus, api_key):
     api = YahooApi(api_key)
     nouns = api.extract_phrases(corpus)
     if nouns:
+        db = mongo.connect(settings['mongo'])
         db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
 
 
@@ -126,13 +127,14 @@ class ImageFileContext(object):
 
 @celery.task
 def tweet_word_cloud():
+    db = mongo.connect(settings['mongo'])
     frequencies = words.get_filtered_noun_frequencies(
         db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
     if not frequencies:
         return
     img = words.generate_word_cloud(frequencies, font_path='font.ttf')
     # Instantiate every time to avoid connection reset
-    api = get_api(load_yaml('settings.yml')['twitter'])
+    api = get_api(settings['twitter'])
     with ImageFileContext(img) as image_file:
         media_id = api.upload_media(media=image_file)['media_id']
     api.update_status(status='a', media_ids=[media_id])
