@@ -1,13 +1,13 @@
 import csv
 from datetime import datetime, timezone
 import yaml
-import pymongo
 from twython import TwythonStreamer
 import tasks
+import mongo
 
 
-client = pymongo.MongoClient(host='mongo', port=27017)
-db = client.kinokonow
+settings = yaml.load(open('settings.yml'))
+db = mongo.connect(settings['mongo'])
 
 
 def convert_tweet_date(tweet_date):
