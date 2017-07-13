@@ -62,7 +62,7 @@ def clean(text):
     return remove_mention(text)
 
 
-@celery.task()
+@celery.task
 def clean_tweet(tweet):
     return clean(tweet)
 
@@ -81,7 +81,7 @@ class YahooApi(object):
         return []
 
 
-@celery.task()
+@celery.task
 def extract_nouns(corpus):
     api = YahooApi(settings['yahoo_api_key'])
     nouns = api.extract_phrases(corpus)
