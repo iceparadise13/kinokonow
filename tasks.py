@@ -82,17 +82,16 @@ class YahooApi(object):
 
 
 @celery.task()
-def extract_nouns(corpus, api_key):
-    api = YahooApi(api_key)
+def extract_nouns(corpus):
+    api = YahooApi(settings['yahoo_api_key'])
     nouns = api.extract_phrases(corpus)
     if nouns:
         db = mongo.connect(settings['mongo'])
         db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
 
 
-def create_noun_extraction_task(yahoo_api_key, tweet):
-    return chain(clean_tweet.s(tweet),
-                 extract_nouns.s(yahoo_api_key))
+def create_noun_extraction_task(tweet):
+    return chain(clean_tweet.s(tweet), extract_nouns.s())
 
 
 def get_api(settings):

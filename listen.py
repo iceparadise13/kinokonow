@@ -42,7 +42,6 @@ if __name__ == '__main__':
     settings = load_yaml('settings.yml')
     db = mongo.connect(settings['mongo'])
 
-    yahoo_api_key = settings['yahoo_api_key']
     users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))
 
@@ -50,7 +49,7 @@ if __name__ == '__main__':
         if 'text' in data:
             print(data['user']['screen_name'], ':', data['text'], '\n')
             save_tweet(db, data)
-            tasks.create_noun_extraction_task(yahoo_api_key, data['text']).delay()
+            tasks.create_noun_extraction_task(data['text']).delay()
 
     stream = get_streamer(settings['twitter'])
     stream.on_success = on_success
