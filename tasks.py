@@ -40,7 +40,6 @@ celery = make_celery(flask_app)
 settings = load_yaml('settings.yml')
 
 
-
 def remove_pattern(pat, text):
     return re.sub('%s(?:\s|$)' % pat, '', text)
 
