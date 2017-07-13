@@ -1,1 +1,1 @@
-docker build -t k8tems/kinokonow_worker -f $(dirname $0)/worker.dock .
+docker build -t kinokonow_worker -f $(dirname $0)/worker.dock .
