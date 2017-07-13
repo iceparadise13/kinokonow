@@ -1,6 +1,5 @@
 import csv
 from datetime import datetime, timezone
-import yaml
 from twython import TwythonStreamer
 import tasks
 import mongo
@@ -30,13 +29,12 @@ class Streamer(TwythonStreamer):
         self.disconnect()
 
 
-def get_streamer():
-    cfg = yaml.load(open('twitter.yml', 'rb'))
+def get_streamer(settings):
     return Streamer(
-        cfg['consumer_key'],
-        cfg['consumer_secret'],
-        cfg['access_token_key'],
-        cfg['access_token_secret'])
+        settings['consumer_key'],
+        settings['consumer_secret'],
+        settings['access_token_key'],
+        settings['access_token_secret'])
 
 
 def get_followers():
@@ -45,7 +43,7 @@ def get_followers():
 
 
 if __name__ == '__main__':
-    yahoo_api_key = open('yahoo_api_key').read()
+    yahoo_api_key = settings['yahoo_api_key']
     users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))
 
@@ -55,6 +53,6 @@ if __name__ == '__main__':
             save_tweet(data)
             tasks.create_noun_extraction_task(yahoo_api_key, data['text']).delay()
 
-    stream = get_streamer()
+    stream = get_streamer(settings['twitter'])
     stream.on_success = on_success
     stream.statuses.filter(follow=','.join(users_to_follow))
