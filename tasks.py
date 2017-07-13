@@ -5,13 +5,13 @@ import tempfile
 import uuid
 from datetime import datetime, timedelta
 import requests
-import yaml
 from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
 import pymongo
 from web import flask_app
 import words
+from util import load_yaml
 
 
 redis_host = 'redis'
@@ -95,13 +95,12 @@ def create_noun_extraction_task(yahoo_api_key, tweet):
                  extract_nouns.s(yahoo_api_key))
 
 
-def get_api():
-    cfg = yaml.load(open('twitter.yml', 'rb'))
+def get_api(settings):
     return Twython(
-        cfg['consumer_key'],
-        cfg['consumer_secret'],
-        cfg['access_token_key'],
-        cfg['access_token_secret'])
+        settings['consumer_key'],
+        settings['consumer_secret'],
+        settings['access_token_key'],
+        settings['access_token_secret'])
 
 
 def generate_temp_file_name():
@@ -133,7 +132,7 @@ def tweet_word_cloud():
         return
     img = words.generate_word_cloud(frequencies, font_path='font.ttf')
     # Instantiate every time to avoid connection reset
-    api = get_api()
+    api = get_api(load_yaml('settings.yml')['twitter'])
     with ImageFileContext(img) as image_file:
         media_id = api.upload_media(media=image_file)['media_id']
     api.update_status(status='a', media_ids=[media_id])
