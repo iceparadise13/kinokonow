@@ -4,9 +4,10 @@ import yaml
 from twython import TwythonStreamer
 import tasks
 import mongo
+from util import load_yaml
 
 
-settings = yaml.load(open('settings.yml'))
+settings = load_yaml('settings.yml')
 db = mongo.connect(settings['mongo'])
 
 
