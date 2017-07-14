@@ -17,7 +17,7 @@ celery -A tasks.celery -l INFO worker
 celery -A tasks.celery -l INFO beat
 ```
 
-### LICENSE
+### ライセンス
 
 wordcloud2.js  
 Tag cloud/Wordle presentation on 2D canvas or HTML  
