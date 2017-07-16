@@ -1,8 +1,33 @@
-FROM python:3-onbuild
+FROM python:3.6
 
+RUN apt-get update
+
+# Jumanppの依存性
+RUN apt-get install -y libboost-dev
+RUN apt-get install -y build-essential
+
+# Jumanppのインストール
 RUN wget http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
 RUN tar xJvf jumanpp-1.01.tar.xz
 # RUNコマンドでcdした後はディレクトリ維持のため、同じ行でビルドを実行する必要がある
 RUN cd jumanpp-1.01 && ./configure && make && make install
+
+# Install python dependencies
+# `requirements.txt` should be added independently
+# so that the installment does not have to be run every time a file changes
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY . /app
+# python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
+# ビルドのキャッシュが無効化されるので自分で依存性をインストールして
+# プロジェクトのファイルをコピーする
+# RUN mkdir -p /usr/src/app
+# WORKDIR /usr/src/app
+# requirements.txtを`COPY . /usr/src/app`と一緒にコピーしてしまうとプロジェクトのファイルが一つでも変わる度に
+# 依存性を全てインストールし直す必要が出てくるので先にコピーしておく
+# COPY requirements.txt /usr/src/app/
+# RUN pip install --no-cache-dir -r requirements.txt
+# COPY . /usr/src/app
 
 ENTRYPOINT echo "猫を踏んだ" | jumanpp
