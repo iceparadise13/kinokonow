@@ -91,7 +91,7 @@ def extract_nouns(corpus, analyzer=None):
     analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
     nouns = []
     for sentence in corpus.split('\n'):
-        nouns += extract_nouns_from_sentence(sentence, analyzer)
+        nouns += extract_nouns_from_sentence(clean(sentence), analyzer)
     return nouns
 
 
