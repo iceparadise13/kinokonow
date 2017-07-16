@@ -1,4 +1,10 @@
 FROM python:3-onbuild
-ENV USER_NAME celery
-RUN adduser --disabled-password --gecos '' ${USER_NAME}
-ENTRYPOINT su -m ${USER_NAME} -c "celery --concurrency=1 -l INFO -A tasks.celery worker"
+
+RUN wget http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
+RUN tar xJvf jumanpp-1.01.tar.xz
+RUN cd jumanpp-1.01
+RUN ./configure
+RUN make
+RUN make install
+
+ENTRYPOINT echo "猫を踏んだ" | jumanpp
