@@ -19,12 +19,14 @@ RUN cd ${BOOST_DIR} && ./bootstrap.sh
 RUN cd ${BOOST_DIR} && (./b2 || true)
 RUN cd ${BOOST_DIR} && (./b2 install || true)
 # Jumanppのインストール
-RUN wget -q http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
-RUN tar xJvf jumanpp-1.01.tar.xz
-RUN echo ${BOOST_ROOT}
-RUN cd jumanpp-1.01 && ./configure
-RUN cd jumanpp-1.01 && make
-RUN cd jumanpp-1.01 && make install
+ENV JUMANPP_DIR jumanpp-1.01
+ENV JUMANPP_TARBALL ${JUMANPP_DIR}.tar.xz
+RUN wget -q http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/${JUMANPP_TARBALL}
+RUN tar xJvf ${JUMANPP_TARBALL}
+RUN cd ${JUMANPP_DIR} && ./configure
+RUN cd ${JUMANPP_DIR} && make
+RUN cd ${JUMANPP_DIR} && make install
+RUN rm -rf ${JUMANPP_TARBALL}
 
 # Jumanのインストール
 ENV JUMAN_DIR juman-7.01
