@@ -68,13 +68,14 @@ RUN rm -rf ${PYKNP_DIR}
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
 # プロジェクトのファイルをコピーする
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-# requirements.txtを`COPY . /usr/src/app`と一緒にコピーしてしまうとプロジェクトのファイルが一つでも変わる度に
+ENV WORK_DIR /usr/src/app
+RUN mkdir -p ${WORK_DIR}
+WORKDIR ${WORK_DIR}
+# requirements.txtを`COPY . ${WORK_DIR}`と一緒にコピーしてしまうとプロジェクトのファイルが一つでも変わる度に
 # 依存性を全てインストールし直す必要が出てくるので先にコピーしておく
-COPY requirements.txt /usr/src/app/
+COPY requirements.txt ${WORK_DIR}
 RUN pip install --no-cache-dir -r requirements.txt
-COPY . /usr/src/app
+COPY . ${WORK_DIR}
 
 ENV USER_NAME celery
 RUN adduser --disabled-password --gecos '' ${USER_NAME}
