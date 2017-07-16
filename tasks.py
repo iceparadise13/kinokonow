@@ -45,15 +45,16 @@ def preprocess_tweet(tweet):
 
 
 def extract_nouns_from_sentence(sentence, analyzer):
+    # \n分けされた複数の文章が渡されても最初の文章しか解析されないため、文章は一つずつ渡す必要がある
     return [anal.midasi for anal in analyzer(sentence) if anal.hinsi == '名詞']
 
 
 @celery.task
-def extract_nouns(corpus, analyzer=None):
+def extract_nouns(tweet, analyzer=None):
     analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
     nouns = []
-    for sentence in corpus.split('\n'):
-        nouns += extract_nouns_from_sentence(sentence, analyzer)
+    for corpus in tweet.split('\n'):
+        nouns += extract_nouns_from_sentence(corpus, analyzer)
     return nouns
 
 
