@@ -62,8 +62,7 @@ def preprocess_tweet(tweet):
     # 文章的に意味を持たないツイッター固有の情報を消す
     tweet = remove_rt_boilerplate(tweet)
     tweet = remove_mention(tweet)
-    tweet = remove_url(tweet)
-    return tweet.split('\n')
+    return remove_url(tweet)
 
 
 def extract_nouns_from_sentence(sentence, analyzer):

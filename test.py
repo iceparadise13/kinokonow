@@ -8,30 +8,18 @@ import listen
 
 
 class TestPreprocessTweet(unittest.TestCase):
-    def test_separate_sentences(self):
-        tweet = 'foo\nbar\nbaz'
-        self.assertEqual(['foo', 'bar', 'baz'], tasks.preprocess_tweet(tweet))
-
     def test_remove_rt_boilerplate(self):
         tweet = 'RT @bar: foo'
-        self.assertEqual(['foo'], tasks.preprocess_tweet(tweet))
+        self.assertEqual('foo', tasks.preprocess_tweet(tweet))
 
     def test_remove_mention(self):
-        self.assertEqual(['foo foo'], tasks.preprocess_tweet('foo @bar foo'))
-        # eol
-        self.assertEqual(['foo '], tasks.preprocess_tweet('foo @bar'))
-        # `foo` will also be replaced if the regex engine is greedy
-        self.assertEqual(['foo '], tasks.preprocess_tweet('@bar foo '))
+        self.assertEqual('foofoo', tasks.preprocess_tweet('foo@barfoo'))
 
     def test_remove_url(self):
-        self.assertEqual(['foo foo'], tasks.preprocess_tweet('foo https://t.co/bar foo'))
-        # eol
-        self.assertEqual(['foo '], tasks.preprocess_tweet('foo https://t.co/bar'))
-        # greed
-        self.assertEqual(['foo '], tasks.preprocess_tweet('https://t.co/bar foo '))
+        self.assertEqual('foo', tasks.preprocess_tweet('foohttps://t.co/bar'))
 
     def test_remove_spaces(self):
-        self.assertEqual(['foobarbaz'], tasks.preprocess_tweet('foo bar baz '))
+        self.assertEqual('foobarbaz', tasks.preprocess_tweet('foo bar baz '))
 
 
 class TestGetNounFrequencies(unittest.TestCase):
