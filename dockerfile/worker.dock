@@ -27,17 +27,18 @@ RUN cd jumanpp-1.01 && make
 RUN cd jumanpp-1.01 && make install
 
 # Jumanのインストール
-RUN wget -q http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/juman-7.01.tar.bz2
-RUN tar jxvf juman-7.01.tar.bz2
 ENV JUMAN_DIR juman-7.01
+RUN wget -q http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/${JUMAN_DIR}.tar.bz2
+RUN tar jxvf ${JUMAN_DIR}.tar.bz2
 RUN cd ${JUMAN_DIR} && ./configure
 RUN cd ${JUMAN_DIR} && make
 RUN cd ${JUMAN_DIR} && make install
 
 # Knpのインストール
-RUN wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/knp-4.16.tar.bz2
-RUN tar jxvf knp-4.16.tar.bz2
-ENV KNP_DIR knp-4.16
+# 4.16がリンク切れしてるあたり4.17も切れる可能性が高いのでwgetはやめたほうがいいかも
+ENV KNP_DIR knp-4.17
+RUN wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${KNP_DIR}.tar.bz2
+RUN tar jxvf ${KNP_DIR}.tar.bz2
 RUN cd ${KNP_DIR} && ./configure
 RUN cd ${KNP_DIR} && make
 RUN cd ${KNP_DIR} && make install
