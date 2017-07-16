@@ -38,6 +38,7 @@ RUN rm -rf ${JUMAN_TARBALL}
 RUN cd ${JUMAN_DIR} && ./configure
 RUN cd ${JUMAN_DIR} && make
 RUN cd ${JUMAN_DIR} && make install
+RUN rm -rf ${JUMAN_DIR}
 
 # Knpのインストール
 # 4.16がリンク切れしてるあたり4.17も切れる可能性が高いのでwgetはやめたほうがいいかも
@@ -50,6 +51,7 @@ RUN rm -rf ${KNP_TARBALL}
 RUN cd ${KNP_DIR} && ./configure
 RUN cd ${KNP_DIR} && make
 RUN cd ${KNP_DIR} && make install
+RUN rm -rf ${KNP_DIR}
 
 # PyKNPのインストール
 ENV PYKNP_DIR pyknp-0.3
@@ -58,6 +60,7 @@ RUN wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${PYKNP_TARBALL}
 RUN tar xvf ${PYKNP_TARBALL}
 RUN rm -rf ${PYKNP_TARBALL}
 RUN cd ${PYKNP_DIR} && python setup.py install
+RUN rm -rf ${PYKNP_DIR}
 
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
