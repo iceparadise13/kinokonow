@@ -57,6 +57,9 @@ def remove_rt_boilerplate(text):
 
 @celery.task
 def preprocess_tweet(tweet):
+    # 半角スペースが入っているとJumanppの挙動がおかしくなるので消す
+    tweet = tweet.replace(' ', '')
+    # 文章的に意味を持たないツイッター固有の情報を消す
     tweet = remove_rt_boilerplate(tweet)
     tweet = remove_mention(tweet)
     tweet = remove_url(tweet)

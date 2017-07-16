@@ -30,6 +30,9 @@ class TestPreprocessTweet(unittest.TestCase):
         # greed
         self.assertEqual(['foo '], tasks.preprocess_tweet('https://t.co/bar foo '))
 
+    def test_remove_spaces(self):
+        self.assertEqual(['foobarbaz'], tasks.preprocess_tweet('foo bar baz '))
+
 
 class TestGetNounFrequencies(unittest.TestCase):
     def test_frequency(self):
