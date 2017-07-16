@@ -63,4 +63,6 @@ COPY requirements.txt /usr/src/app/
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . /usr/src/app
 
-ENTRYPOINT echo "猫を踏んだ" | jumanpp
+ENV USER_NAME celery
+RUN adduser --disabled-password --gecos '' ${USER_NAME}
+ENTRYPOINT su -m ${USER_NAME} -c "celery --concurrency=1 -l INFO -A tasks.celery worker"
