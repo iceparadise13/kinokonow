@@ -26,13 +26,21 @@ RUN cd jumanpp-1.01 && ./configure
 RUN cd jumanpp-1.01 && make
 RUN cd jumanpp-1.01 && make install
 
-#Jumanのインストール
+# Jumanのインストール
 RUN wget -q http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/juman-7.01.tar.bz2
 RUN tar jxvf juman-7.01.tar.bz2
 ENV JUMAN_DIR juman-7.01
 RUN cd ${JUMAN_DIR} && ./configure
 RUN cd ${JUMAN_DIR} && make
 RUN cd ${JUMAN_DIR} && make install
+
+# Knpのインストール
+RUN wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/knp-4.16.tar.bz2
+RUN tar jxvf knp-4.16.tar.bz2
+ENV KNP_DIR knp-4.16
+RUN cd ${KNP_DIR} && ./configure
+RUN cd ${KNP_DIR} && make
+RUN cd ${KNP_DIR} && make install
 
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
