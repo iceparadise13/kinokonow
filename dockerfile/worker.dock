@@ -18,6 +18,7 @@ RUN cd ${BOOST_DIR} && ./bootstrap.sh
 # `./b2`で失敗したコンポーネントは無視したいので失敗した場合`true`を実行して終了コードを無理やり0にセットする
 RUN cd ${BOOST_DIR} && (./b2 || true)
 RUN cd ${BOOST_DIR} && (./b2 install || true)
+RUN rm -rf ${BOOST_DIR}
 # Jumanppのインストール
 ENV JUMANPP_DIR jumanpp-1.01
 ENV JUMANPP_TARBALL ${JUMANPP_DIR}.tar.xz
