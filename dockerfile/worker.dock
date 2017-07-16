@@ -55,12 +55,12 @@ RUN rm -rf ${PYKNP_TARBALL}
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
 # プロジェクトのファイルをコピーする
-# RUN mkdir -p /usr/src/app
-# WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 # requirements.txtを`COPY . /usr/src/app`と一緒にコピーしてしまうとプロジェクトのファイルが一つでも変わる度に
 # 依存性を全てインストールし直す必要が出てくるので先にコピーしておく
-# COPY requirements.txt /usr/src/app/
-# RUN pip install --no-cache-dir -r requirements.txt
-# COPY . /usr/src/app
+COPY requirements.txt /usr/src/app/
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . /usr/src/app
 
 ENTRYPOINT echo "猫を踏んだ" | jumanpp
