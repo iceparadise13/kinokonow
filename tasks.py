@@ -62,6 +62,7 @@ def extract_nouns(data, analyzer=None):
     analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
     nouns = hash_tags
     for sentence in tweet.split('\n'):
+        print('Extracting nouns from %s' % repr(sentence))
         nouns += extract_nouns_from_sentence(sentence, analyzer)
     return nouns
 
