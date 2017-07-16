@@ -90,8 +90,10 @@ def extract_nouns_from_sentence(corpus, analyzer):
 @celery.task
 def extract_nouns(corpus, analyzer=None):
     analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
+    nouns = []
     for sentence in corpus.split('\n'):
-        extract_nouns_from_sentence(sentence, analyzer)
+        nouns += extract_nouns_from_sentence(sentence, analyzer)
+    return nouns
 
 
 def create_noun_extraction_task(tweet):

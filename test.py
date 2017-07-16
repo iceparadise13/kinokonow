@@ -124,19 +124,23 @@ class ConvertTweetTime(unittest.TestCase):
 
 
 class TestExtractNouns(unittest.TestCase):
-    def test(self):
+    def test_only_return_noun(self):
         corpus = '猫を踏んだ'
-        analyzer = mock.MagicMock(return_value=[
+        analyzer = mock.MagicMock(side_effect=[[
             mock.MagicMock(midasi='猫', hinsi='名詞'),
             mock.MagicMock(midasi='を', hinsi='助詞'),
             mock.MagicMock(midasi='踏んだ', hinsi='動詞')
-        ])
+        ]])
         self.assertEqual(['猫'], tasks.extract_nouns(corpus, analyzer))
 
     def test_multiple_sentences(self):
         corpus = '1\n2\n3'
-        analyzer = mock.MagicMock()
-        tasks.extract_nouns(corpus, analyzer)
+        analyzer = mock.MagicMock(side_effect=[
+            [mock.MagicMock(midasi='1', hinsi='名詞')],
+            [mock.MagicMock(midasi='2', hinsi='名詞')],
+            [mock.MagicMock(midasi='3', hinsi='名詞')]
+        ])
+        self.assertEqual(['1', '2', '3'], tasks.extract_nouns(corpus, analyzer))
         analyzer.assert_has_calls(
             [mock.call('1'), mock.call('2'), mock.call('3')],
             any_order=True)
