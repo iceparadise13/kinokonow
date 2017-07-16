@@ -1,18 +1,14 @@
 FROM python:3.6
 
 RUN apt-get update
-# `add-apt-repository`を使うのに必要
-RUN apt-get install -y software-properties-common
-
-# これが無いとlibboost-devのバージョンが1.55になってしまい、
-# 1.57が必要なjumanppをビルド出来なくなる
-RUN add-apt-repository ppa:boost-latest/ppa
-RUN apt-get update
 
 # Jumanppの依存性
-RUN apt-cache show libboost-dev
-RUN apt-get install -y libboost-dev
-RUN apt-get install -y build-essential
+# Boostの依存性
+RUN apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+# Boostのインストール
+RUN wget -O boost_1_57_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz/download
+RUN tar xzvf boost_1_57_0.tar.gz
+RUN cd boost_1_57_0 && ./bootstrap.sh --prefix=/usr/local && ./b2 && ./b2 install
 
 # Jumanppのインストール
 RUN wget http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
