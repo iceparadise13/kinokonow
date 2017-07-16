@@ -33,6 +33,9 @@ class TestPreprocessTweet(unittest.TestCase):
     def test_remove_spaces(self):
         self.assertEqual('foobarbaz', tasks.preprocess_tweet('foo bar baz ')[0])
 
+    def test_extract_hash_tags(self):
+        self.assertEqual(('fooqux', ['bar', 'baz'],), tasks.preprocess_tweet('foo #bar #baz qux'))
+
 
 class TestGetNounFrequencies(unittest.TestCase):
     def test_frequency(self):

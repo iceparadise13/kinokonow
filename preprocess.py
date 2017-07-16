@@ -18,7 +18,15 @@ def remove_rt_boilerplate(text):
 
 
 def extract_hash_tags(tweet):
-    return tweet, []
+    hashtags = []
+    while 1:
+        regex = re.search('#(\S+(?#should be greedy))', tweet)
+        if not regex:
+            break
+        tag = regex.group(1)
+        hashtags.append(tag)
+        tweet = tweet.replace('#' + tag, '')
+    return tweet, hashtags
 
 
 def preprocess_tweet(tweet):
@@ -31,6 +39,8 @@ def preprocess_tweet(tweet):
     tweet = remove_rt_boilerplate(tweet)
     tweet = remove_mention(tweet)
     tweet = remove_url(tweet)
+    # 「#」はJumanppに渡すとハングする上に、
+    # 外国で見るようなハッシュタグを文章中の単語として使う文化は日本に無いのでそのまま抽出する
     tweet, hash_tags = extract_hash_tags(tweet)
     # 半角スペースが入っているとJumanppの挙動がおかしくなるので消す
     # 他のフィルターに支障が出るので最後に実行する
