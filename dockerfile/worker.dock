@@ -16,7 +16,6 @@ RUN tar xJvf jumanpp-1.01.tar.xz
 # RUNコマンドでcdした後はディレクトリ維持のため、同じ行でビルドを実行する必要がある
 RUN cd jumanpp-1.01 && ./configure && make && make install
 
-COPY . /app
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
 # プロジェクトのファイルをコピーする
