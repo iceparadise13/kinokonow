@@ -9,9 +9,11 @@ RUN apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev b
 # Boostのインストール
 ENV BOOST_VER 1.62.0
 ENV BOOST_DIR boost_1_62_0
+ENV BOOST_TARBALL ${BOOST_DIR}.tar.gz
 # うるさいので-qフラグをつける
-RUN wget -qO ${BOOST_DIR}.tar.gz http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/${BOOST_DIR}.tar.gz/download
-RUN tar xzvf ${BOOST_DIR}.tar.gz
+RUN wget -qO ${BOOST_TARBALL} http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/${BOOST_TARBALL}/download
+RUN tar xzvf ${BOOST_TARBALL}
+RUN rm -rf ${BOOST_TARBALL}
 # cdした後の現在ディレクトリはRUNコマンド後に初期化されるので一々cdする必要がある
 # コマンドを結合して一行で実行する手はあるが、キャッシュが活用出来なくなる
 RUN cd ${BOOST_DIR} && ./bootstrap.sh
