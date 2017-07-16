@@ -26,6 +26,16 @@ RUN cd jumanpp-1.01 && ./configure
 RUN cd jumanpp-1.01 && make
 RUN cd jumanpp-1.01 && make install
 
+# Knpのインストール
+# 4.16がリンク切れしてるあたり4.17も切れる可能性が高いのでwgetはやめたほうがいいかも
+# 容量が大きいのでJumanより先に入れる
+ENV KNP_DIR knp-4.17
+RUN wget -q http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${KNP_DIR}.tar.bz2
+RUN tar jxvf ${KNP_DIR}.tar.bz2
+RUN cd ${KNP_DIR} && ./configure
+RUN cd ${KNP_DIR} && make
+RUN cd ${KNP_DIR} && make install
+
 # Jumanのインストール
 ENV JUMAN_DIR juman-7.01
 RUN wget -q http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/${JUMAN_DIR}.tar.bz2
@@ -33,15 +43,6 @@ RUN tar jxvf ${JUMAN_DIR}.tar.bz2
 RUN cd ${JUMAN_DIR} && ./configure
 RUN cd ${JUMAN_DIR} && make
 RUN cd ${JUMAN_DIR} && make install
-
-# Knpのインストール
-# 4.16がリンク切れしてるあたり4.17も切れる可能性が高いのでwgetはやめたほうがいいかも
-ENV KNP_DIR knp-4.17
-RUN wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${KNP_DIR}.tar.bz2
-RUN tar jxvf ${KNP_DIR}.tar.bz2
-RUN cd ${KNP_DIR} && ./configure
-RUN cd ${KNP_DIR} && make
-RUN cd ${KNP_DIR} && make install
 
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
