@@ -7,9 +7,10 @@ RUN apt-get update
 # Boostの依存性
 RUN apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
 # Boostのインストール
-ENV BOOST_DIR boost_1_57_0
+ENV BOOST_VER 1.62.0
+ENV BOOST_DIR boost_1_62_0
 # うるさいので-qフラグをつける
-RUN wget -qO ${BOOST_DIR}.tar.gz http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz/download
+RUN wget -qO ${BOOST_DIR}.tar.gz http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/${BOOST_DIR}.tar.gz/download
 RUN tar xzvf ${BOOST_DIR}.tar.gz
 # cdした後の現在ディレクトリはRUNコマンド後に初期化されるので一々cdする必要がある
 # コマンドを結合して一行で実行する手はあるが、キャッシュが活用出来なくなる
