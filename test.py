@@ -14,6 +14,12 @@ class TestPreprocessTweet(unittest.TestCase):
 
     def test_remove_mention(self):
         self.assertEqual('foobaz', tasks.preprocess_tweet('foo @bar baz '))
+        # multiple mentions
+        self.assertEqual('foobaz', tasks.preprocess_tweet('foo @bar @bar baz '))
+        # eol
+        self.assertEqual('foo', tasks.preprocess_tweet('foo @bar'))
+        # mention only
+        self.assertEqual('', tasks.preprocess_tweet('@bar'))
 
     def test_remove_url(self):
         self.assertEqual('foobar', tasks.preprocess_tweet('foo https://t.co/bar bar'))
