@@ -2,9 +2,7 @@ FROM python:3-onbuild
 
 RUN wget http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
 RUN tar xJvf jumanpp-1.01.tar.xz
-RUN cd jumanpp-1.01
-RUN ./configure
-RUN make
-RUN make install
+# RUNコマンドでcdした後はディレクトリ維持のため、同じ行でビルドを実行する必要がある
+RUN cd jumanpp-1.01 && ./configure && make && make install
 
 ENTRYPOINT echo "猫を踏んだ" | jumanpp
