@@ -82,9 +82,16 @@ class YahooApi(object):
         return []
 
 
+def analyze(sentence):
+    # Note jumanpp only analyzes the first sentence
+    return [(m.midasi, m.genkei, m.hinsi, m.bunrui)
+            for m in Jumanpp().analysis(sentence).mrph_list()]
+
+
 @celery.task
 def extract_nouns(corpus, analyzer=None):
-    analyzer = analyzer or Jumanpp().analysis
+    analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
+    return [anal.midasi for anal in analyzer(corpus) if anal.hinsi == '名詞']
 
 
 def create_noun_extraction_task(tweet):
