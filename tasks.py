@@ -50,9 +50,10 @@ def extract_nouns_from_sentence(sentence, analyzer):
 
 
 @celery.task
-def extract_nouns(tweet, analyzer=None):
+def extract_nouns(tweet, hash_tags, analyzer=None):
     analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
-    nouns = []
+    # ハッシュタグは無条件で名詞として扱う
+    nouns = hash_tags
     for sentence in tweet.split('\n'):
         nouns += extract_nouns_from_sentence(sentence, analyzer)
     return nouns
