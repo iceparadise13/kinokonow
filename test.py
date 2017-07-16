@@ -145,6 +145,13 @@ class TestExtractNouns(unittest.TestCase):
             [mock.call('1'), mock.call('2'), mock.call('3')],
             any_order=True)
 
+    def test_cleaned(self):
+        retweet_boilerplate = 'RT @twitter: %s'
+        corpus = '%s\n%s' % (retweet_boilerplate % 'a', retweet_boilerplate % 'b')
+        analyzer = mock.MagicMock()
+        tasks.extract_nouns(corpus, analyzer)
+        analyzer.assert_has_calls([mock.call('a'), mock.call('b')], any_order=True)
+
 
 if __name__ == '__main__':
     unittest.main()

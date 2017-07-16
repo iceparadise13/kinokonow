@@ -82,9 +82,8 @@ class YahooApi(object):
         return []
 
 
-def extract_nouns_from_sentence(corpus, analyzer):
-    analysis = analyzer(corpus)
-    return [anal.midasi for anal in analysis if anal.hinsi == '名詞']
+def extract_nouns_from_sentence(sentence, analyzer):
+    return [anal.midasi for anal in analyzer(sentence) if anal.hinsi == '名詞']
 
 
 @celery.task
