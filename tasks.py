@@ -1,5 +1,4 @@
 import os
-import re
 import tempfile
 import uuid
 from datetime import datetime, timedelta
@@ -11,6 +10,7 @@ from pyknp import Jumanpp
 from web import flask_app
 import words
 from util import load_yaml
+import preprocess
 
 
 redis_host = 'redis'
@@ -39,32 +39,9 @@ celery = make_celery(flask_app)
 settings = load_yaml('settings.yml')
 
 
-def remove_pattern(pat, text):
-    return re.sub('%s(?:\s|$)' % pat, '', text)
-
-
-def remove_mention(text):
-    return remove_pattern('@.+?', text)
-
-
-def remove_url(text):
-    return remove_pattern('(?:http|https)://.+?', text)
-
-
-def remove_rt_boilerplate(text):
-    return remove_pattern('RT @.+:', text)
-
-
 @celery.task
 def preprocess_tweet(tweet):
-    # 文章的に意味を持たないツイッター固有の情報を消す
-    tweet = remove_rt_boilerplate(tweet)
-    tweet = remove_mention(tweet)
-    tweet = remove_url(tweet)
-    hash_tags = []
-    # 半角スペースが入っているとJumanppの挙動がおかしくなるので消す
-    # 他のフィルターに支障が出るので最後に実行する
-    return tweet.replace(' ', ''), hash_tags
+    return preprocess.preprocess_tweet(tweet)
 
 
 def extract_nouns_from_sentence(sentence, analyzer):
