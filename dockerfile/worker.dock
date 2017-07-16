@@ -1,8 +1,16 @@
 FROM python:3.6
 
 RUN apt-get update
+# `add-apt-repository`を使うのに必要
+RUN apt-get install -y software-properties-common
+
+# これが無いとlibboost-devのバージョンが1.55になってしまい、
+# 1.57が必要なjumanppをビルド出来なくなる
+RUN add-apt-repository ppa:boost-latest/ppa
+RUN apt-get update
 
 # Jumanppの依存性
+RUN apt-cache show libboost-dev
 RUN apt-get install -y libboost-dev
 RUN apt-get install -y build-essential
 
@@ -11,12 +19,6 @@ RUN wget http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
 RUN tar xJvf jumanpp-1.01.tar.xz
 # RUNコマンドでcdした後はディレクトリ維持のため、同じ行でビルドを実行する必要がある
 RUN cd jumanpp-1.01 && ./configure && make && make install
-
-# Install python dependencies
-# `requirements.txt` should be added independently
-# so that the installment does not have to be run every time a file changes
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
 
 COPY . /app
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
