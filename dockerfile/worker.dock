@@ -44,6 +44,7 @@ RUN tar jxvf ${KNP_TARBALL}
 RUN cd ${KNP_DIR} && ./configure
 RUN cd ${KNP_DIR} && make
 RUN cd ${KNP_DIR} && make install
+RUN rm -rf ${KNP_TARBALL}
 
 # PyKNPのインストール
 ENV PYKNP_DIR pyknp-0.3
