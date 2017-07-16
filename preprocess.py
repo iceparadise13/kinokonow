@@ -23,7 +23,7 @@ def extract_hash_tags(tweet):
 
 def preprocess_tweet(tweet):
     """
-    Jumanppにデータを渡す前にツイートをプリプロセスする
+    Jumanppにツイートを渡す前にプリプロセスする
     :param tweet: 生のツイート
     :return: プリプロセスされたツイートとハッシュタグリストのタプル
     """
