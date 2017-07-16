@@ -6,6 +6,7 @@ RUN apt-get update
 # Boostを`apt-get install libboost-dev`で入れると1.55がインストールされてJumanppに必要な1.57が満たされないので自分でビルドする
 # Boostの依存性
 RUN apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+RUN apt-get clean
 # Boostのインストール
 ENV BOOST_VER 1.62.0
 ENV BOOST_DIR boost_1_62_0
