@@ -8,7 +8,8 @@ RUN apt-get update
 RUN apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
 # Boostのインストール
 ENV BOOST_DIR boost_1_57_0
-RUN wget -O ${BOOST_DIR}.tar.gz http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz/download
+# うるさいので-qフラグは忘れずに
+RUN wget -qO ${BOOST_DIR}.tar.gz http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz/download
 RUN tar xzvf ${BOOST_DIR}.tar.gz
 # キャッシュを活用するためにビルドのコマンドは分ける
 RUN cd ${BOOST_DIR} && ./bootstrap.sh --prefix=/usr/locals
