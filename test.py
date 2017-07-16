@@ -23,6 +23,12 @@ class TestPreprocessTweet(unittest.TestCase):
 
     def test_remove_url(self):
         self.assertEqual('foobar', tasks.preprocess_tweet('foo https://t.co/bar bar'))
+        # multiple urls
+        self.assertEqual('foobar', tasks.preprocess_tweet('foo https://t.co/bar https://t.co/bar bar'))
+        # eol
+        self.assertEqual('foo', tasks.preprocess_tweet('foo https://t.co/bar'))
+        # url only
+        self.assertEqual('', tasks.preprocess_tweet('https://t.co/bar'))
 
     def test_remove_spaces(self):
         self.assertEqual('foobarbaz', tasks.preprocess_tweet('foo bar baz '))
