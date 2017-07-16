@@ -123,5 +123,17 @@ class ConvertTweetTime(unittest.TestCase):
         self.assertEqual(expected, listen.convert_tweet_date('Fri Jan 01 10:01:01 +0900 2017'))
 
 
+class TestExtractNouns(unittest.TestCase):
+    def test(self):
+        corpus = '猫を踏んだ'
+        analyzer = mock.MagicMock()
+        analyzer.return_value = [
+            mock.MagicMock(midasi='猫', hinsi='名詞'),
+            mock.MagicMock(midasi='を', hinsi='助詞'),
+            mock.MagicMock(midasi='踏んだ', hinsi='動詞')
+        ]
+        self.assertEqual(['猫'], tasks.extract_nouns(corpus, analyzer))
+
+
 if __name__ == '__main__':
     unittest.main()

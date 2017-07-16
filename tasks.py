@@ -8,10 +8,11 @@ import requests
 from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
+import mongo
+from pyknp import Jumanpp
 from web import flask_app
 import words
 from util import load_yaml
-import mongo
 
 
 redis_host = 'redis'
@@ -82,12 +83,8 @@ class YahooApi(object):
 
 
 @celery.task
-def extract_nouns(corpus):
-    api = YahooApi(settings['yahoo_api_key'])
-    nouns = api.extract_phrases(corpus)
-    if nouns:
-        db = mongo.connect(settings['mongo'])
-        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+def extract_nouns(corpus, analyzer=None):
+    analyzer = analyzer or Jumanpp().analysis
 
 
 def create_noun_extraction_task(tweet):
