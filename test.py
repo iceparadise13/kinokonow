@@ -42,40 +42,6 @@ class TestRemoveRtBoilerplate(unittest.TestCase):
         self.assertEqual(expected, tasks.remove_rt_boilerplate('RT @bar: foo'))
 
 
-class TestYahooApi(unittest.TestCase):
-    def setUp(self):
-        self.session = mock.MagicMock()
-
-    def set_content(self, content):
-        self.session.get.return_value = mock.MagicMock(content=content)
-
-    def extract_phrases(self):
-        api = tasks.YahooApi('foo', self.session)
-        self.result = api.extract_phrases('bar baz')
-
-    def test_url_called(self):
-        self.set_content(b'{}')
-        self.extract_phrases()
-        url = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?' \
-              'appid=foo&output=json&sentence=bar baz'
-        self.session.get.assert_called_once_with(url)
-
-    def test_return_nouns(self):
-        self.set_content(b'{"bar": 60, "baz": 40}')
-        self.extract_phrases()
-        self.assertEqual(sorted(['bar', 'baz']), sorted(self.result))
-
-    def test_handle_empty_list(self):
-        self.set_content(b'[]')
-        self.extract_phrases()
-        self.assertEqual([], self.result)
-
-    def test_handle_error(self):
-        self.set_content(b'["Error"]')
-        self.extract_phrases()
-        self.assertEqual([], self.result)
-
-
 class TestGetNounFrequencies(unittest.TestCase):
     def test_frequency(self):
         collection = mongomock.MongoClient().db.collection
@@ -144,13 +110,6 @@ class TestExtractNouns(unittest.TestCase):
         analyzer.assert_has_calls(
             [mock.call('1'), mock.call('2'), mock.call('3')],
             any_order=True)
-
-    def test_cleaned(self):
-        retweet_boilerplate = 'RT @twitter: %s'
-        corpus = '%s\n%s' % (retweet_boilerplate % 'a', retweet_boilerplate % 'b')
-        analyzer = mock.MagicMock()
-        tasks.extract_nouns(corpus, analyzer)
-        analyzer.assert_has_calls([mock.call('a'), mock.call('b')], any_order=True)
 
 
 if __name__ == '__main__':

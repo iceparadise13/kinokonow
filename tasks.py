@@ -68,20 +68,6 @@ def clean_tweet(tweet):
     return clean(tweet)
 
 
-class YahooApi(object):
-    def __init__(self, api_key, session=None):
-        self.api_key = api_key
-        self.session = session or requests.Session()
-
-    def extract_phrases(self, text):
-        pat = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&output=json&sentence=%s'
-        resp = self.session.get(pat % (self.api_key, text))
-        result = json.loads(resp.content.decode('utf-8'))
-        if type(result) == dict:
-            return list(result.keys())
-        return []
-
-
 def extract_nouns_from_sentence(sentence, analyzer):
     return [anal.midasi for anal in analyzer(sentence) if anal.hinsi == '名詞']
 
@@ -91,7 +77,7 @@ def extract_nouns(corpus, analyzer=None):
     analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
     nouns = []
     for sentence in corpus.split('\n'):
-        nouns += extract_nouns_from_sentence(clean(sentence), analyzer)
+        nouns += extract_nouns_from_sentence(sentence, analyzer)
     return nouns
 
 
