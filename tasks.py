@@ -1,10 +1,8 @@
 import os
 import re
-import json
 import tempfile
 import uuid
 from datetime import datetime, timedelta
-import requests
 from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
