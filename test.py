@@ -13,10 +13,10 @@ class TestPreprocessTweet(unittest.TestCase):
         self.assertEqual('foo', tasks.preprocess_tweet(tweet))
 
     def test_remove_mention(self):
-        self.assertEqual('foofoo', tasks.preprocess_tweet('foo@barfoo'))
+        self.assertEqual('foobaz', tasks.preprocess_tweet('foo @bar baz '))
 
     def test_remove_url(self):
-        self.assertEqual('foo', tasks.preprocess_tweet('foohttps://t.co/bar'))
+        self.assertEqual('foobar', tasks.preprocess_tweet('foo https://t.co/bar bar'))
 
     def test_remove_spaces(self):
         self.assertEqual('foobarbaz', tasks.preprocess_tweet('foo bar baz '))
