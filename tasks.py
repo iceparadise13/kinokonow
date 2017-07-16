@@ -45,7 +45,7 @@ def preprocess_tweet(tweet):
 
 
 def extract_nouns_from_sentence(sentence, analyzer):
-    # \n分けされた複数の文章が渡されても最初の文章しか解析されないため、文章は一つずつ渡す必要がある
+    # 改行分けされた複数の文章が渡されても最初の文章しか解析されないため、文章は一つずつ渡す必要がある
     return [anal.midasi for anal in analyzer(sentence) if anal.hinsi == '名詞']
 
 
