@@ -53,8 +53,8 @@ def extract_nouns_from_sentence(sentence, analyzer):
 def extract_nouns(tweet, analyzer=None):
     analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
     nouns = []
-    for corpus in tweet.split('\n'):
-        nouns += extract_nouns_from_sentence(corpus, analyzer)
+    for sentence in tweet.split('\n'):
+        nouns += extract_nouns_from_sentence(sentence, analyzer)
     return nouns
 
 
