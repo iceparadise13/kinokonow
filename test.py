@@ -106,6 +106,12 @@ class TestExtractNouns(unittest.TestCase):
             [mock.call('1'), mock.call('2'), mock.call('3')],
             any_order=True)
 
+    def test_ignore_empty_sentence(self):
+        corpus = '\n\n'
+        analyzer = mock.MagicMock()
+        tasks.extract_nouns(corpus, analyzer)
+        analyzer.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()
