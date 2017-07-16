@@ -7,10 +7,14 @@ RUN apt-get update
 # Boostの依存性
 RUN apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
 # Boostのインストール
-RUN wget -O boost_1_57_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz/download
-RUN tar xzvf boost_1_57_0.tar.gz
-# Boostのインストールで失敗したコンポーネントは無視したいので終了コードを無理やり0にセットする
-RUN cd boost_1_57_0 && ./bootstrap.sh --prefix=/usr/local && ./b2 && ./b2 install; exit 0
+ENV BOOST_DIR boost_1_57_0
+RUN wget -O ${BOOST_DIR}.tar.gz http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz/download
+RUN tar xzvf ${BOOST_DIR}.tar.gz
+# キャッシュを活用するためにビルドのコマンドは分ける
+RUN cd ${BOOST_DIR} && ./bootstrap.sh --prefix=/usr/locals
+# `./b2`で失敗したコンポーネントは無視したいので失敗した場合`true`を実行して終了コードを無理やり0にセットする
+RUN cd ${BOOST_DIR} && (./b2 || true)
+RUN cd ${BOOST_DIR} && (./b2 install || true)
 
 # Jumanppのインストール
 RUN wget http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
