@@ -20,7 +20,6 @@ RUN cd ${BOOST_DIR} && (./b2 install || true)
 # Jumanppのインストール
 RUN wget -q http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/jumanpp-1.01.tar.xz
 RUN tar xJvf jumanpp-1.01.tar.xz
-# RUNコマンドでcdした後はディレクトリ維持のため、同じ行でビルドを実行する必要がある
 RUN echo ${BOOST_ROOT}
 RUN cd jumanpp-1.01 && ./configure
 RUN cd jumanpp-1.01 && make
