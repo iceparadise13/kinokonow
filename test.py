@@ -124,7 +124,7 @@ class ConvertTweetTime(unittest.TestCase):
 
 
 class TestExtractNouns(unittest.TestCase):
-    def test_only_return_noun(self):
+    def test_only_return_nouns(self):
         corpus = '猫を踏んだ'
         analyzer = mock.MagicMock(side_effect=[[
             mock.MagicMock(midasi='猫', hinsi='名詞'),
