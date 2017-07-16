@@ -7,39 +7,28 @@ import words
 import listen
 
 
-class TestRemoveUrl(unittest.TestCase):
-    def test(self):
-        expected = 'foo foo'
-        self.assertEqual(expected, tasks.remove_url('foo https://t.co/bar foo'))
+class TestPreprocessTweet(unittest.TestCase):
+    def test_separate_sentences(self):
+        tweet = 'foo\nbar\nbaz'
+        self.assertEqual(['foo', 'bar', 'baz'], tasks.preprocess_tweet(tweet))
 
-    def test_eol(self):
-        expected = 'foo '
-        self.assertEqual(expected, tasks.remove_url('foo https://t.co/bar'))
+    def test_remove_rt_boilerplate(self):
+        tweet = 'RT @bar: foo'
+        self.assertEqual(['foo'], tasks.preprocess_tweet(tweet))
 
-    def test_greed(self):
-        expected = 'foo '
+    def test_remove_mention(self):
+        self.assertEqual(['foo foo'], tasks.preprocess_tweet('foo @bar foo'))
+        # eol
+        self.assertEqual(['foo '], tasks.preprocess_tweet('foo @bar'))
         # `foo` will also be replaced if the regex engine is greedy
-        self.assertEqual(expected, tasks.remove_url('https://t.co/bar foo '))
+        self.assertEqual(['foo '], tasks.preprocess_tweet('@bar foo '))
 
-
-class TestRemoveMention(unittest.TestCase):
-    def test(self):
-        expected = 'foo foo'
-        self.assertEqual(expected, tasks.remove_mention('foo @bar foo'))
-
-    def test_eol(self):
-        expected = 'foo '
-        self.assertEqual(expected, tasks.remove_mention('foo @bar'))
-
-    def test_greed(self):
-        expected = 'foo '
-        self.assertEqual(expected, tasks.remove_mention('@bar foo '))
-
-
-class TestRemoveRtBoilerplate(unittest.TestCase):
-    def test(self):
-        expected = 'foo'
-        self.assertEqual(expected, tasks.remove_rt_boilerplate('RT @bar: foo'))
+    def test_remove_url(self):
+        self.assertEqual(['foo foo'], tasks.preprocess_tweet('foo https://t.co/bar foo'))
+        # eol
+        self.assertEqual(['foo '], tasks.preprocess_tweet('foo https://t.co/bar'))
+        # greed
+        self.assertEqual(['foo '], tasks.preprocess_tweet('https://t.co/bar foo '))
 
 
 class TestGetNounFrequencies(unittest.TestCase):

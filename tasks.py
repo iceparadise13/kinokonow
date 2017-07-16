@@ -55,15 +55,12 @@ def remove_rt_boilerplate(text):
     return remove_pattern('RT @.+:', text)
 
 
-def clean(text):
-    text = remove_rt_boilerplate(text)
-    text = remove_url(text)
-    return remove_mention(text)
-
-
 @celery.task
-def clean_tweet(tweet):
-    return clean(tweet)
+def preprocess_tweet(tweet):
+    tweet = remove_rt_boilerplate(tweet)
+    tweet = remove_mention(tweet)
+    tweet = remove_url(tweet)
+    return tweet.split('\n')
 
 
 def extract_nouns_from_sentence(sentence, analyzer):
@@ -80,7 +77,7 @@ def extract_nouns(corpus, analyzer=None):
 
 
 def create_noun_extraction_task(tweet):
-    return chain(clean_tweet.s(tweet), extract_nouns.s())
+    return chain(preprocess_tweet.s(tweet), extract_nouns.s())
 
 
 def get_api(settings):
