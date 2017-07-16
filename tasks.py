@@ -61,9 +61,10 @@ def preprocess_tweet(tweet):
     tweet = remove_rt_boilerplate(tweet)
     tweet = remove_mention(tweet)
     tweet = remove_url(tweet)
+    hash_tags = []
     # 半角スペースが入っているとJumanppの挙動がおかしくなるので消す
     # 他のフィルターに支障が出るので最後に実行する
-    return tweet.replace(' ', '')
+    return tweet.replace(' ', ''), hash_tags
 
 
 def extract_nouns_from_sentence(sentence, analyzer):
