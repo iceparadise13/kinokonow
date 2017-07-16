@@ -44,6 +44,14 @@ RUN cd ${KNP_DIR} && ./configure
 RUN cd ${KNP_DIR} && make
 RUN cd ${KNP_DIR} && make install
 
+# PyKNPのインストール
+ENV PYKNP_DIR pyknp-0.3
+ENV PYKNP_TARBALL ${PYKNP_DIR}.tar.gz
+RUN wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${PYKNP_TARBALL}
+RUN tar xvf ${PYKNP_TARBALL}
+RUN cd ${PYKNP_DIR} && python setup.py install
+RUN rm -rf ${PYKNP_TARBALL}
+
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
 # プロジェクトのファイルをコピーする
