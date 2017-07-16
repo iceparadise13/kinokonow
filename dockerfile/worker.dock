@@ -23,20 +23,21 @@ ENV JUMANPP_DIR jumanpp-1.01
 ENV JUMANPP_TARBALL ${JUMANPP_DIR}.tar.xz
 RUN wget -q http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/${JUMANPP_TARBALL}
 RUN tar xJvf ${JUMANPP_TARBALL}
+RUN rm -rf ${JUMANPP_TARBALL}
 RUN cd ${JUMANPP_DIR} && ./configure
 RUN cd ${JUMANPP_DIR} && make
 RUN cd ${JUMANPP_DIR} && make install
-RUN rm -rf ${JUMANPP_TARBALL}
+RUN rm -rf ${JUMANPP_DIR}
 
 # Jumanのインストール
 ENV JUMAN_DIR juman-7.01
 ENV JUMAN_TARBALL ${JUMAN_DIR}.tar.bz2
 RUN wget -q http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/${JUMAN_TARBALL}
 RUN tar jxvf ${JUMAN_TARBALL}
+RUN rm -rf ${JUMAN_TARBALL}
 RUN cd ${JUMAN_DIR} && ./configure
 RUN cd ${JUMAN_DIR} && make
 RUN cd ${JUMAN_DIR} && make install
-RUN rm -rf ${JUMAN_TARBALL}
 
 # Knpのインストール
 # 4.16がリンク切れしてるあたり4.17も切れる可能性が高いのでwgetはやめたほうがいいかも
@@ -45,18 +46,18 @@ ENV KNP_DIR knp-4.17
 ENV KNP_TARBALL ${KNP_DIR}.tar.bz2
 RUN wget -q http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${KNP_TARBALL}
 RUN tar jxvf ${KNP_TARBALL}
+RUN rm -rf ${KNP_TARBALL}
 RUN cd ${KNP_DIR} && ./configure
 RUN cd ${KNP_DIR} && make
 RUN cd ${KNP_DIR} && make install
-RUN rm -rf ${KNP_TARBALL}
 
 # PyKNPのインストール
 ENV PYKNP_DIR pyknp-0.3
 ENV PYKNP_TARBALL ${PYKNP_DIR}.tar.gz
 RUN wget http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${PYKNP_TARBALL}
 RUN tar xvf ${PYKNP_TARBALL}
-RUN cd ${PYKNP_DIR} && python setup.py install
 RUN rm -rf ${PYKNP_TARBALL}
+RUN cd ${PYKNP_DIR} && python setup.py install
 
 # python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
 # ビルドのキャッシュが無効化されるので自分で依存性をインストールして
