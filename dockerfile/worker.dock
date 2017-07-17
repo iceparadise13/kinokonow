@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.6-onbuild
 
 ENV USER_NAME celery
 RUN adduser --disabled-password --gecos '' ${USER_NAME}
