@@ -6,11 +6,11 @@ from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
 import mongo
-from pyknp import Jumanpp
 from web import flask_app
 import words
 from util import load_yaml
 import preprocess
+from ma import extract_nouns_from_ma_server
 
 
 redis_host = 'redis'
@@ -50,22 +50,15 @@ def extract_nouns_from_sentence(sentence, analyzer):
 
 
 @celery.task
-def extract_nouns(data, analyzer=None):
+def extract_nouns(data):
     """
-    与えられたツイートから名詞を抽出する
+    形態素解析鯖を使って与えられたツイートから名詞を抽出する
     ハッシュタグは無条件で名詞として扱う
     :param data: ツイートとハッシュタグのリストのタプル
-    :param analyzer: モック用
     :return: 抽出された名詞のリスト
     """
     tweet, hash_tags = data
-    analyzer = analyzer or (lambda sentence: Jumanpp().analysis(sentence).mrph_list())
-    nouns = hash_tags
-    for sentence in tweet.split('\n'):
-        if sentence:
-            print('Extracting nouns from %s' % repr(sentence))
-            nouns += extract_nouns_from_sentence(sentence, analyzer)
-    return nouns
+    return hash_tags + extract_nouns_from_ma_server(tweet)
 
 
 def create_noun_extraction_task(tweet):
