@@ -58,7 +58,9 @@ def extract_nouns(data):
     :return: 抽出された名詞のリスト
     """
     tweet, hash_tags = data
-    return hash_tags + extract_nouns_from_ma_server(tweet)
+    host = os.environ.get('HOST', 'localhost')
+    port = os.environ.get('PORT', 5000)
+    return hash_tags + extract_nouns_from_ma_server(tweet, host=host, port=port)
 
 
 def create_noun_extraction_task(tweet):
