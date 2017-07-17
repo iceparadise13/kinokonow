@@ -1,3 +1,4 @@
+import os
 import json
 from flask import Flask, request
 from pyknp import Jumanpp
@@ -34,4 +35,5 @@ def home():
 
 
 if __name__ == '__main__':
-    flask_app.run(debug=True, host='0.0.0.0')
+    debug = True if 'DEBUG' in os.environ.get() else False
+    flask_app.run(debug=debug, host='0.0.0.0')
