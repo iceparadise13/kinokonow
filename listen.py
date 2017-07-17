@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from twython import TwythonStreamer
 import tasks
 import mongo
-from util import load_yaml
+import settings
 
 
 def convert_tweet_date(tweet_date):
@@ -25,12 +25,8 @@ class Streamer(TwythonStreamer):
         self.disconnect()
 
 
-def get_streamer(settings):
-    return Streamer(
-        settings['consumer_key'],
-        settings['consumer_secret'],
-        settings['access_token_key'],
-        settings['access_token_secret'])
+def get_streamer():
+    return Streamer(*settings.get_twython_settings())
 
 
 def get_followers():
@@ -39,7 +35,6 @@ def get_followers():
 
 
 if __name__ == '__main__':
-    settings = load_yaml('settings.yml')
     db = mongo.connect()
 
     users_to_follow = get_followers()
@@ -51,6 +46,6 @@ if __name__ == '__main__':
             save_tweet(db, data)
             tasks.create_noun_extraction_task(data['text']).delay()
 
-    stream = get_streamer(settings['twitter'])
+    stream = get_streamer()
     stream.on_success = on_success
     stream.statuses.filter(follow=','.join(users_to_follow))

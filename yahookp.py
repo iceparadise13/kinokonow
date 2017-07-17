@@ -1,8 +1,7 @@
-import os
 import json
 import requests
 from flask import Flask, request
-from util import load_yaml
+import settings
 import env
 
 
@@ -30,8 +29,7 @@ def extract_nouns(tweet):
     :param tweet: ツイート
     :return: 抽出された名詞のリスト
     """
-    settings = load_yaml('settings.yml')
-    api = YahooApi(settings['yahoo_api_key'])
+    api = YahooApi(settings.get_yahoo_api_key())
     return api.extract_phrases(tweet)
 
 
