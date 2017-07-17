@@ -54,7 +54,7 @@ def extract_nouns(data):
     """
     tweet, hash_tags = data
     host = os.environ.get('MA_HOST', 'localhost')
-    port = os.environ.get('MA_PORT', 5000)
+    port = int(os.environ.get('MA_PORT', '5000'))
     return hash_tags + extract_nouns_from_ma_server(tweet, host=host, port=port)
 
 
