@@ -8,10 +8,10 @@ from twython import Twython
 import mongo
 from web import flask_app
 import words
-from util import load_yaml
 import preprocess
 from ma import extract_nouns_from_ma_server
 import env
+import settings
 
 
 redis_host = env.get_redis_host()
@@ -38,7 +38,6 @@ def make_celery(app):
 
 
 celery = make_celery(flask_app)
-settings = load_yaml('settings.yml')
 
 
 @celery.task
@@ -64,12 +63,8 @@ def create_noun_extraction_task(tweet):
     return chain(preprocess_tweet.s(tweet), extract_nouns.s())
 
 
-def get_api(settings):
-    return Twython(
-        settings['consumer_key'],
-        settings['consumer_secret'],
-        settings['access_token_key'],
-        settings['access_token_secret'])
+def get_api():
+    return Twython(*settings.get_twython_settings())
 
 
 def generate_temp_file_name():
@@ -102,7 +97,7 @@ def tweet_word_cloud():
         return
     img = words.generate_word_cloud(frequencies, font_path='font.ttf')
     # Instantiate every time to avoid connection reset
-    api = get_api(settings['twitter'])
+    api = get_api()
     with ImageFileContext(img) as image_file:
         media_id = api.upload_media(media=image_file)['media_id']
     api.update_status(status='a', media_ids=[media_id])

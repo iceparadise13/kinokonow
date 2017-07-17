@@ -85,34 +85,5 @@ class ConvertTweetTime(unittest.TestCase):
         self.assertEqual(expected, listen.convert_tweet_date('Fri Jan 01 10:01:01 +0900 2017'))
 
 
-class TestExtractNouns(unittest.TestCase):
-    def test_only_return_nouns(self):
-        corpus = '猫を踏んだ'
-        analyzer = mock.MagicMock(side_effect=[[
-            mock.MagicMock(midasi='猫', hinsi='名詞'),
-            mock.MagicMock(midasi='を', hinsi='助詞'),
-            mock.MagicMock(midasi='踏んだ', hinsi='動詞')
-        ]])
-        self.assertEqual(['猫'], yahookp.extract_nouns(corpus, analyzer))
-
-    def test_multiple_sentences(self):
-        corpus = '1\n2\n3'
-        analyzer = mock.MagicMock(side_effect=[
-            [mock.MagicMock(midasi='1', hinsi='名詞')],
-            [mock.MagicMock(midasi='2', hinsi='名詞')],
-            [mock.MagicMock(midasi='3', hinsi='名詞')]
-        ])
-        self.assertEqual(['1', '2', '3'], yahookp.extract_nouns(corpus, analyzer))
-        analyzer.assert_has_calls(
-            [mock.call('1'), mock.call('2'), mock.call('3')],
-            any_order=True)
-
-    def test_ignore_empty_sentence(self):
-        corpus = '\n\n'
-        analyzer = mock.MagicMock()
-        yahookp.extract_nouns(corpus, analyzer)
-        analyzer.assert_not_called()
-
-
 if __name__ == '__main__':
     unittest.main()
