@@ -35,6 +35,6 @@ def home():
 
 
 if __name__ == '__main__':
-    debug = True if 'DEBUG' in os.environ.get() else False
+    debug = True if 'DEBUG' in os.environ else False
     port = int(os.environ.get('MA_PORT', '5000'))
     flask_app.run(debug=debug, host='0.0.0.0', port=port)
