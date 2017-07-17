@@ -1,4 +1,5 @@
-from flask import Flask
+import json
+from flask import Flask, request
 from pyknp import Jumanpp
 
 
@@ -29,7 +30,7 @@ def extract_nouns(tweet, analyzer=None):
 
 @flask_app.route('/parse')
 def home():
-    return ''
+    return json.dumps(extract_nouns(request.args.get('tweet')))
 
 
 if __name__ == '__main__':
