@@ -1,17 +1,16 @@
 import os
-import re
-import json
 import tempfile
 import uuid
 from datetime import datetime, timedelta
-import requests
 from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
+import mongo
 from web import flask_app
 import words
 from util import load_yaml
-import mongo
+import preprocess
+from ma import extract_nouns_from_ma_server
 
 
 redis_host = 'redis'
@@ -40,58 +39,27 @@ celery = make_celery(flask_app)
 settings = load_yaml('settings.yml')
 
 
-def remove_pattern(pat, text):
-    return re.sub('%s(?:\s|$)' % pat, '', text)
-
-
-def remove_mention(text):
-    return remove_pattern('@.+?', text)
-
-
-def remove_url(text):
-    return remove_pattern('(?:http|https)://.+?', text)
-
-
-def remove_rt_boilerplate(text):
-    return remove_pattern('RT @.+:', text)
-
-
-def clean(text):
-    text = remove_rt_boilerplate(text)
-    text = remove_url(text)
-    return remove_mention(text)
+@celery.task
+def preprocess_tweet(tweet):
+    return preprocess.preprocess_tweet(tweet)
 
 
 @celery.task
-def clean_tweet(tweet):
-    return clean(tweet)
-
-
-class YahooApi(object):
-    def __init__(self, api_key, session=None):
-        self.api_key = api_key
-        self.session = session or requests.Session()
-
-    def extract_phrases(self, text):
-        pat = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&output=json&sentence=%s'
-        resp = self.session.get(pat % (self.api_key, text))
-        result = json.loads(resp.content.decode('utf-8'))
-        if type(result) == dict:
-            return list(result.keys())
-        return []
-
-
-@celery.task
-def extract_nouns(corpus):
-    api = YahooApi(settings['yahoo_api_key'])
-    nouns = api.extract_phrases(corpus)
-    if nouns:
-        db = mongo.connect(settings['mongo'])
-        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+def extract_nouns(data):
+    """
+    形態素解析鯖を使って与えられたツイートから名詞を抽出する
+    ハッシュタグは無条件で名詞として扱う
+    :param data: ツイートとハッシュタグのリストのタプル
+    :return: 抽出された名詞のリスト
+    """
+    tweet, hash_tags = data
+    host = os.environ.get('MA_HOST', 'localhost')
+    port = int(os.environ.get('MA_PORT', '5000'))
+    return hash_tags + extract_nouns_from_ma_server(tweet, host=host, port=port)
 
 
 def create_noun_extraction_task(tweet):
-    return chain(clean_tweet.s(tweet), extract_nouns.s())
+    return chain(preprocess_tweet.s(tweet), extract_nouns.s())
 
 
 def get_api(settings):

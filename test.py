@@ -5,75 +5,37 @@ import mongomock
 import tasks
 import words
 import listen
+import yahookp
 
 
-class TestRemoveUrl(unittest.TestCase):
-    def test(self):
-        expected = 'foo foo'
-        self.assertEqual(expected, tasks.remove_url('foo https://t.co/bar foo'))
+class TestPreprocessTweet(unittest.TestCase):
+    def test_remove_rt_boilerplate(self):
+        tweet = 'RT @bar: foo'
+        self.assertEqual('foo', tasks.preprocess_tweet(tweet)[0])
 
-    def test_eol(self):
-        expected = 'foo '
-        self.assertEqual(expected, tasks.remove_url('foo https://t.co/bar'))
+    def test_remove_mention(self):
+        self.assertEqual('foobaz', tasks.preprocess_tweet('foo @bar baz ')[0])
+        # multiple mentions
+        self.assertEqual('foobaz', tasks.preprocess_tweet('foo @bar @bar baz ')[0])
+        # eol
+        self.assertEqual('foo', tasks.preprocess_tweet('foo @bar')[0])
+        # mention only
+        self.assertEqual('', tasks.preprocess_tweet('@bar')[0])
 
-    def test_greed(self):
-        expected = 'foo '
-        # `foo` will also be replaced if the regex engine is greedy
-        self.assertEqual(expected, tasks.remove_url('https://t.co/bar foo '))
+    def test_remove_url(self):
+        self.assertEqual('foobar', tasks.preprocess_tweet('foo https://t.co/bar bar')[0])
+        # multiple urls
+        self.assertEqual('foobar', tasks.preprocess_tweet('foo https://t.co/bar https://t.co/bar bar')[0])
+        # eol
+        self.assertEqual('foo', tasks.preprocess_tweet('foo https://t.co/bar')[0])
+        # url only
+        self.assertEqual('', tasks.preprocess_tweet('https://t.co/bar')[0])
 
+    def test_remove_spaces(self):
+        self.assertEqual('foobarbaz', tasks.preprocess_tweet('foo bar baz ')[0])
 
-class TestRemoveMention(unittest.TestCase):
-    def test(self):
-        expected = 'foo foo'
-        self.assertEqual(expected, tasks.remove_mention('foo @bar foo'))
-
-    def test_eol(self):
-        expected = 'foo '
-        self.assertEqual(expected, tasks.remove_mention('foo @bar'))
-
-    def test_greed(self):
-        expected = 'foo '
-        self.assertEqual(expected, tasks.remove_mention('@bar foo '))
-
-
-class TestRemoveRtBoilerplate(unittest.TestCase):
-    def test(self):
-        expected = 'foo'
-        self.assertEqual(expected, tasks.remove_rt_boilerplate('RT @bar: foo'))
-
-
-class TestYahooApi(unittest.TestCase):
-    def setUp(self):
-        self.session = mock.MagicMock()
-
-    def set_content(self, content):
-        self.session.get.return_value = mock.MagicMock(content=content)
-
-    def extract_phrases(self):
-        api = tasks.YahooApi('foo', self.session)
-        self.result = api.extract_phrases('bar baz')
-
-    def test_url_called(self):
-        self.set_content(b'{}')
-        self.extract_phrases()
-        url = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?' \
-              'appid=foo&output=json&sentence=bar baz'
-        self.session.get.assert_called_once_with(url)
-
-    def test_return_nouns(self):
-        self.set_content(b'{"bar": 60, "baz": 40}')
-        self.extract_phrases()
-        self.assertEqual(sorted(['bar', 'baz']), sorted(self.result))
-
-    def test_handle_empty_list(self):
-        self.set_content(b'[]')
-        self.extract_phrases()
-        self.assertEqual([], self.result)
-
-    def test_handle_error(self):
-        self.set_content(b'["Error"]')
-        self.extract_phrases()
-        self.assertEqual([], self.result)
+    def test_extract_hash_tags(self):
+        self.assertEqual(('fooqux', ['bar', 'baz'],), tasks.preprocess_tweet('foo #bar #baz qux'))
 
 
 class TestGetNounFrequencies(unittest.TestCase):
@@ -121,6 +83,35 @@ class ConvertTweetTime(unittest.TestCase):
     def test_timezone_converted(self):
         expected = datetime(year=2017, month=1, day=1, hour=1, minute=1, second=1, tzinfo=timezone.utc)
         self.assertEqual(expected, listen.convert_tweet_date('Fri Jan 01 10:01:01 +0900 2017'))
+
+
+class TestExtractNouns(unittest.TestCase):
+    def test_only_return_nouns(self):
+        corpus = '猫を踏んだ'
+        analyzer = mock.MagicMock(side_effect=[[
+            mock.MagicMock(midasi='猫', hinsi='名詞'),
+            mock.MagicMock(midasi='を', hinsi='助詞'),
+            mock.MagicMock(midasi='踏んだ', hinsi='動詞')
+        ]])
+        self.assertEqual(['猫'], yahookp.extract_nouns(corpus, analyzer))
+
+    def test_multiple_sentences(self):
+        corpus = '1\n2\n3'
+        analyzer = mock.MagicMock(side_effect=[
+            [mock.MagicMock(midasi='1', hinsi='名詞')],
+            [mock.MagicMock(midasi='2', hinsi='名詞')],
+            [mock.MagicMock(midasi='3', hinsi='名詞')]
+        ])
+        self.assertEqual(['1', '2', '3'], yahookp.extract_nouns(corpus, analyzer))
+        analyzer.assert_has_calls(
+            [mock.call('1'), mock.call('2'), mock.call('3')],
+            any_order=True)
+
+    def test_ignore_empty_sentence(self):
+        corpus = '\n\n'
+        analyzer = mock.MagicMock()
+        yahookp.extract_nouns(corpus, analyzer)
+        analyzer.assert_not_called()
 
 
 if __name__ == '__main__':
