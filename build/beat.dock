@@ -1,3 +1,0 @@
-FROM python:3-onbuild
-# beat requires root
-ENTRYPOINT celery -l INFO -A tasks.celery beat
