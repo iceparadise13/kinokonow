@@ -40,7 +40,7 @@ def get_followers():
 
 if __name__ == '__main__':
     settings = load_yaml('settings.yml')
-    db = mongo.connect(settings['mongo'])
+    db = mongo.connect()
 
     users_to_follow = get_followers()
     print('following %d users' % len(users_to_follow))

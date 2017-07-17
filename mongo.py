@@ -1,6 +1,7 @@
 import pymongo
+import env
 
 
-def connect(settings):
-    client = pymongo.MongoClient(host=settings['host'], port=settings['port'])
-    return client.get_database(settings['db'])
+def connect():
+    client = pymongo.MongoClient(host=env.get_mongo_host(), port=env.get_mongo_port())
+    return client.get_database(env.get_mongo_db())

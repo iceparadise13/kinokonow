@@ -11,10 +11,12 @@ import words
 from util import load_yaml
 import preprocess
 from ma import extract_nouns_from_ma_server
+import env
 
 
-redis_host = 'redis'
-redis_url = 'redis://%s:6379' % redis_host
+redis_host = env.get_redis_host()
+redis_port = env.get_redis_port()
+redis_url = 'redis://%s:%d' % (redis_host, redis_port)
 flask_app.config.update(
     CELERY_BROKER_URL=redis_url,
     CELERY_RESULT_BACKEND=redis_url
@@ -53,8 +55,8 @@ def extract_nouns(data):
     :return: 抽出された名詞のリスト
     """
     tweet, hash_tags = data
-    host = os.environ.get('MA_HOST', 'localhost')
-    port = int(os.environ.get('MA_PORT', '5000'))
+    host = env.get_ma_host()
+    port = env.get_ma_port()
     return hash_tags + extract_nouns_from_ma_server(tweet, host=host, port=port)
 
 
@@ -93,7 +95,7 @@ class ImageFileContext(object):
 
 @celery.task
 def tweet_word_cloud():
-    db = mongo.connect(settings['mongo'])
+    db = mongo.connect()
     frequencies = words.get_filtered_noun_frequencies(
         db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
     if not frequencies:

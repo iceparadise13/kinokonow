@@ -3,6 +3,7 @@ import json
 import requests
 from flask import Flask, request
 from util import load_yaml
+import env
 
 
 flask_app = Flask(__name__, template_folder='templates')
@@ -40,6 +41,6 @@ def home():
 
 
 if __name__ == '__main__':
-    debug = True if 'DEBUG' in os.environ else False
-    port = int(os.environ.get('MA_PORT', '5000'))
+    debug = env.get_debug()
+    port = env.get_ma_port()
     flask_app.run(debug=debug, host='0.0.0.0', port=port)
