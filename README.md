@@ -23,7 +23,7 @@ python -m yahookp
 
 ### TODO
 
-- [ ] TfIdfでゴミ掃除
+- [x] TfIdfでゴミ掃除
 - [ ] リアルタイムのクラウド表示/ツイート検索用サイト
 - [ ] JumanppやMeCabで形態素解析の導入
 - [ ] nグラムを候補に挙げる
