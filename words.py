@@ -1,20 +1,13 @@
 import pprint
 from operator import itemgetter
 import wordcloud
+from database import get_noun_frequencies
 
 
 def print_frequencies(frequencies):
     frequencies = list(frequencies.items())
     pprint.pprint(sorted(frequencies, key=itemgetter(1)))
     print('%d nouns' % len(frequencies))
-
-
-def get_noun_frequencies(nouns, starting_at):
-    cusor = nouns.aggregate([
-        {'$match': {'created_at': {'$gte': starting_at}}},
-        {'$group': {'_id': '$text', 'frequency': {'$sum': 1}}}
-    ])
-    return dict([(c['_id'], c['frequency']) for c in cusor])
 
 
 def remove_nouns_in_blacklist(nouns, blacklist):

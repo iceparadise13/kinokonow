@@ -5,13 +5,15 @@ from datetime import datetime, timedelta
 from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
-import mongo
-from web import flask_app
-import words
-import preprocess
-from ma import extract_nouns_from_ma_server
 import env
+import mongo
+import preprocess
 import settings
+import words
+import database
+from ma import extract_nouns_from_ma_server
+from web import flask_app
+import tfidf
 
 
 redis_host = env.get_redis_host()
@@ -95,21 +97,49 @@ class ImageFileContext(object):
         return self.image_file.close()
 
 
-@celery.task
-def tweet_word_cloud():
+def tweet_word_cloud(scores):
+    if scores:
+        img = words.generate_word_cloud(scores, font_path='font.ttf')
+        # Instantiate every time to avoid connection reset
+        api = get_api()
+        with ImageFileContext(img) as image_file:
+            media_id = api.upload_media(media=image_file)['media_id']
+        api.update_status(status='a', media_ids=[media_id])
+
+
+def score_key_phrases():
+    """
+    保存されている名詞のtfidf値を計算して返す
+    単一ツイートの名詞を一つのドキュメントとして扱うとツイートの長さの性質上、
+    tfidfが低頻出語を抽出するだけのアルゴリズムになってしまうので、
+    一定の時系列の範囲中にあるツイートの名詞全てを一つのドキュメントとして扱う
+    :return:
+    tfidf値の辞書
+    実数のスコアはそのままwordcloudライブラリのクラウド生成メソッドに渡しても問題無い
+    """
     db = mongo.connect()
-    frequencies = words.get_filtered_noun_frequencies(
-        db.nouns, datetime.utcnow() - timedelta(hours=1), words.read_black_list())
-    if not frequencies:
-        return
-    img = words.generate_word_cloud(frequencies, font_path='font.ttf')
-    # Instantiate every time to avoid connection reset
-    api = get_api()
-    with ImageFileContext(img) as image_file:
-        media_id = api.upload_media(media=image_file)['media_id']
-    api.update_status(status='a', media_ids=[media_id])
+    now = datetime.utcnow()
+    document = database.get_noun_frequencies(
+        db.nouns, now - timedelta(hours=1))
+    if not document:
+        print('Failed to get noun frequencies')
+        return {}
+    database.save_document(db.tfidf_documents, document, now)
+    past_documents = database.get_documents(db.tfidf_documents, now - timedelta(days=3))
+    return tfidf.score(document, past_documents)
+
+
+@celery.task
+def hourly_task():
+    """定期タスクとしてchainが使えないみたいなので一つのタスクとして定義する"""
+    scores = score_key_phrases()
+    print('tfidf scores ' + str(scores))
+    if scores:
+        # 値が0の要素があるとゼロ除算が起きるので事前に除く
+        scores = dict([(k, v) for k, v in scores.items() if v])
+        tweet_word_cloud(scores)
 
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(crontab(minute=0), tweet_word_cloud.s(), name='tweet every hour')
+    sender.add_periodic_task(crontab(minute=env.get_tweet_minute()), hourly_task, name='tweet every hour')
