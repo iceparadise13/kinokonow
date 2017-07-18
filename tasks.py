@@ -119,8 +119,7 @@ def score_key_phrases():
     """
     db = mongo.connect()
     now = datetime.utcnow()
-    document = database.get_noun_frequencies(
-        db.nouns, now - timedelta(hours=1))
+    document = database.get_noun_frequencies(db.nouns, now - timedelta(hours=1))
     if not document:
         print('Failed to get noun frequencies')
         return {}
