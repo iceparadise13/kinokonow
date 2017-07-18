@@ -16,6 +16,17 @@ celery -A tasks.celery -l INFO worker
 ```
 celery -A tasks.celery -l INFO beat
 ```
+フレーズ候補抽出鯖
+```
+python -m yahookp
+```
+
+### TODO
+
+- [ ] TfIdfでゴミ掃除
+- [ ] リアルタイムのクラウド表示/ツイート検索用サイト
+- [ ] JumanppやMeCabで形態素解析の導入
+- [ ] nグラムを候補に挙げる
 
 ### ライセンス
 
