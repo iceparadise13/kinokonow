@@ -9,11 +9,10 @@ class TfIdf(list):
     def _tf(self, word, document):
         """
         `document`における`word`のtf値を (`document`における`word`の出現数) / (`document`の合計単語数) で計算する
-        式をそのまま使うと全ドキュメントにおける頻出語のペナルティーが少ないので自乗して補う
         :param word:
-        idf値を計算する単語
+        tf値を計算する単語
         :return:
-        idf値
+        tf値
         """
         return document.get(word, 0) / self._count_words(document)
 
