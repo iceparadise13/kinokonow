@@ -98,13 +98,12 @@ class ImageFileContext(object):
 
 
 def tweet_word_cloud(scores):
-    if scores:
-        img = words.generate_word_cloud(scores, font_path='font.ttf')
-        # Instantiate every time to avoid connection reset
-        api = get_api()
-        with ImageFileContext(img) as image_file:
-            media_id = api.upload_media(media=image_file)['media_id']
-        api.update_status(status='a', media_ids=[media_id])
+    img = words.generate_word_cloud(scores, font_path='font.ttf')
+    # Instantiate every time to avoid connection reset
+    api = get_api()
+    with ImageFileContext(img) as image_file:
+        media_id = api.upload_media(media=image_file)['media_id']
+    api.update_status(status='a', media_ids=[media_id])
 
 
 def score_key_phrases():
