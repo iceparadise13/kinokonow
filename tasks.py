@@ -59,8 +59,15 @@ def extract_nouns(data):
     return hash_tags + extract_nouns_from_ma_server(tweet, host=host, port=port)
 
 
+@celery.task
+def save_nouns(nouns):
+    if nouns:
+        db = mongo.connect()
+        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+
+
 def create_noun_extraction_task(tweet):
-    return chain(preprocess_tweet.s(tweet), extract_nouns.s())
+    return chain(preprocess_tweet.s(tweet), extract_nouns.s(), save_nouns.s())
 
 
 def get_api():
