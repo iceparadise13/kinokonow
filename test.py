@@ -1,6 +1,6 @@
 import unittest
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import mongomock
 import database
 import tasks
@@ -134,6 +134,14 @@ class TestTfIdf(unittest.TestCase):
     def test_bypass_zero_division(self):
         t = tfidf.TfIdf([{'foo': 1}])
         self.assertEqual(1, t._idf('bar'))
+
+
+class TestInitialTfIdfDocument(unittest.TestCase):
+    def test_initial_tfidf_document_scored_properly(self):
+        db = mongomock.MongoClient().db
+        thirty_minutes_ago = datetime.utcnow() - timedelta(minutes=30)
+        db.nouns.insert_many([{'text': 'a', 'created_at': thirty_minutes_ago}])
+        self.assertNotEqual(0.0, tasks.score_key_phrases(db)['a'])
 
 
 if __name__ == '__main__':

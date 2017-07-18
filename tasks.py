@@ -106,25 +106,28 @@ def tweet_word_cloud(scores):
     api.update_status(status='a', media_ids=[media_id])
 
 
-def score_key_phrases():
+def score_key_phrases(db=None):
     """
     保存されている名詞のtfidf値を計算して返す
     単一ツイートの名詞を一つのドキュメントとして扱うとツイートの長さの性質上、
     tfidfが低頻出語を抽出するだけのアルゴリズムになってしまうので、
     一定の時系列の範囲中にあるツイートの名詞全てを一つのドキュメントとして扱う
+    ドキュメントをidf用の過去のドキュメントに含めてしまうと一番最初のドキュメントを取得した時に
+    全ての単語のidfスコアが0になってワードクラウドが出力出来ないのでドキュメントの保存は最後に行う
     :return:
     tfidf値の辞書
     実数のスコアはそのままwordcloudライブラリのクラウド生成メソッドに渡しても問題無い
     """
-    db = mongo.connect()
+    db = db or mongo.connect()
     now = datetime.utcnow()
     document = database.get_noun_frequencies(db.nouns, now - timedelta(hours=1))
     if not document:
         print('Failed to get noun frequencies')
         return {}
-    database.save_document(db.tfidf_documents, document, now)
     past_documents = database.get_documents(db.tfidf_documents, now - timedelta(days=3))
-    return tfidf.score(document, past_documents)
+    scores = tfidf.score(document, past_documents)
+    database.save_document(db.tfidf_documents, document, now)
+    return scores
 
 
 @celery.task
