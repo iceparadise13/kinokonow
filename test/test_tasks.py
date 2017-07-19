@@ -1,6 +1,5 @@
 import unittest
 import tasks
-import words
 
 
 class TestPreprocessTweet(unittest.TestCase):
