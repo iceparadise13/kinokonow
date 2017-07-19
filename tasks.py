@@ -6,7 +6,6 @@ from celery import Celery, chain
 from celery.schedules import crontab
 from twython import Twython
 import env
-import mongo
 import preprocess
 import settings
 import words
@@ -64,8 +63,7 @@ def extract_nouns(data):
 @celery.task
 def save_nouns(nouns):
     if nouns:
-        db = mongo.connect()
-        db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+        database.save_nouns(nouns)
 
 
 def create_noun_extraction_task(tweet):
@@ -106,7 +104,7 @@ def tweet_word_cloud(scores):
     api.update_status(status='a', media_ids=[media_id])
 
 
-def score_key_phrases(db=None):
+def score_key_phrases():
     """
     保存されている名詞のtfidf値を計算して返す
     単一ツイートの名詞を一つのドキュメントとして扱うとツイートの長さの性質上、
@@ -118,15 +116,14 @@ def score_key_phrases(db=None):
     tfidf値の辞書
     実数のスコアはそのままwordcloudライブラリのクラウド生成メソッドに渡しても問題無い
     """
-    db = db or mongo.connect()
     now = datetime.utcnow()
-    document = database.get_noun_frequencies(db.nouns, now - timedelta(hours=1))
+    document = database.get_noun_frequencies(now - timedelta(hours=1))
     if not document:
         print('Failed to get noun frequencies')
         return {}
-    past_documents = database.get_documents(db.tfidf_documents, now - timedelta(days=3))
+    past_documents = database.get_documents(now - timedelta(days=3))
     scores = tfidf.score(document, past_documents)
-    database.save_document(db.tfidf_documents, document, now)
+    database.save_document(document, now)
     return scores
 
 

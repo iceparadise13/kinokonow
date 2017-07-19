@@ -1,12 +1,9 @@
 import unittest
-import json
-from datetime import datetime, timezone, timedelta
-import mongomock
-import database
+from datetime import datetime, timedelta
 import tasks
-import words
-import listen
 import tfidf
+import words
+from test_mongo import TestMongo
 
 
 class TestPreprocessTweet(unittest.TestCase):
@@ -39,31 +36,6 @@ class TestPreprocessTweet(unittest.TestCase):
         self.assertEqual(('fooqux', ['bar', 'baz'],), tasks.preprocess_tweet('foo #bar #baz qux'))
 
 
-class TestGetNounFrequencies(unittest.TestCase):
-    def test_frequency(self):
-        collection = mongomock.MongoClient().db.collection
-        created_at = datetime(2017, 1, 1, 1, 0, 0)
-        collection.insert_many([
-            {'text': 'a', 'created_at': created_at},
-            {'text': 'b', 'created_at': created_at},
-            {'text': 'b', 'created_at': created_at},
-        ])
-        expected = {'a': 1, 'b': 2}
-        result = database.get_noun_frequencies(collection, created_at)
-        self.assertEqual(expected, result)
-
-    def test_starting_at(self):
-        collection = mongomock.MongoClient().db.collection
-        collection.insert_many([
-            {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 0)},
-            {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
-            {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
-        ])
-        expected = {'a': 2}
-        result = database.get_noun_frequencies(collection, datetime(2017, 1, 1, 1, 0, 1))
-        self.assertEqual(expected, result)
-
-
 class TestRemoveNounsInBlacklist(unittest.TestCase):
     def test(self):
         frequencies = {
@@ -74,37 +46,6 @@ class TestRemoveNounsInBlacklist(unittest.TestCase):
         blacklist = ['a', 'b']
         expected = {'c': 3}
         self.assertEqual(expected, words.remove_nouns_in_blacklist(frequencies, blacklist))
-
-
-class ConvertTweetTime(unittest.TestCase):
-    def test_date_time_converted(self):
-        expected = datetime(year=2017, month=7, day=7, hour=11, minute=35, second=39, tzinfo=timezone.utc)
-        self.assertEqual(expected, listen.convert_tweet_date('Fri Jul 07 11:35:39 +0000 2017'))
-
-    def test_timezone_converted(self):
-        expected = datetime(year=2017, month=1, day=1, hour=1, minute=1, second=1, tzinfo=timezone.utc)
-        self.assertEqual(expected, listen.convert_tweet_date('Fri Jan 01 10:01:01 +0900 2017'))
-
-
-class TestGetDocuments(unittest.TestCase):
-    def test(self):
-        collection = mongomock.MongoClient().db.collection
-        subdoc_1 = {'foo': 1}
-        subdoc_2 = {'bar': 2}
-        doc_1 = {'_id': 1, 'document': json.dumps(subdoc_1), 'created_at': datetime(year=2017, month=1, day=1, tzinfo=timezone.utc)}
-        doc_2 = {'_id': 2, 'document': json.dumps(subdoc_2), 'created_at': datetime(year=2017, month=1, day=2, tzinfo=timezone.utc)}
-        collection.insert_many([doc_1, doc_2])
-        result = database.get_documents(collection, datetime(year=2017, month=1, day=2, tzinfo=timezone.utc))
-        self.assertEqual([subdoc_2], result)
-
-
-class TestSaveDocument(unittest.TestCase):
-    def test_document_is_saved_as_json(self):
-        collection = mongomock.MongoClient().db.collection
-        document = {'.': 1}
-        created_at = datetime(year=2017, month=1, day=1, tzinfo=timezone.utc)
-        database.save_document(collection, document, created_at)
-        self.assertTrue(collection.find({'document': json.dumps(document)}).count())
 
 
 class TestScoreTfIdf(unittest.TestCase):
@@ -136,12 +77,11 @@ class TestTfIdf(unittest.TestCase):
         self.assertEqual(1, t._idf('bar'))
 
 
-class TestInitialTfIdfDocument(unittest.TestCase):
+class TestInitialTfIdfDocument(TestMongo):
     def test_initial_tfidf_document_scored_properly(self):
-        db = mongomock.MongoClient().db
         thirty_minutes_ago = datetime.utcnow() - timedelta(minutes=30)
-        db.nouns.insert_many([{'text': 'a', 'created_at': thirty_minutes_ago}])
-        self.assertNotEqual(0.0, tasks.score_key_phrases(db)['a'])
+        self.db.nouns.insert_many([{'text': 'a', 'created_at': thirty_minutes_ago}])
+        self.assertNotEqual(0.0, tasks.score_key_phrases()['a'])
 
 
 if __name__ == '__main__':
