@@ -1,15 +1,15 @@
-from datetime import datetime, timedelta
+from celery import Celery, chain
 from celery import Celery, chain
 from celery.schedules import crontab
+
 import database
 import env
 import preprocess
-import tfidf
-from ma import extract_nouns_from_ma_server
-from web import flask_app
 import tweet
 import words
-
+from ma import extract_nouns_from_ma_server
+from score import score_key_phrases
+from web import flask_app
 
 redis_host = env.get_redis_host()
 redis_port = env.get_redis_port()
@@ -66,33 +66,10 @@ def create_noun_extraction_task(tweet):
     return chain(preprocess_tweet.s(tweet), extract_nouns.s(), save_nouns.s())
 
 
-def score_key_phrases():
-    """
-    保存されている名詞のtfidf値を計算して返す
-    単一ツイートの名詞を一つのドキュメントとして扱うとツイートの長さの性質上、
-    tfidfが低頻出語を抽出するだけのアルゴリズムになってしまうので、
-    一定の時系列の範囲中にあるツイートの名詞全てを一つのドキュメントとして扱う
-    ドキュメントをidf用の過去のドキュメントに含めてしまうと一番最初のドキュメントを取得した時に
-    全ての単語のidfスコアが0になってワードクラウドが出力出来ないのでドキュメントの保存は最後に行う
-    :return:
-    tfidf値の辞書
-    実数のスコアはそのままwordcloudライブラリのクラウド生成メソッドに渡しても問題無い
-    """
-    now = datetime.utcnow()
-    document = database.get_noun_frequencies(now - timedelta(hours=1))
-    if not document:
-        print('Failed to get noun frequencies')
-        return {}
-    past_documents = database.get_documents(now - timedelta(days=3))
-    scores = tfidf.score(document, past_documents)
-    database.save_document(document, now)
-    return scores
-
-
 @celery.task
 def hourly_task():
     """定期タスクとしてchainが使えないみたいなので一つのタスクとして定義する"""
-    scores = score_key_phrases()
+    scores = score_key_phrases(save=True)
     print('tfidf scores ' + str(scores))
     if scores:
         # 値が0の要素があるとゼロ除算が起きるので事前に除く

@@ -1,5 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
+
+import score
 import tasks
 import tfidf
 from test.test_mongo import TestMongo
@@ -38,4 +40,4 @@ class TestInitialTfIdfDocument(TestMongo):
     def test_initial_tfidf_document_scored_properly(self):
         thirty_minutes_ago = datetime.utcnow() - timedelta(minutes=30)
         self.db.nouns.insert_many([{'text': 'a', 'created_at': thirty_minutes_ago}])
-        self.assertNotEqual(0.0, tasks.score_key_phrases()['a'])
+        self.assertNotEqual(0.0, score.score_key_phrases(save=True)['a'])

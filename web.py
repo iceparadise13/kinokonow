@@ -1,20 +1,32 @@
-import pymongo
 from flask import Flask, render_template
-import random
+import score
+import env
+from operator import itemgetter
 
 
 flask_app = Flask(__name__, template_folder='templates')
-client = pymongo.MongoClient(host='localhost', port=27017)
-db = client.get_database('kinokonow')
+
+
+def scores_to_frequencies(scores, freq_range):
+    min_score = min(scores.values())
+    max_score = max(scores.values())
+    result = []
+    for k, v in scores.items():
+        fraction = (v - min_score) / (max_score - min_score)
+        v = freq_range[0] + ((freq_range[1] - freq_range[0]) * fraction)
+        result.append([k, int(v)])
+    return result
 
 
 @flask_app.route('/')
 def home():
-    frequencies = []
-    for i in range(50):
-        frequencies.append([''.join(random.sample(['a', 'b', 'c'], random.randint(1, 3))), random.randint(1, 20)])
-    return render_template('index.html', frequencies=frequencies)
+    cap = 50
+    scores = score.score_key_phrases(save=False)
+    frequencies = scores_to_frequencies(scores, (1, 10))
+    frequencies = sorted(frequencies, key=itemgetter(1), reverse=True)
+    print(frequencies)
+    return render_template('index.html', frequencies=frequencies[:cap])
 
 
 if __name__ == '__main__':
-    flask_app.run(debug=True, host='0.0.0.0')
+    flask_app.run(debug=env.get_debug(), host='0.0.0.0', port=env.get_web_port())

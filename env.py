@@ -35,3 +35,7 @@ def get_mongo_db():
 
 def get_tweet_minute():
     return int(os.environ.get('TWEET_MINUTE',  '0'))
+
+
+def get_web_port():
+    return int(os.environ.get('WEB_PORT', 7000))
