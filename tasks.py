@@ -98,7 +98,7 @@ def hourly_task():
         # 値が0の要素があるとゼロ除算が起きるので事前に除く
         scores = dict([(k, v) for k, v in scores.items() if v])
         img = words.generate_word_cloud(scores, font_path='font.ttf')
-        tweet.tweet_word_cloud(img)
+        tweet.tweet_media(img)
 
 
 @celery.on_after_configure.connect

@@ -30,7 +30,7 @@ class ImageFileContext(object):
         return self.image_file.close()
 
 
-def tweet_word_cloud(img):
+def tweet_media(img):
     # Instantiate every time to avoid connection reset
     api = get_api()
     with ImageFileContext(img) as image_file:
