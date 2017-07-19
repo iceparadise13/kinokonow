@@ -24,7 +24,7 @@ python -m yahookp
 ### TODO
 
 - [x] TfIdfでゴミ掃除
-- [ ] db関連の処理全部database.pyに移して  
+- [x] db関連の処理全部database.pyに移して  
 フォーク関連の問題が無ければdatabase.pyでdbをグローバル変数として定義する
 - [ ] リアルタイムのクラウド表示/ツイート検索用サイト
 - [ ] JumanppやMeCabで形態素解析の導入
