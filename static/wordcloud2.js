@@ -210,6 +210,7 @@ if (!window.clearImmediate) {
       classes: null,
 
       hover: null,
+      hoverRelease: null,
       click: null
     };
 
@@ -401,14 +402,16 @@ if (!window.clearImmediate) {
         return;
       }
 
+      if (hovered)
+        settings.hoverRelease(hovered.spans);
+
       hovered = info;
       if (!info) {
-        settings.hover(undefined, undefined, evt);
-
+        settings.hover(undefined, undefined, evt, undefined);
         return;
       }
 
-      settings.hover(info.item, info.dimension, evt);
+      settings.hover(info.item, info.dimension, evt, info.spans);
 
     };
 
@@ -717,6 +720,7 @@ if (!window.clearImmediate) {
         h: (bounds[2] - bounds[0] + 1) * g
       };
 
+      var spans = [];
       elements.forEach(function(el) {
         if (el.getContext) {
           var ctx = el.getContext('2d');
@@ -800,12 +804,14 @@ if (!window.clearImmediate) {
             span.className += classes;
           }
           el.appendChild(span);
+          spans.push(span);
         }
       });
+      return spans;
     };
 
     /* Help function to updateGrid */
-    var fillGridAt = function fillGridAt(x, y, drawMask, dimension, item) {
+    var fillGridAt = function fillGridAt(x, y, drawMask, dimension, item, spans) {
       if (x >= ngx || y >= ngy || x < 0 || y < 0) {
         return;
       }
@@ -818,13 +824,13 @@ if (!window.clearImmediate) {
       }
 
       if (interactive) {
-        infoGrid[x][y] = { item: item, dimension: dimension };
+        infoGrid[x][y] = { item: item, dimension: dimension , spans: spans};
       }
     };
 
     /* Update the filling information of the given space with occupied points.
        Draw the mask on the canvas if necessary. */
-    var updateGrid = function updateGrid(gx, gy, gw, gh, info, item) {
+    var updateGrid = function updateGrid(gx, gy, gw, gh, info, item, spans) {
       var occupied = info.occupied;
       var drawMask = settings.drawMask;
       var ctx;
@@ -854,7 +860,7 @@ if (!window.clearImmediate) {
           continue;
         }
 
-        fillGridAt(px, py, drawMask, dimension, item);
+        fillGridAt(px, py, drawMask, dimension, item, spans);
       }
 
       if (drawMask) {
@@ -917,11 +923,11 @@ if (!window.clearImmediate) {
         }
 
         // Actually put the text on the canvas
-        drawText(gx, gy, info, word, weight,
-                 (maxRadius - r), gxy[2], rotateDeg, attributes);
+        var spans = drawText(gx, gy, info, word, weight,
+                             (maxRadius - r), gxy[2], rotateDeg, attributes);
 
         // Mark the spaces on the grid as filled
-        updateGrid(gx, gy, gw, gh, info, item);
+        updateGrid(gx, gy, gw, gh, info, item, spans);
 
         // Return true so some() will stop and also return true.
         return true;

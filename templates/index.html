@@ -1,48 +1,30 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>canvas</title>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<script src="{{ url_for('static', filename='wordcloud2.js') }}"></script>
-
-<style type="text/css">
-#canvas_cloud{
-    height: 500px;
-    overflow: scroll;
-}
-
-::-webkit-scrollbar {
-    display: none;
-}
-</style>
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
+  <script src="{{ url_for('static', filename='wordcloud2.js') }}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.min.js"></script>
 </head>
-
-<body>
-<div id="canvas_cloud"></div>
-
-<script>
-    function run(){
-        document.getElementById('canvas_cloud').style.height = window.innerHeight + "px";
-        var options =
-        {
-          rotateRatio: 0,
-          list : {{frequencies |tojson }},
-          gridSize: Math.round(16 * document.getElementById('canvas_cloud').offsetWidth / 1024),
-          weightFactor: function (size) {
-            return Math.pow(size, 1.9) * document.getElementById('canvas_cloud').offsetWidth / 1024;
-          }
-        };
-        WordCloud(document.getElementById('canvas_cloud'), options);
-    }
-    run();
-    window.onresize = function(){
-        run();
-    }
-</script>
-
+<!--double quotes should be escaped-->
+<body onload='setupWordCloud({{ frequencies|tojson|safe }})'>
+  <div class="container">
+    <div id="chart-row" class="row">
+      <div id="chart-container" class="col-10 offset-1 align-self-center">
+        <div id="chart"></div>
+      </div>
+    </div>
+    <div id="search-query-row" class="row">
+      <div id="search-query-container" class="col-4 offset-4 align-self-center">
+        <input id="search-query" type="text" class="form-control input-normal" placeholder="検索する単語"/>
+      </div>
+    </div>
+    <div id="search-view-row" class="row">
+      <div id="search-view"></div>
+    </div>
+  </div>
 </body>
 </html>

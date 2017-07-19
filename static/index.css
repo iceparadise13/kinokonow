@@ -1,0 +1,33 @@
+html,
+body,
+.container {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#chart-row{
+  height: 100%;
+}
+
+#chart-container{
+  height: 90%;
+}
+
+#chart {
+  height: 100%;
+  min-height: 150px;
+}
+
+#search-query-row{
+  height: 20%;
+}
+
+#search-view-row{
+  height: 80%;
+}
+
+.zc-ref {
+  display: none;
+}
