@@ -1,9 +1,10 @@
 import unittest
 from datetime import datetime, timedelta
+
 import tasks
 import tfidf
 import words
-from test_mongo import TestMongo
+from test.test_mongo import TestMongo
 
 
 class TestPreprocessTweet(unittest.TestCase):
