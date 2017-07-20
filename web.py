@@ -1,7 +1,9 @@
-from flask import Flask, render_template
+import json
+from flask import Flask, render_template, request
 import score
 import env
 from operator import itemgetter
+import database
 
 
 flask_app = Flask(__name__, template_folder='templates')
@@ -21,7 +23,13 @@ def scores_to_frequencies(scores, freq_range):
     return result
 
 
-@flask_app.route('/')
+@flask_app.route('/search', methods=['POST'])
+def search():
+    query = request.form['search-query']
+    return json.dumps(database.search_tweet(query))
+
+
+@flask_app.route('/', methods=['GET'])
 def home():
     cap = 50
     scores = score.score_key_phrases(save=False)

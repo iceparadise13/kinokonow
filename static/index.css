@@ -31,3 +31,7 @@ body,
 .zc-ref {
   display: none;
 }
+
+#search-result-row {
+  height: 15%;
+}

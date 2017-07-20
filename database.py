@@ -46,3 +46,11 @@ def save_tweet(data):
     data = dict(data)
     data['created_at'] = convert_tweet_date(data['created_at'])
     db.tweets.insert_one(data)
+
+
+def search_tweet(query, cap=100):
+    cursor = db.tweets.find({
+        'text': {'$regex': '^(?!RT).*%s.*' % query},
+    })
+    return [{'text': c['text'], 'user': c['user']['name']}
+            for c in list(cursor[:cap])]

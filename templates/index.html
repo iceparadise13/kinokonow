@@ -11,7 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.min.js"></script>
 </head>
 <!--double quotes should be escaped-->
-<body onload='setupWordCloud({{ frequencies|tojson|safe }})'>
+<body onload='onLoad({{ frequencies|tojson|safe }})'>
   <div class="container">
     <div id="chart-row" class="row">
       <div id="chart-container" class="col-10 offset-1 align-self-center">
@@ -20,11 +20,23 @@
     </div>
     <div id="search-query-row" class="row">
       <div id="search-query-container" class="col-4 offset-4 align-self-center">
-        <input id="search-query" type="text" class="form-control input-normal" placeholder="検索する単語"/>
+        <form id="search-query-form" method="POST">
+          <input id="search-query" name="search-query" type="text" class="form-control input-normal" placeholder="検索する単語"/>
+        </form>
       </div>
     </div>
     <div id="search-view-row" class="row">
-      <div id="search-view"></div>
+      <div id="search-view" class="col-12">
+      </div>
+    </div>
+
+    <div id="search-result-template" class="hidden">
+      <div id="search-result-row" class="row">
+        <div id="search-result-container" class="col-4 offset-4 align-self-center">
+          <div id="search-result-user"></div>
+          <div id="search-result-tweet"></div>
+        </div>
+      </div>
     </div>
   </div>
 </body>

@@ -77,3 +77,15 @@ class TestGetNounFrequencies(TestMongo):
         expected = {'a': 2}
         result = database.get_noun_frequencies(datetime(2017, 1, 1, 1, 0, 1))
         self.assertEqual(expected, result)
+
+
+class TestSearch(TestMongo):
+    def test(self):
+        data_1 = {'text': 'foo bar baz', 'user': {'name': 'bob'}}
+        data_2 = {'text': 'qux quux corge', 'user': {'name': 'joe'}}
+        self.db.tweets.insert_many([data_1, data_2])
+        self.assertEqual([{'text': 'foo bar baz', 'user': 'bob'}], database.search_tweet('bar'))
+
+    def test_ignore_rt(self):
+        self.db.tweets.insert_one({'text': 'RT foo'})
+        self.assertEqual([], database.search_tweet(''))
