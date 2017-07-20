@@ -8,11 +8,14 @@ flask_app = Flask(__name__, template_folder='templates')
 
 
 def scores_to_frequencies(scores, freq_range):
+    if not scores:
+        return []
     min_score = min(scores.values())
     max_score = max(scores.values())
     result = []
     for k, v in scores.items():
-        fraction = (v - min_score) / (max_score - min_score)
+        score_range = max_score - min_score
+        fraction = (v - min_score) / score_range if score_range else 0.5
         v = freq_range[0] + ((freq_range[1] - freq_range[0]) * fraction)
         result.append([k, int(v)])
     return result

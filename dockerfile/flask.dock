@@ -1,0 +1,6 @@
+FROM tiangolo/uwsgi-nginx-flask:flask-python3.5
+# プロジェクトのファイルが変わる度に再インストールしたくないので予めインストールしておく
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+RUN mv web_uwsgi.ini uwsgi.ini
