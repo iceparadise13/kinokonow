@@ -40,24 +40,28 @@ function setupWordCloud(frequencies) {
 function onLoad(frequencies){
     setupWordCloud(frequencies);
 
+    function createSearchResultNode(datum){
+        var node = $("#search-result-template").find("#search-result-row").clone();
+        node.find("#search-result-user").text(datum.user);
+        node.find("#search-result-tweet").text(datum.text);
+        return node;
+    }
+
     function populateSearchResults(data){
       var searchView = $("#search-view");
       searchView.empty();
-      for(var i =0; i<data.length; ++i){
-          var row = data[i];
-          var node = $("#search-result-template").find("#search-result-row").clone();
-          node.find("#search-result-user").text(row.user);
-          node.find("#search-result-tweet").text(row.text);
-          searchView.append(node);
-      }
+      for(var i =0; i<data.length; ++i)
+          searchView.append(createSearchResultNode(data[i]));
     }
 
-    $("#search-query-form").submit(function(e) {
+    var searchQueryForm = $("#search-query-form");
+
+    searchQueryForm.submit(function(e) {
         $.ajax({
                dataType: "json",
                type: "POST",
                url: "search",
-               data: $("#search-query-form").serialize(),
+               data: searchQueryForm.serialize(),
                success: populateSearchResults
              });
         e.preventDefault();

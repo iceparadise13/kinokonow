@@ -1,4 +1,7 @@
 import json
+import time
+import logging
+from functools import wraps
 from flask import Flask, render_template, request
 import score
 import env
@@ -23,21 +26,34 @@ def scores_to_frequencies(scores, freq_range):
     return result
 
 
+def bench_mark(f):
+    @wraps(f)  # required
+    def inner(*args, **kwargs):
+        it = time.time()
+        result = f(*args, **kwargs)
+        flask_app.logger.info('function %s took %f seconds' % (f.__name__, time.time() - it))
+        return result
+    return inner
+
+
 @flask_app.route('/search', methods=['POST'])
+@bench_mark  # this has no effect if decorated above `route`
 def search():
     query = request.form['search-query']
     return json.dumps(database.search_tweet(query))
 
 
 @flask_app.route('/', methods=['GET'])
+@bench_mark
 def home():
     cap = 50
     scores = score.score_key_phrases(save=False)
     frequencies = scores_to_frequencies(scores, (1, 10))
     frequencies = sorted(frequencies, key=itemgetter(1), reverse=True)
-    print(frequencies)
+    flask_app.logger.info('frequencies: ' + str(frequencies))
     return render_template('index.html', frequencies=frequencies[:cap])
 
 
 if __name__ == '__main__':
+    flask_app.logger.setLevel(logging.INFO)
     flask_app.run(debug=env.get_debug(), host='0.0.0.0', port=env.get_web_port())
