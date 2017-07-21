@@ -52,12 +52,14 @@ function onLoad(frequencies){
       }
     }
 
-    $("#search-query-form").submit(function(e) {
+    var searchQueryForm = $("#search-query-form");
+
+    searchQueryForm.submit(function(e) {
         $.ajax({
                dataType: "json",
                type: "POST",
                url: "search",
-               data: $("#search-query-form").serialize(),
+               data: searchQueryForm.serialize(),
                success: populateSearchResults
              });
         e.preventDefault();
