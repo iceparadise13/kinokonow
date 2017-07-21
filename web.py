@@ -1,6 +1,7 @@
 import json
 import time
 import logging
+from logging.handlers import RotatingFileHandler
 from functools import wraps
 from flask import Flask, render_template, request
 import score
@@ -10,6 +11,20 @@ import database
 
 
 flask_app = Flask(__name__, template_folder='templates')
+
+
+def setup_logging():
+    logging_level = logging.INFO
+    handler = RotatingFileHandler('web.log', maxBytes=100000, backupCount=1)
+    handler.setLevel(logging_level)
+    flask_app.logger.addHandler(handler)
+    flask_app.logger.setLevel(logging_level)
+
+
+def wsgi_app(*args, **kwargs):
+    # Don't want to setup logging when `web.py` is imported
+    setup_logging()
+    return flask_app(*args, **kwargs)
 
 
 def scores_to_frequencies(scores, freq_range):
@@ -57,5 +72,5 @@ def home():
 
 
 if __name__ == '__main__':
-    flask_app.logger.setLevel(logging.INFO)
+    setup_logging()
     flask_app.run(debug=env.get_debug(), host='0.0.0.0', port=env.get_web_port())

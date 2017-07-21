@@ -9,3 +9,4 @@ blacklist.txt
 env.sh
 celerybeat-schedule
 celerybeat.pid
+web.log
