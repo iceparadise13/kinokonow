@@ -1,7 +1,5 @@
 from celery import Celery, chain
-from celery import Celery, chain
 from celery.schedules import crontab
-
 import database
 import env
 import preprocess
@@ -9,32 +7,16 @@ import tweet
 import words
 from ma import extract_nouns_from_ma_server
 from score import score_key_phrases
-from web import flask_app
-
-redis_host = env.get_redis_host()
-redis_port = env.get_redis_port()
-redis_url = 'redis://%s:%d' % (redis_host, redis_port)
-flask_app.config.update(
-    CELERY_BROKER_URL=redis_url,
-    CELERY_RESULT_BACKEND=redis_url
-)
 
 
-def make_celery(app):
-    celery = Celery(app.import_name, backend=app.config['CELERY_RESULT_BACKEND'],
-                    broker=app.config['CELERY_BROKER_URL'])
-    celery.conf.update(app.config)
-    TaskBase = celery.Task
-    class ContextTask(TaskBase):
-        abstract = True
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-    celery.Task = ContextTask
-    return celery
+def make_celery():
+    redis_host = env.get_redis_host()
+    redis_port = env.get_redis_port()
+    redis_url = 'redis://%s:%d' % (redis_host, redis_port)
+    return Celery('worker', backend=redis_url, broker=redis_url)
 
 
-celery = make_celery(flask_app)
+celery = make_celery()
 
 
 @celery.task
