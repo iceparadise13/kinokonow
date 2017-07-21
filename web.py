@@ -50,8 +50,10 @@ def home():
     scores = score.score_key_phrases(save=False)
     frequencies = scores_to_frequencies(scores, (1, 10))
     frequencies = sorted(frequencies, key=itemgetter(1), reverse=True)
+    # printing all the frequencies is way too slow
+    frequencies = frequencies[:cap]
     flask_app.logger.info('frequencies: ' + str(frequencies))
-    return render_template('index.html', frequencies=frequencies[:cap])
+    return render_template('index.html', frequencies=frequencies)
 
 
 if __name__ == '__main__':
