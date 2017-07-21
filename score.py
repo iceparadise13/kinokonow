@@ -20,7 +20,6 @@ def score_key_phrases(save):
     now = datetime.utcnow()
     document = database.get_noun_frequencies(now - timedelta(hours=1))
     if not document:
-        print('Failed to get noun frequencies')
         return {}
     past_documents = database.get_documents(now - timedelta(days=3))
     scores = tfidf.score(document, past_documents)
