@@ -66,17 +66,29 @@ def get_frequencies():
     return frequencies
 
 
+predefined_frequencies = []
+
+
 @flask_app.route('/', methods=['GET'])
 @bench_mark
 def home():
-    frequencies = get_frequencies()
-    # printing all the frequencies is way too slow
-    cap = 50
-    frequencies = frequencies[:cap]
+    if predefined_frequencies:
+        frequencies = predefined_frequencies
+    else:
+        frequencies = get_frequencies()
+        # printing all the frequencies is way too slow
+        cap = 50
+        frequencies = frequencies[:cap]
     flask_app.logger.info('frequencies: ' + str(frequencies))
     return render_template('index.html', frequencies=frequencies)
 
 
-if __name__ == '__main__':
+def run_dev(frequencies=None):
+    global predefined_frequencies
+    predefined_frequencies = frequencies or []
     setup_logging()
     flask_app.run(debug=env.get_debug(), host='0.0.0.0', port=env.get_web_port())
+
+
+if __name__ == '__main__':
+    run_dev()
