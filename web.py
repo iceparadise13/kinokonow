@@ -37,11 +37,15 @@ def bench_mark(f):
     return inner
 
 
+predefined_search_results = []
+
+
 @flask_app.route('/search', methods=['POST'])
 @bench_mark  # this has no effect if decorated above `route`
 def search():
-    query = request.form['search-query']
-    return json.dumps(database.search_tweet(query))
+    search_results = predefined_search_results if predefined_search_results else \
+        database.search_tweet(request.form['search-query'])
+    return json.dumps(search_results)
 
 
 def get_scores():
@@ -70,9 +74,11 @@ def home():
     return render_template('index.html', frequencies=frequencies)
 
 
-def run_dev(frequencies=None):
+def run_dev(frequencies=None, search_results=None):
     global predefined_frequencies
     predefined_frequencies = frequencies or []
+    global predefined_search_results
+    predefined_search_results = search_results or []
     setup_logging()
     flask_app.run(debug=env.get_debug(), host='0.0.0.0', port=env.get_web_port())
 
