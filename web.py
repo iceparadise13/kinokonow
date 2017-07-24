@@ -58,14 +58,20 @@ def search():
     return json.dumps(database.search_tweet(query))
 
 
-@flask_app.route('/', methods=['GET'])
-@bench_mark
-def home():
-    cap = 50
+def get_frequencies():
     scores = score.score_key_phrases(save=False)
     frequencies = scores_to_frequencies(scores, (1, 10))
     frequencies = sorted(frequencies, key=itemgetter(1), reverse=True)
     # printing all the frequencies is way too slow
+    return frequencies
+
+
+@flask_app.route('/', methods=['GET'])
+@bench_mark
+def home():
+    frequencies = get_frequencies()
+    # printing all the frequencies is way too slow
+    cap = 50
     frequencies = frequencies[:cap]
     flask_app.logger.info('frequencies: ' + str(frequencies))
     return render_template('index.html', frequencies=frequencies)
