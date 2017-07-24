@@ -8,7 +8,7 @@ body,
 }
 
 #chart-row{
-  height: 100%;
+  height: 80%;
 }
 
 #chart-container{
@@ -26,10 +26,6 @@ body,
 
 #search-view-row{
   height: 80%;
-}
-
-.zc-ref {
-  display: none;
 }
 
 #search-result-row {

@@ -4,14 +4,44 @@
   <title>きのこなう</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
         integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
   <script src="{{ url_for('static', filename='index.js') }}"></script>
   <script src="{{ url_for('static', filename='wordcloud2.js') }}"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.min.js"></script>
 </head>
 <!--double quotes should be escaped-->
 <body onload='onLoad({{ frequencies|tojson|safe }})'>
+  <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="form-modal-label" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-mobile" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                  <form id="modal-search-query-form" method="POST">
+                    <input id="modal-search-query" name="search-query" type="text" class="form-control input-normal" placeholder="検索する単語"/>
+                  </form>
+              </div>
+              <div class="container">
+                <div id="search-view-row" class="row">
+                  <div id="search-view" class="col-12">
+                  </div>
+                </div>
+                <div id="search-result-template" class="hidden">
+                  <div id="search-result-row" class="row">
+                    <div id="search-result-container" class="col-10 offset-1 align-self-center">
+                      <div id="search-result-user"></div>
+                      <div id="search-result-tweet"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
   <div class="container">
     <div id="chart-row" class="row">
       <div id="chart-container" class="col-10 offset-1 align-self-center">
@@ -23,19 +53,6 @@
         <form id="search-query-form" method="POST">
           <input id="search-query" name="search-query" type="text" class="form-control input-normal" placeholder="検索する単語"/>
         </form>
-      </div>
-    </div>
-    <div id="search-view-row" class="row">
-      <div id="search-view" class="col-12">
-      </div>
-    </div>
-
-    <div id="search-result-template" class="hidden">
-      <div id="search-result-row" class="row">
-        <div id="search-result-container" class="col-4 offset-4 align-self-center">
-          <div id="search-result-user"></div>
-          <div id="search-result-tweet"></div>
-        </div>
       </div>
     </div>
   </div>
