@@ -46,7 +46,7 @@ def search():
 
 def get_scores():
     """
-    単語ごとのスコアを入れ子のリストとして返す
+    単語ごとのスコアを降順ソートされた入れ子のリストとして返す
     辞書型で返してしまうとソート出来ない
     """
     scores = score.score_key_phrases(save=False)
