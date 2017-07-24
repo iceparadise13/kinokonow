@@ -27,20 +27,6 @@ def wsgi_app(*args, **kwargs):
     return flask_app(*args, **kwargs)
 
 
-def scores_to_frequencies(scores, freq_range):
-    if not scores:
-        return []
-    min_score = min(scores.values())
-    max_score = max(scores.values())
-    result = []
-    for k, v in scores.items():
-        score_range = max_score - min_score
-        fraction = (v - min_score) / score_range if score_range else 0.5
-        v = freq_range[0] + ((freq_range[1] - freq_range[0]) * fraction)
-        result.append([k, int(v)])
-    return result
-
-
 def bench_mark(f):
     @wraps(f)  # required
     def inner(*args, **kwargs):
@@ -58,12 +44,13 @@ def search():
     return json.dumps(database.search_tweet(query))
 
 
-def get_frequencies():
+def get_scores():
+    """
+    単語ごとのスコアを入れ子のリストとして返す
+    辞書型で返してしまうとソート出来ない
+    """
     scores = score.score_key_phrases(save=False)
-    frequencies = scores_to_frequencies(scores, (1, 10))
-    frequencies = sorted(frequencies, key=itemgetter(1), reverse=True)
-    # printing all the frequencies is way too slow
-    return frequencies
+    return sorted(scores.items(), key=itemgetter(1), reverse=True)
 
 
 predefined_frequencies = []
@@ -75,7 +62,7 @@ def home():
     if predefined_frequencies:
         frequencies = predefined_frequencies
     else:
-        frequencies = get_frequencies()
+        frequencies = get_scores()
         # printing all the frequencies is way too slow
         cap = 50
         frequencies = frequencies[:cap]
