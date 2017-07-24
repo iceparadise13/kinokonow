@@ -19,7 +19,6 @@ function setupWordCloud(frequencies) {
             setScale(spans[0], 1);
       },
       click: function(item) {
-        $.scrollTo($("#search-query-row"), 500);
         var clickedWord = item[0];
         $("#search-query").val(clickedWord);
         $("#search-query-form").submit();
@@ -47,9 +46,8 @@ Array.min = function(array){
 
 function getValues(object){
     var values = [];
-    for(var i in object){
+    for(var i in object)
         values = values.concat(object[i][1]);
-    }
     return values;
 }
 
@@ -76,9 +74,7 @@ function capWeights(weights){
     return cappedWeights;
 }
 
-function onLoad(weights){
-    setupWordCloud(capWeights(weights));
-
+function setupSearch(){
     function createSearchResultNode(datum){
         var node = $("#search-result-template").find("#search-result-row").clone();
         node.find("#search-result-user").text(datum.user);
@@ -89,20 +85,36 @@ function onLoad(weights){
     function populateSearchResults(data){
       var searchView = $("#search-view");
       searchView.empty();
-      for(var i =0; i<data.length; ++i)
+      for(var i in data)
           searchView.append(createSearchResultNode(data[i]));
     }
 
-    var searchQueryForm = $("#search-query-form");
-
-    searchQueryForm.submit(function(e) {
+    function sendQuery(){
         $.ajax({
                dataType: "json",
                type: "POST",
                url: "search",
-               data: searchQueryForm.serialize(),
+               data: $(this).serialize(),
                success: populateSearchResults
              });
+    }
+
+    var searchQueryForm = $("#search-query-form");
+    searchQueryForm.submit(function(e) {
+        $('#modal').modal('show');
+        $("#modal-search-query").val($("#search-query").val());
+        sendQuery();
         e.preventDefault();
     });
+
+    var modalSearchQueryForm = $("#modal-search-query-form");
+    modalSearchQueryForm.submit(function(e) {
+        sendQuery();
+        e.preventDefault();
+    });
+}
+
+function onLoad(weights){
+    setupWordCloud(capWeights(weights));
+    setupSearch();
 }
