@@ -89,27 +89,27 @@ function setupSearch(){
           searchView.append(createSearchResultNode(data[i]));
     }
 
-    function sendQuery(){
+    function sendQuery(data){
         $.ajax({
-               dataType: "json",
-               type: "POST",
-               url: "search",
-               data: $(this).serialize(),
-               success: populateSearchResults
-             });
+          dataType: "json",
+          type: "POST",
+          url: "search",
+          data: data,
+          success: populateSearchResults
+        });
     }
 
     var searchQueryForm = $("#search-query-form");
     searchQueryForm.submit(function(e) {
         $('#modal').modal('show');
         $("#modal-search-query").val($("#search-query").val());
-        sendQuery();
+        sendQuery($(this).serialize());
         e.preventDefault();
     });
 
     var modalSearchQueryForm = $("#modal-search-query-form");
     modalSearchQueryForm.submit(function(e) {
-        sendQuery();
+        sendQuery($(this).serialize());
         e.preventDefault();
     });
 }
