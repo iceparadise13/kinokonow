@@ -57,7 +57,7 @@ function capWeights(weights){
     var valueMax = Array.max(values);
     var valueSpread = valueMax - valueMin;
     var cappedWeights = [];
-    // freqRangeの最小値が3以下だとIssue #14が発生する
+    // capRangeの最小値が3以下だとIssue #14が発生する
     var capRange = [4, 10];
     var capMin = capRange[0];
     var capSpread = capRange[1] - capRange[0];
