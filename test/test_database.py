@@ -2,8 +2,7 @@ import json
 import unittest
 from datetime import datetime, timedelta
 import database
-from test.test_mongo import TestMongo
-from utils import create_utc_date
+from utils import create_utc_date, TestMongo
 
 
 class TestGetDocuments(TestMongo):

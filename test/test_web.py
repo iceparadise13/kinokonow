@@ -1,8 +1,7 @@
 import unittest
 import json
 import web
-from test_mongo import TestMongo
-from utils import create_utc_date
+from utils import create_utc_date, TestMongo
 
 
 class TestSearch(TestMongo):

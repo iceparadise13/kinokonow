@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import score
 import tasks
 import tfidf
-from test.test_mongo import TestMongo
+from utils import TestMongo
 
 
 class TestScoreTfIdf(unittest.TestCase):
