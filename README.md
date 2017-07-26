@@ -18,7 +18,7 @@ celery -A tasks.celery -l INFO beat
 ```
 フレーズ候補抽出鯖
 ```
-python -m yahookp
+python -m yahooma
 ```
 
 ### TODO
