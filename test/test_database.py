@@ -89,3 +89,9 @@ class TestSearch(TestMongo):
     def test_ignore_rt(self):
         self.db.tweets.insert_one({'text': 'RT foo'})
         self.assertEqual([], database.search_tweet(''))
+
+    def test_sort_by_date(self):
+        data_1 = {'text': 'foo', 'user': {'name': 'bob'}, 'created_at': create_utc_date(2017, 1, 1)}
+        data_2 = {'text': 'foo', 'user': {'name': 'joe'}, 'created_at': create_utc_date(2017, 1, 2)}
+        self.db.tweets.insert_many([data_1, data_2])
+        self.assertEqual(['joe', 'bob'], [d['user'] for d in database.search_tweet('foo')])

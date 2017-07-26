@@ -51,6 +51,6 @@ def save_tweet(data):
 def search_tweet(query, cap=100):
     cursor = db.tweets.find({
         'text': {'$regex': '^(?!RT).*%s.*' % query},
-    })
+    }).sort('created_at', pymongo.DESCENDING)
     return [{'text': c['text'], 'user': c['user']['name']}
             for c in list(cursor[:cap])]
