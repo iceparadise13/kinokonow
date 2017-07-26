@@ -1,0 +1,88 @@
+FROM python:3.6
+
+RUN apt-get -yqq update
+RUN apt-get -y clean
+
+# Jumanppの依存性
+# Boostを`apt-get install libboost-dev`で入れると1.55がインストールされてJumanppに必要な1.57が満たされないので自分でビルドする
+# Boostの依存性
+RUN apt-get install --no-install-recommends -yqq  -o "Dpkg::Options::=--force-confdef" \
+    build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev
+RUN apt-get clean
+# Boostのインストール
+ENV BOOST_VER 1.62.0
+ENV BOOST_DIR boost_1_62_0
+ENV BOOST_TARBALL ${BOOST_DIR}.tar.gz
+# うるさいので-qフラグをつける
+RUN wget -qO "${BOOST_TARBALL}" "http://sourceforge.net/projects/boost/files/boost/${BOOST_VER}/${BOOST_TARBALL}/download"
+RUN tar xzf "${BOOST_TARBALL}"
+RUN rm -rf "${BOOST_TARBALL}"
+# cdした後の現在ディレクトリはRUNコマンド後に初期化されるので一々cdする必要がある
+# コマンドを結合して一行で実行する手はあるが、キャッシュが活用出来なくなる
+WORKDIR ${BOOST_DIR}
+RUN ./bootstrap.sh > /dev/null
+# `./b2`で失敗したコンポーネントは無視したいので失敗した場合`true`を実行して終了コードを無理やり0にセットする
+RUN (./b2 > /dev/null || true)
+RUN (./b2 install > /dev/null || true)
+RUN rm -rf "${BOOST_DIR}"
+# Jumanppのインストール
+ENV JUMANPP_DIR jumanpp-1.01
+ENV JUMANPP_TARBALL "${JUMANPP_DIR}.tar.xz"
+RUN wget -q "http://lotus.kuee.kyoto-u.ac.jp/nl-resource/jumanpp/${JUMANPP_TARBALL}"
+RUN tar xJf "${JUMANPP_TARBALL}"
+RUN rm -rf "${JUMANPP_TARBALL}"
+WORKDIR ${JUMANPP_DIR}
+RUN ./configure > /dev/null
+RUN make > /dev/null
+RUN make install > /dev/null
+RUN rm -rf "${JUMANPP_DIR}"
+
+# Jumanのインストール
+ENV JUMAN_DIR juman-7.01
+ENV JUMAN_TARBALL ${JUMAN_DIR}.tar.bz2
+RUN wget -q "http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/${JUMAN_TARBALL}"
+RUN tar jxf "${JUMAN_TARBALL}"
+RUN rm -rf "${JUMAN_TARBALL}"
+WORKDIR ${JUMAN_DIR}
+RUN ./configure > /dev/null
+RUN make > /dev/null
+RUN make install > /dev/null
+RUN rm -rf "${JUMAN_DIR}"
+
+# Knpのインストール
+# 4.16がリンク切れしてるあたり4.17も切れる可能性が高いのでwgetはやめたほうがいいかも
+# インストールにJumanが必要
+ENV KNP_DIR knp-4.17
+ENV KNP_TARBALL ${KNP_DIR}.tar.bz2
+RUN wget -q "http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${KNP_TARBALL}"
+RUN tar jxf "${KNP_TARBALL}"
+RUN rm -rf "${KNP_TARBALL}"
+WORKDIR ${KNP_DIR}
+RUN ./configure > /dev/null
+RUN make > /dev/null
+RUN make install > /dev/null
+RUN rm -rf "${KNP_DIR}"
+
+# PyKNPのインストール
+ENV PYKNP_DIR pyknp-0.3
+ENV PYKNP_TARBALL ${PYKNP_DIR}.tar.gz
+RUN wget -q "http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/knp/${PYKNP_TARBALL}"
+RUN tar xf "${PYKNP_TARBALL}"
+RUN rm -rf "${PYKNP_TARBALL}"
+WORKDIR ${PYKNP_DIR}
+RUN python setup.py install > /dev/null
+RUN rm -rf "${PYKNP_DIR}"
+
+# python-onbuild系のイメージを使うとプロジェクトのファイルが一つでも変わる度に
+# ビルドのキャッシュが無効化されるので自分で依存性をインストールして
+# プロジェクトのファイルをコピーする
+ENV WORK_DIR /usr/src/app
+RUN mkdir -p "${WORK_DIR}"
+WORKDIR ${WORK_DIR}
+# requirements.txtを`COPY . ${WORK_DIR}`と一緒にコピーしてしまうとプロジェクトのファイルが一つでも変わる度に
+# 依存性を全てインストールし直す必要が出てくるので先にコピーしておく
+COPY requirements.txt ${WORK_DIR}
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . ${WORK_DIR}
+
+ENTRYPOINT python -m jumanpp
