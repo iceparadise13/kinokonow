@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
   <script src="{{ url_for('static', filename='index.js') }}"></script>
   <script src="{{ url_for('static', filename='wordcloud2.js') }}"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <!--double quotes should be escaped-->
 <body onload='onLoad({{ frequencies|tojson|safe }})'>
@@ -27,6 +28,10 @@
               <div class="container">
                 <div id="search-view-row" class="row">
                   <div id="search-view" class="col-12">
+                  </div>
+                  <div id="search-view-loading-wrapper" class="col-12 hidden">
+                    <div id="search-view-loading" class="fa fa-circle-o-notch fa-spin">
+                    </div>
                   </div>
                 </div>
                 <div id="search-result-template" class="hidden">

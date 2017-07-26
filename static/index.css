@@ -7,6 +7,10 @@ body,
   padding: 0;
 }
 
+.hidden {
+  display: none;
+}
+
 #chart-row{
   height: 80%;
 }
@@ -30,4 +34,12 @@ body,
 
 #search-result-row {
   margin: 10px;
+}
+
+#search-view-loading-wrapper{
+  text-align: center;
+}
+
+#search-view-loading{
+  margin: 20px;
 }
