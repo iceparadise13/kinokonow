@@ -52,5 +52,5 @@ def search_tweet(query, cap=100):
     cursor = db.tweets.find({
         'text': {'$regex': '^(?!RT).*%s.*' % query},
     }).sort('created_at', pymongo.DESCENDING)
-    return [{'text': c['text'], 'user': c['user']['name']}
+    return [{'text': c['text'], 'user': c['user']['name'], 'created_at': c['created_at'].timestamp()}
             for c in list(cursor[:cap])]

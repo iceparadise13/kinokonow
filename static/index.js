@@ -74,9 +74,45 @@ function capWeights(weights){
   return cappedWeights;
 }
 
+function getBeginningOfToday(){
+  var d = new Date();
+  d.setHours(0);
+  d.setMinutes(0);
+  d.setSeconds(0);
+  d.setMilliseconds(0);
+  return d;
+}
+
+function getBeginningOfThisMonth(){
+  var d = getBeginningOfToday();
+  d.setDate(1);
+  return d;
+}
+
+function prepareTimestamp(timestamp){
+  function n(n){
+      return n > 9 ? "" + n: "0" + n;
+  }
+
+  var result = "";
+
+  var dateOfTweet = new Date(0);
+  dateOfTweet.setUTCSeconds(timestamp);
+
+  if (dateOfTweet < getBeginningOfThisMonth())
+    result += (dateOfTweet.getMonth() + 1) + '月';
+
+  if (dateOfTweet < getBeginningOfToday())
+    result += dateOfTweet.getDate() + '日';
+
+  result += n(dateOfTweet.getHours()) + ':' + n(dateOfTweet.getMinutes());
+  return result;
+}
+
 function setupSearch(){
   function createSearchResultNode(datum){
     var node = $("#search-result-template").find("#search-result-row").clone();
+    node.find("#search-result-date").text(prepareTimestamp(datum.created_at));
     node.find("#search-result-user").text(datum.user);
     node.find("#search-result-tweet").text(datum.text);
     return node;
