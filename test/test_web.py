@@ -1,12 +1,8 @@
 import unittest
 import json
-from datetime import datetime, timezone
 import web
 from test_mongo import TestMongo
-
-
-def create_utc_date(*args, **kwargs):
-    return datetime(*args, **kwargs, tzinfo=timezone.utc)
+from utils import create_utc_date
 
 
 class TestSearch(TestMongo):
