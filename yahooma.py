@@ -1,3 +1,4 @@
+import re
 import json
 import requests
 from flask import Flask, request
@@ -13,24 +14,22 @@ class YahooApi(object):
         self.api_key = api_key
         self.session = session or requests.Session()
 
-    def extract_phrases(self, text):
-        pat = 'https://jlp.yahooapis.jp/KeyphraseService/V1/extract?appid=%s&output=json&sentence=%s'
+    def parse(self, text):
+        pat = 'https://jlp.yahooapis.jp/MAService/V1/parse?appid=%s&sentence=%s'
         resp = self.session.get(pat % (self.api_key, text))
-        result = json.loads(resp.content.decode('utf-8'))
-        if type(result) == dict:
-            return list(result.keys())
-        return []
+        # キーフレーズ解析と違ってjsonに対応していない模様
+        # 返ってくるxmlをパース出来るいい感じのライブラリが無いので強引に正規表現でやる
+        return re.findall('<surface>(.+?)</surface>.+?<pos>(.+?)</pos>', resp.content.decode('utf-8'))
 
 
 def extract_nouns(tweet):
     """
     与えられたツイートから名詞を抽出する
-    ハッシュタグは無条件で名詞として扱う
     :param tweet: ツイート
     :return: 抽出された名詞のリスト
     """
     api = YahooApi(settings.get_yahoo_api_key())
-    return api.extract_phrases(tweet)
+    return [word for word, pos in api.parse(tweet) if pos == '名詞']
 
 
 @flask_app.route('/')
