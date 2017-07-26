@@ -1,6 +1,5 @@
 import unittest
 import json
-from operator import itemgetter
 import web
 from test_mongo import TestMongo
 
