@@ -1,8 +1,8 @@
 import os
-import uuid
 import tempfile
+import uuid
 from twython import Twython
-import settings
+from kinokonow import settings
 
 
 def get_api():

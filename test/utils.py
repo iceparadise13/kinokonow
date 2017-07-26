@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 import mongomock
-import database
+from kinokonow import database
 
 
 def create_utc_date(*args, **kwargs):

@@ -1,7 +1,7 @@
 import json
 import unittest
 from datetime import datetime, timedelta
-import database
+from kinokonow import database
 from utils import create_utc_date, TestMongo
 
 

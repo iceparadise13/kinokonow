@@ -1,6 +1,6 @@
-import mock
 import unittest
-import yahooma
+import mock
+from kinokonow import yahooma
 
 
 class TestCase(unittest.TestCase):

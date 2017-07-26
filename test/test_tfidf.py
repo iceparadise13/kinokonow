@@ -1,9 +1,6 @@
 import unittest
 from datetime import datetime, timedelta
-
-import score
-import tasks
-import tfidf
+from kinokonow import score, tfidf
 from utils import TestMongo
 
 

@@ -1,16 +1,17 @@
+import os
 import json
-import time
 import logging
-from logging.handlers import RotatingFileHandler
+import time
 from functools import wraps
-from flask import Flask, render_template, request
-import score
-import env
+from logging.handlers import RotatingFileHandler
 from operator import itemgetter
-import database
+from flask import Flask, render_template, request
+from kinokonow import env, score, database
 
 
-flask_app = Flask(__name__, template_folder='templates')
+flask_app = Flask(__name__,
+                  template_folder=os.path.join(os.getcwd(), 'templates'),
+                  static_folder=os.path.join(os.getcwd(), 'static'))
 
 
 def setup_logging():

@@ -1,9 +1,8 @@
-import re
 import json
+import re
 import requests
 from flask import Flask, request
-import settings
-import env
+from kinokonow import env, settings
 
 
 flask_app = Flask(__name__, template_folder='templates')

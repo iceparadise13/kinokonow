@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timezone
 import pymongo
-import env
+from kinokonow import env
 
 
 def connect():

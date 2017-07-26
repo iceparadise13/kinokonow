@@ -1,8 +1,6 @@
 import csv
 from twython import TwythonStreamer
-import settings
-import tasks
-import database
+from kinokonow import settings, tasks, database
 
 
 class Streamer(TwythonStreamer):

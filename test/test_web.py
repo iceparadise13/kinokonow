@@ -1,6 +1,6 @@
-import unittest
 import json
-import web
+import unittest
+from kinokonow import web
 from utils import create_utc_date, TestMongo
 
 

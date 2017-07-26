@@ -1,12 +1,6 @@
 from celery import Celery, chain
 from celery.schedules import crontab
-import database
-import env
-import preprocess
-import tweet
-import words
-from ma import extract_nouns_from_ma_server
-from score import score_key_phrases
+from kinokonow import database, env, preprocess, tweet, ma, score, words
 
 
 def make_celery():
@@ -35,7 +29,7 @@ def extract_nouns(data):
     tweet, hash_tags = data
     host = env.get_ma_host()
     port = env.get_ma_port()
-    return hash_tags + extract_nouns_from_ma_server(tweet, host=host, port=port)
+    return hash_tags + ma.extract_nouns_from_ma_server(tweet, host=host, port=port)
 
 
 @celery.task
@@ -51,7 +45,7 @@ def create_noun_extraction_task(tweet):
 @celery.task
 def hourly_task():
     """定期タスクとしてchainが使えないみたいなので一つのタスクとして定義する"""
-    scores = score_key_phrases(save=True)
+    scores = score.score_key_phrases(save=True)
     print('tfidf scores ' + str(scores))
     if scores:
         # 値が0の要素があるとゼロ除算が起きるので事前に除く

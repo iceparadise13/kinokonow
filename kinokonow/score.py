@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-import database
-import tfidf
+from kinokonow import database, tfidf
 
 
 def score_key_phrases(save):

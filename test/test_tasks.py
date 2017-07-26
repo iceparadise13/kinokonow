@@ -1,5 +1,5 @@
 import unittest
-import tasks
+from kinokonow import tasks
 
 
 class TestPreprocessTweet(unittest.TestCase):
