@@ -31,7 +31,6 @@ class ImageFileContext(object):
 
 
 def tweet_media(img):
-    # Instantiate every time to avoid connection reset
     api = get_api()
     with ImageFileContext(img) as image_file:
         media_id = api.upload_media(media=image_file)['media_id']
