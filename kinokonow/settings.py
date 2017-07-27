@@ -8,7 +8,7 @@ def load_yaml(fname):
 
 def load_settings():
     # Assuming the root python script is run in the project directory
-    return load_yaml(open(os.environ['KINOKONOW_SETTINGS_PATH']))
+    return load_yaml(os.environ['KINOKONOW_SETTINGS_PATH'])
 
 
 def get_twython_settings():
