@@ -1,7 +1,9 @@
-FROM python:3.6
+FROM python:3.5
 
 ENV USER_NAME celery
 RUN adduser --disabled-password --gecos '' ${USER_NAME}
+
+WORKDIR /usr/src/app
 
 # プロジェクトのファイルが変わる度に再インストールしたくないので予めインストールしておく
 COPY requirements.txt .
