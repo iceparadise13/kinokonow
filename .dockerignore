@@ -1,5 +1,8 @@
 secrets
 follow.txt
 settings.yml
-web.log
+web.log*
 dev_web.py
+__pycache__
+.git
+.idea
