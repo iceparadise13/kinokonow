@@ -1,3 +1,9 @@
-FROM python:3.6-onbuild
+FROM python:3.6
+
 ENV USER_NAME celery
 RUN adduser --disabled-password --gecos '' ${USER_NAME}
+
+# プロジェクトのファイルが変わる度に再インストールしたくないので予めインストールしておく
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
