@@ -14,13 +14,13 @@ def get_streamer():
     return Streamer(*settings.get_twython_settings())
 
 
-def get_followers():
+def get_users_to_follow():
     with open(os.environ['KINOKONOW_FOLLOWS_PATH']) as f:
         return [user_id for _, user_id, _ in csv.reader(f)]
 
 
 if __name__ == '__main__':
-    users_to_follow = get_followers()
+    users_to_follow = get_users_to_follow()
     print('following %d users' % len(users_to_follow))
 
     def on_success(data):
