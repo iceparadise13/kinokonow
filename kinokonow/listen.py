@@ -1,3 +1,4 @@
+import os
 import csv
 from twython import TwythonStreamer
 from kinokonow import settings, tasks, database
@@ -14,7 +15,7 @@ def get_streamer():
 
 
 def get_followers():
-    with open('follow.txt') as f:
+    with open(os.environ['KINOKONOW_FOLLOWS_PATH']) as f:
         return [user_id for _, user_id, _ in csv.reader(f)]
 
 
