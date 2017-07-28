@@ -42,10 +42,17 @@ def get_noun_frequencies(starting_at):
 
 
 def save_tweet(data):
-    # shallow copy suffices
-    data = dict(data)
-    data['created_at'] = convert_tweet_date(data['created_at'])
-    db.tweets.insert_one(data)
+    db.tweets.insert_one({
+        'id': data['id_str'],
+        'user': {'name': data['user']['name'],
+                 'id': data['user']['id_str'],
+                 'profile_image_url': data['user']['profile_image_url_https']},
+        'text': data['text'],
+        'source': data['source'],
+        'favorite_count': data['favorite_count'],
+        'retweet_count': data['retweet_count'],
+        'created_at': convert_tweet_date(data['created_at']),
+    })
 
 
 def search_tweet(query, cap=100):

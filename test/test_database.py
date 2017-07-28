@@ -45,11 +45,37 @@ class ConvertTweetTime(unittest.TestCase):
 
 
 class TestSaveTweet(TestMongo):
-    def test_datetime_converted(self):
+    def setUp(self):
+        self.data = {
+            'id_str': 'tweet_id',
+            'user': {'name': 'bob',
+                     'id_str': '123456',
+                     'profile_image_url_https': 'https://a.com'},
+            'text': 'foo',
+            'source': '<a>Twitter for iPhone</a>',
+            'favorite_count': 1,
+            'retweet_count': 2,
+            'created_at': 'Fri Jul 07 11:35:39 +0000 2017'}
+        super(TestSaveTweet, self).setUp()
+
+    def test_data_saved(self):
+        database.save_tweet(self.data)
+        t = self.db.tweets.find()[0]
+        self.assertEqual('tweet_id', t['id'])
+        self.assertEqual('foo', t['text'])
+        self.assertEqual('bob', t['user']['name'])
+        self.assertEqual('123456', t['user']['id'])
+        self.assertEqual('https://a.com', t['user']['profile_image_url'])
+        self.assertEqual('<a>Twitter for iPhone</a>', t['source'])
+        self.assertEqual(1, t['favorite_count'])
+        self.assertEqual(2, t['retweet_count'])
         expected = create_utc_date(year=2017, month=7, day=7, hour=11, minute=35, second=39)
-        data = {'created_at': 'Fri Jul 07 11:35:39 +0000 2017', 'text': 'foo'}
-        database.save_tweet(data)
-        self.assertEqual(expected, self.db.tweets.find()[0]['created_at'])
+        self.assertEqual(expected, t['created_at'])
+
+    def test_unnecessary_data_removed(self):
+        self.data['garbage'] = 'data'
+        database.save_tweet(self.data)
+        self.assertNotIn('garbage', self.db.tweets.find()[0])
 
 
 class TestGetNounFrequencies(TestMongo):
