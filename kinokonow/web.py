@@ -9,9 +9,11 @@ from flask import Flask, render_template, request
 from kinokonow import env, score, database
 
 
+script_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.join(script_dir, os.path.pardir)
 flask_app = Flask(__name__,
-                  template_folder=os.path.join(os.getcwd(), 'templates'),
-                  static_folder=os.path.join(os.getcwd(), 'static'))
+                  template_folder=os.path.join(parent_dir, 'templates'),
+                  static_folder=os.path.join(parent_dir, 'static'))
 
 
 def setup_logging():
