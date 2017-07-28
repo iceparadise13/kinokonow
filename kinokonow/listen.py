@@ -64,7 +64,7 @@ if __name__ == '__main__':
             user_id = data['user']['id_str']
             if user_id not in users_to_follow:
                 print('Not following user %s %s' % (screen_name, user_id))
-                pass
+                return
             print(screen_name, ':', data['text'], '\n')
             database.save_tweet(data)
             tasks.create_noun_extraction_task(data['text']).delay()
