@@ -54,7 +54,7 @@ def search_tweet(query, cap=100):
     }).sort('created_at', pymongo.DESCENDING)
     # by default `datetime` objects returned by pymongo have no timezones associated with them
     # these objects are then assumed to be the localtime, rendering the return of `timestamp` inaccurate
-    # `mongomock` does not have the same behavior so this is currently untestable
+    # `mongomock` does not have the same behavior so this is currently not unit-testable
     return [{'text': c['text'], 'user': c['user']['name'],
              'created_at': c['created_at'].replace(tzinfo=timezone.utc).timestamp()}
             for c in list(cursor[:cap])]
