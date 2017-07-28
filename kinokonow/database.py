@@ -52,5 +52,8 @@ def search_tweet(query, cap=100):
     cursor = db.tweets.find({
         'text': {'$regex': '^(?!RT).*%s.*' % query},
     }).sort('created_at', pymongo.DESCENDING)
-    return [{'text': c['text'], 'user': c['user']['name'], 'created_at': c['created_at'].timestamp()}
+    # by default `datetime` objects returned by pymongo have no timezones associated with them
+    # these objects are then assumed to be the localtime, rendering the return of `timestamp` inaccurate
+    return [{'text': c['text'], 'user': c['user']['name'],
+             'created_at': c['created_at'].replace(tzinfo=timezone.utc).timestamp()}
             for c in list(cursor[:cap])]
