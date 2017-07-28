@@ -55,17 +55,20 @@ if __name__ == '__main__':
 
     def on_success(data):
         if 'text' in data:
+            screen_name = data['user']['screen_name']
+            print(screen_name, ':', data['text'], '\n')
+
             source = extract_source(data['source'])
             if not white_list.is_allowed(source):
                 print('source %s is not allowed' % source)
                 return
-            screen_name = data['user']['screen_name']
+
             # idがいつか数字じゃなくなるかもしれないので文字列として処理する
             user_id = data['user']['id_str']
             if user_id not in users_to_follow:
                 print('Not following user %s %s' % (screen_name, user_id))
                 return
-            print(screen_name, ':', data['text'], '\n')
+
             database.save_tweet(data)
             tasks.create_noun_extraction_task(data['text']).delay()
 
