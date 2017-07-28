@@ -50,6 +50,7 @@ class TestSaveTweet(TestMongo):
             'id_str': 'tweet_id',
             'user': {'name': 'bob',
                      'id_str': '123456',
+                     'screen_name': 'realBob',
                      'profile_image_url_https': 'https://a.com'},
             'text': 'foo',
             'source': '<a>Twitter for iPhone</a>',
@@ -65,6 +66,7 @@ class TestSaveTweet(TestMongo):
         self.assertEqual('foo', t['text'])
         self.assertEqual('bob', t['user']['name'])
         self.assertEqual('123456', t['user']['id'])
+        self.assertEqual('realBob', t['user']['screen_name'])
         self.assertEqual('https://a.com', t['user']['profile_image_url'])
         self.assertEqual('<a>Twitter for iPhone</a>', t['source'])
         self.assertEqual(1, t['favorite_count'])

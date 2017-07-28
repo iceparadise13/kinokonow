@@ -42,11 +42,13 @@ def get_noun_frequencies(starting_at):
 
 
 def save_tweet(data):
+    user_data = data['user']
     db.tweets.insert_one({
         'id': data['id_str'],
-        'user': {'name': data['user']['name'],
-                 'id': data['user']['id_str'],
-                 'profile_image_url': data['user']['profile_image_url_https']},
+        'user': {'name': user_data['name'],
+                 'id': user_data['id_str'],
+                 'screen_name': user_data['screen_name'],
+                 'profile_image_url': user_data['profile_image_url_https']},
         'text': data['text'],
         'source': data['source'],
         'favorite_count': data['favorite_count'],
