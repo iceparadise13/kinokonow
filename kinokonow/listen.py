@@ -63,7 +63,7 @@ if __name__ == '__main__':
             # idがいつか数字じゃなくなるかもしれないので文字列として処理する
             user_id = data['user']['id_str']
             if user_id not in users_to_follow:
-                print('Not following user %s %d' % (screen_name, user_id))
+                print('Not following user %s %s' % (screen_name, user_id))
                 pass
             print(screen_name, ':', data['text'], '\n')
             database.save_tweet(data)
