@@ -60,7 +60,8 @@ if __name__ == '__main__':
                 print('source %s is not allowed' % source)
                 return
             screen_name = data['user']['screen_name']
-            user_id = data['user']['id']
+            # idがいつか数字じゃなくなるかもしれないので文字列として処理する
+            user_id = data['user']['id_str']
             if user_id not in users_to_follow:
                 print('Not following user %s %d' % (screen_name, user_id))
                 pass
