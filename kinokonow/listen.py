@@ -59,11 +59,12 @@ if __name__ == '__main__':
             if not white_list.is_allowed(source):
                 print('source %s is not allowed' % source)
                 return
+            screen_name = data['user']['screen_name']
             user_id = data['user']['id']
             if user_id not in users_to_follow:
-                print('Not following user id %d' % user_id)
+                print('Not following user %s %d' % (screen_name, user_id))
                 pass
-            print(data['user']['screen_name'], ':', data['text'], '\n')
+            print(screen_name, ':', data['text'], '\n')
             database.save_tweet(data)
             tasks.create_noun_extraction_task(data['text']).delay()
 
