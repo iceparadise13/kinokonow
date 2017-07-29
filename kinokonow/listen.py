@@ -1,13 +1,17 @@
 import re
 import os
 import csv
+import logging
 from twython import TwythonStreamer
 from kinokonow import settings, tasks, database
 
 
+logger = logging.getLogger(__name__)
+
+
 class Streamer(TwythonStreamer):
     def on_error(self, status_code, data):
-        print(status_code)
+        logger.warning(status_code)
         self.disconnect()
 
 
@@ -50,23 +54,23 @@ def extract_source(source):
 
 if __name__ == '__main__':
     users_to_follow = get_users_to_follow()
-    print('Following %d users' % len(users_to_follow))
+    logger.info('Following %d users' % len(users_to_follow))
     white_list = AllowedSources.init()
 
     def on_success(data):
         if 'text' in data:
             screen_name = data['user']['screen_name']
-            print(screen_name, ':', data['text'], '\n')
+            logger.info('%s:%s\n' % (screen_name, data['text']))
 
             source = extract_source(data['source'])
             if not white_list.is_allowed(source):
-                print('source %s is not allowed' % source)
+                logger.warning('source %s is not allowed' % source)
                 return
 
             # idがいつか数字じゃなくなるかもしれないので文字列として処理する
             user_id = data['user']['id_str']
             if user_id not in users_to_follow:
-                print('Not following user %s %s' % (screen_name, user_id))
+                logger.warning('Not following user %s %s' % (screen_name, user_id))
                 return
 
             database.save_tweet(data)

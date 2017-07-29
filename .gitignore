@@ -11,3 +11,4 @@ celerybeat-schedule
 celerybeat.pid
 web.log
 dev_web.py
+logs

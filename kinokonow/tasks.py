@@ -1,6 +1,12 @@
+import logging
 from celery import Celery, chain
 from celery.schedules import crontab
-from kinokonow import database, env, preprocess, tweet, ma, score, words
+from kinokonow import database, env, preprocess, tweet, ma, score, words, log as knlog
+
+
+# wsgiアプリでログをstdoutに出力するのは非推奨らしいのでflaskでこのモジュールをインポートしてはいけない
+knlog.setup_worker()
+logger = logging.getLogger(__name__)
 
 
 def make_celery():
@@ -46,7 +52,7 @@ def create_noun_extraction_task(tweet):
 def hourly_task():
     """定期タスクとしてchainが使えないみたいなので一つのタスクとして定義する"""
     scores = score.score_key_phrases(save=True)
-    print('tfidf scores ' + str(scores))
+    logger.info('tfidf scores ' + str(scores))
     if scores:
         # 値が0の要素があるとゼロ除算が起きるので事前に除く
         scores = dict([(k, v) for k, v in scores.items() if v])

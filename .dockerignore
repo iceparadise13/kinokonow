@@ -5,3 +5,4 @@ dev_web.py
 __pycache__
 .git
 .idea
+logs

@@ -5,6 +5,10 @@ RUN adduser --disabled-password --gecos '' ${USER_NAME}
 
 WORKDIR /usr/src/app
 
+ENV LOGS_DIR=logs
+RUN mkdir ${LOGS_DIR}
+RUN chown ${USER_NAME} ${LOGS_DIR}
+
 # プロジェクトのファイルが変わる度に再インストールしたくないので予めインストールしておく
 COPY requirements.txt .
 RUN pip install -r requirements.txt

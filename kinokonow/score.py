@@ -1,5 +1,9 @@
+import logging
 from datetime import datetime, timedelta
 from kinokonow import database, tfidf
+
+
+logger = logging.getLogger(__name__)
 
 
 def score_key_phrases(save):
@@ -19,6 +23,7 @@ def score_key_phrases(save):
     now = datetime.utcnow()
     document = database.get_noun_frequencies(now - timedelta(hours=1))
     if not document:
+        logger.info('No nouns in document')
         return {}
     past_documents = database.get_documents(now - timedelta(days=3))
     scores = tfidf.score(document, past_documents)
