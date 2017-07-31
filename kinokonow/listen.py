@@ -80,6 +80,7 @@ if __name__ == '__main__':
             # リツイートは処理の方針が固まるまで無視する
             if is_rt(data['text']):
                 logger.warning('Ignoring RT %s' % data['text'])
+                return
 
             database.save_tweet(data)
             tasks.create_noun_extraction_task(data['text']).delay()
