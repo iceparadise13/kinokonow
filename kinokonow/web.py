@@ -1,12 +1,14 @@
-import os
 import json
 import logging
+import os
 import time
+from datetime import timezone
 from functools import wraps
 from logging.handlers import RotatingFileHandler
 from operator import itemgetter
 from flask import Flask, render_template, request
 from kinokonow import env, score, database
+from kinokonow.search import normalize_search_query
 
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -40,13 +42,28 @@ def bench_mark(f):
     return inner
 
 
+def prepare_search_results(cursor, cap):
+    # by default `datetime` objects returned by pymongo have no timezones associated with them
+    # these objects are then assumed to be the localtime, rendering the return of `timestamp` inaccurate
+    # `mongomock` does not have the same behavior so this is currently not unit-testable
+    return [{'text': c['text'], 'user': c['user']['name'],
+             'created_at': c['created_at'].replace(tzinfo=timezone.utc).timestamp()}
+             for c in list(cursor[:cap])]
+
+
 mock_search = None
 
 
 @flask_app.route('/search', methods=['POST'])
 @bench_mark  # this has no effect if decorated above `route`
 def search():
-    search_results = mock_search() if mock_search else database.search_tweet(request.form['search-query'])
+    if mock_search:
+        search_results = mock_search()
+    else:
+        query = request.form['search-query']
+        query = normalize_search_query(query)
+        search_results = database.search_tweet(query)
+        search_results = prepare_search_results(search_results, cap=50)
     return json.dumps(search_results)
 
 

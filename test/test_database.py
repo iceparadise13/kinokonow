@@ -1,6 +1,8 @@
 import json
 import unittest
 from datetime import datetime, timedelta
+
+import kinokonow.search
 from kinokonow import database
 from utils import create_utc_date, TestMongo
 
@@ -44,6 +46,25 @@ class ConvertTweetTime(unittest.TestCase):
         self.assertEqual(expected, database.convert_tweet_date('Fri Jan 01 10:01:01 +0900 2017'))
 
 
+class TestNormalizeTweet(unittest.TestCase):
+    @staticmethod
+    def normalize(tweet):
+        return kinokonow.search.normalize_tweet(tweet)
+
+    def test_remove_mention(self):
+        self.assertEqual('bar', self.normalize('@foo bar'))
+
+    def test_remove_url(self):
+        self.assertEqual('bar', self.normalize('https://t.co/foo bar'))
+        self.assertEqual('bar ', self.normalize('bar https://t.co/foo'))
+
+    def test_remove_rt_boiler_plate(self):
+        self.assertEqual('bar', self.normalize('RT @foo: bar'))
+
+    def test_lower_case(self):
+        self.assertEqual('barあ', self.normalize('BARあ'))
+
+
 class TestSaveTweet(TestMongo):
     def setUp(self):
         self.data = {
@@ -52,7 +73,8 @@ class TestSaveTweet(TestMongo):
                      'id_str': '123456',
                      'screen_name': 'realBob',
                      'profile_image_url_https': 'https://a.com'},
-            'text': 'foo',
+            'text': '@foo bar',
+            'text_norm': 'bar',
             'source': '<a>Twitter for iPhone</a>',
             'favorite_count': 1,
             'retweet_count': 2,
@@ -63,7 +85,8 @@ class TestSaveTweet(TestMongo):
         database.save_tweet(self.data)
         t = self.db.tweets.find()[0]
         self.assertEqual('tweet_id', t['id'])
-        self.assertEqual('foo', t['text'])
+        self.assertEqual('@foo bar', t['text'])
+        self.assertEqual('bar', t['text_norm'])
         self.assertEqual('bob', t['user']['name'])
         self.assertEqual('123456', t['user']['id'])
         self.assertEqual('realBob', t['user']['screen_name'])
@@ -104,20 +127,20 @@ class TestGetNounFrequencies(TestMongo):
 
 
 class TestSearch(TestMongo):
-    def test(self):
-        date = create_utc_date(2017, 1, 1, 0, 0, 0)
-        data_1 = {'text': 'foo bar baz', 'user': {'name': 'bob'}, 'created_at': date}
-        data_2 = {'text': 'qux quux corge', 'user': {'name': 'joe'}, 'created_at': date}
-        self.db.tweets.insert_many([data_1, data_2])
-        expected = [{'text': 'foo bar baz', 'user': 'bob', 'created_at': 1483228800}]
-        self.assertEqual(expected, database.search_tweet('bar'))
+    def search(self, query):
+        return list(database.search_tweet(query))
 
-    def test_ignore_rt(self):
-        self.db.tweets.insert_one({'text': 'RT foo'})
-        self.assertEqual([], database.search_tweet(''))
+    def test(self):
+        data_1 = {'text_norm': 'foo bar baz'}
+        data_2 = {'text_norm': 'qux quux corge'}
+        self.db.tweets.insert_many([data_1, data_2])
+        result = self.search('bar')
+        self.assertEqual(1, len(result))
+        self.assertEqual('foo bar baz', result[0]['text_norm'])
 
     def test_sort_by_date(self):
-        data_1 = {'text': 'foo', 'user': {'name': 'bob'}, 'created_at': create_utc_date(2017, 1, 1)}
-        data_2 = {'text': 'foo', 'user': {'name': 'joe'}, 'created_at': create_utc_date(2017, 1, 2)}
+        data_1 = {'text_norm': 'foo', 'created_at': create_utc_date(2017, 1, 1)}
+        data_2 = {'text_norm': 'foo bar', 'created_at': create_utc_date(2017, 1, 2)}
         self.db.tweets.insert_many([data_1, data_2])
-        self.assertEqual(['joe', 'bob'], [d['user'] for d in database.search_tweet('foo')])
+        self.assertEqual(['foo bar', 'foo'], [d['text_norm'] for d in self.search('foo')])
+

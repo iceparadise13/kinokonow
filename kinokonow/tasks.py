@@ -1,7 +1,7 @@
 import logging
 from celery import Celery, chain
 from celery.schedules import crontab
-from kinokonow import database, env, preprocess, tweet, ma, score, words, log as knlog
+from kinokonow import database, env, filter, tweet, ma, score, words, log as knlog
 
 
 # wsgiアプリでログをstdoutに出力するのは非推奨らしいのでflaskでこのモジュールをインポートしてはいけない
@@ -20,19 +20,19 @@ celery = make_celery()
 
 
 @celery.task
-def preprocess_tweet(tweet):
-    return preprocess.preprocess_tweet(tweet)
+def save_tweet(data):
+    database.save_tweet(data)
 
 
 @celery.task
-def extract_nouns(data):
+def extract_nouns(tweet):
     """
     形態素解析鯖を使って与えられたツイートから名詞を抽出する
     ハッシュタグは無条件で名詞として扱う
     :param data: ツイートとハッシュタグのリストのタプル
     :return: 抽出された名詞のリスト
     """
-    tweet, hash_tags = data
+    tweet, hash_tags = filter.pre_ma(tweet)
     host = env.get_ma_host()
     port = env.get_ma_port()
     return hash_tags + ma.extract_nouns_from_ma_server(tweet, host=host, port=port)
@@ -45,7 +45,7 @@ def save_nouns(nouns):
 
 
 def create_noun_extraction_task(tweet):
-    return chain(preprocess_tweet.s(tweet), extract_nouns.s(), save_nouns.s())
+    return chain(extract_nouns.s(tweet), save_nouns.s())
 
 
 @celery.task

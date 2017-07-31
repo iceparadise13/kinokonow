@@ -64,7 +64,8 @@ if __name__ == '__main__':
     def on_success(data):
         if 'text' in data:
             screen_name = data['user']['screen_name']
-            logger.info('%s:%s\n' % (screen_name, data['text']))
+            tweet = data['text']
+            logger.info('%s:%s\n' % (screen_name, tweet))
 
             source = extract_source(data['source'])
             if not white_list.is_allowed(source):
@@ -78,12 +79,12 @@ if __name__ == '__main__':
                 return
 
             # リツイートは処理の方針が固まるまで無視する
-            if is_rt(data['text']):
-                logger.warning('Ignoring RT %s' % data['text'])
+            if is_rt(tweet):
+                logger.warning('Ignoring RT %s' % tweet)
                 return
 
-            database.save_tweet(data)
-            tasks.create_noun_extraction_task(data['text']).delay()
+            tasks.save_tweet.delay(data)
+            tasks.create_noun_extraction_task(tweet).delay()
 
     stream = get_streamer()
     stream.on_success = on_success

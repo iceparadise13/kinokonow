@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timezone
 import pymongo
-from kinokonow import env
+from kinokonow import env, search
 
 
 def connect():
@@ -50,6 +50,7 @@ def save_tweet(data):
                  'screen_name': user_data['screen_name'],
                  'profile_image_url': user_data['profile_image_url_https']},
         'text': data['text'],
+        'text_norm': search.normalize_tweet(data['text']),
         'source': data['source'],
         'favorite_count': data['favorite_count'],
         'retweet_count': data['retweet_count'],
@@ -57,13 +58,7 @@ def save_tweet(data):
     })
 
 
-def search_tweet(query, cap=100):
-    cursor = db.tweets.find({
-        'text': {'$regex': '^(?!RT).*%s.*' % query},
-    }).sort('created_at', pymongo.DESCENDING)
-    # by default `datetime` objects returned by pymongo have no timezones associated with them
-    # these objects are then assumed to be the localtime, rendering the return of `timestamp` inaccurate
-    # `mongomock` does not have the same behavior so this is currently not unit-testable
-    return [{'text': c['text'], 'user': c['user']['name'],
-             'created_at': c['created_at'].replace(tzinfo=timezone.utc).timestamp()}
-            for c in list(cursor[:cap])]
+def search_tweet(query):
+    # `.*`を使いだしたら複数行の検索がうまくいかないので注意
+    return db.tweets.find(
+        {'text_norm': {'$regex': '%s' % query}}).sort('created_at', pymongo.DESCENDING)
