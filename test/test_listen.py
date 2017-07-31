@@ -17,7 +17,7 @@ class TestIsRt(unittest.TestCase):
         self.assertTrue(listen.is_rt('RT foo'))
 
     def test_false(self):
-        self.assertTrue(listen.is_rt('foo'))
+        self.assertFalse(listen.is_rt('foo'))
 
 
 if __name__ == '__main__':

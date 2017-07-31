@@ -52,6 +52,10 @@ def extract_source(source):
     return regex.group(1)
 
 
+def is_rt(tweet):
+    return tweet.startswith('RT')
+
+
 if __name__ == '__main__':
     users_to_follow = get_users_to_follow()
     logger.info('Following %d users' % len(users_to_follow))
