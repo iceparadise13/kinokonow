@@ -21,16 +21,6 @@ celery -A tasks.celery -l INFO beat
 python -m yahooma
 ```
 
-### TODO
-
-- [x] TfIdfでゴミ掃除
-- [x] db関連の処理全部database.pyに移して  
-フォーク関連の問題が無ければdatabase.pyでdbをグローバル変数として定義する
-- [x] リアルタイムのクラウド表示/ツイート検索用サイト
-- [x] JumanppやMeCabで形態素解析の導入
-- [ ] nグラムを候補に挙げる
-- [ ] ツイ消しの対応
-
 ### ライセンス
 
 wordcloud2.js  
