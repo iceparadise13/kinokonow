@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
             source = extract_source(data['source'])
             if not white_list.is_allowed(source):
-                logger.warning('source %s is not allowed' % source)
+                logger.warning('Source %s is not allowed' % source)
                 return
 
             # idがいつか数字じゃなくなるかもしれないので文字列として処理する
