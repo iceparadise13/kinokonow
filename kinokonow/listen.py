@@ -77,6 +77,7 @@ if __name__ == '__main__':
                 logger.warning('Not following user %s %s' % (screen_name, user_id))
                 return
 
+            # リツイートは処理の方針が固まるまで無視する
             if is_rt(data['text']):
                 logger.warning('Ignoring RT %s' % data['text'])
 
