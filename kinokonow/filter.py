@@ -29,9 +29,9 @@ def extract_hash_tags(tweet):
     return tweet, hashtags
 
 
-def preprocess_tweet(tweet):
+def pre_ma(tweet):
     """
-    Jumanppにツイートを渡す前にプリプロセスする
+    形態素解析をする前にツイートをプリプロセスする
     :param tweet: 生のツイート
     :return: プリプロセスされたツイートとハッシュタグリストのタプル
     """
@@ -44,4 +44,4 @@ def preprocess_tweet(tweet):
     tweet, hash_tags = extract_hash_tags(tweet)
     # 半角スペースが入っているとJumanppの挙動がおかしくなるので消す
     # 他のフィルターに支障が出るので最後に実行する
-    return tweet.replace(' ', ''), hash_tags
+    return tweet, hash_tags

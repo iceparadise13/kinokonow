@@ -52,6 +52,10 @@ def extract_source(source):
     return regex.group(1)
 
 
+def is_rt(tweet):
+    return tweet.startswith('RT')
+
+
 if __name__ == '__main__':
     users_to_follow = get_users_to_follow()
     logger.info('Following %d users' % len(users_to_follow))
@@ -60,11 +64,12 @@ if __name__ == '__main__':
     def on_success(data):
         if 'text' in data:
             screen_name = data['user']['screen_name']
-            logger.info('%s:%s\n' % (screen_name, data['text']))
+            tweet = data['text']
+            logger.info('%s:%s\n' % (screen_name, tweet))
 
             source = extract_source(data['source'])
             if not white_list.is_allowed(source):
-                logger.warning('source %s is not allowed' % source)
+                logger.warning('Source %s is not allowed' % source)
                 return
 
             # idがいつか数字じゃなくなるかもしれないので文字列として処理する
@@ -73,8 +78,13 @@ if __name__ == '__main__':
                 logger.warning('Not following user %s %s' % (screen_name, user_id))
                 return
 
-            database.save_tweet(data)
-            tasks.create_noun_extraction_task(data['text']).delay()
+            # リツイートは処理の方針が固まるまで無視する
+            if is_rt(tweet):
+                logger.warning('Ignoring RT %s' % tweet)
+                return
+
+            tasks.save_tweet.delay(data)
+            tasks.create_noun_extraction_task(tweet).delay()
 
     stream = get_streamer()
     stream.on_success = on_success
