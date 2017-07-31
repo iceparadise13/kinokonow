@@ -73,6 +73,9 @@ if __name__ == '__main__':
                 logger.warning('Not following user %s %s' % (screen_name, user_id))
                 return
 
+            if is_rt(data['text']):
+                logger.warning('Ignoring RT %s' % data['text'])
+
             database.save_tweet(data)
             tasks.create_noun_extraction_task(data['text']).delay()
 
