@@ -35,7 +35,7 @@ def extract_nouns(tweet):
     tweet, hash_tags = filter.pre_ma(tweet)
     host = env.get_ma_host()
     port = env.get_ma_port()
-    return hash_tags + ma.extract_nouns_from_ma_server(tweet, host=host, port=port)
+    return set(hash_tags + ma.extract_nouns_from_ma_server(tweet, host=host, port=port))
 
 
 @celery.task
