@@ -6,19 +6,19 @@ pip install -r requirements.txt
 ### 実行
 ストリーム
 ```
-python -m listen
+python -m kinokonow.listen
 ```
 ワーカー
 ```
-celery -A tasks.celery -l INFO worker
+celery -A kinokonow.tasks.celery -l INFO worker
 ```
 定期ツイート
 ```
-celery -A tasks.celery -l INFO beat
+celery -A kinokonow.tasks.celery -l INFO beat
 ```
 フレーズ候補抽出鯖
 ```
-python -m yahooma
+python -m kinokonow.yahooma
 ```
 
 ### ライセンス
