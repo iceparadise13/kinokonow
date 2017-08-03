@@ -19,8 +19,8 @@ def convert_tweet_date(tweet_date):
     return (dt - dt.utcoffset()).replace(tzinfo=timezone.utc)
 
 
-def save_nouns(nouns):
-    db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in nouns])
+def save_phrases(phrases):
+    db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in phrases])
 
 
 def get_documents(since):

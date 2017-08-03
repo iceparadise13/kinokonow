@@ -31,7 +31,7 @@ class TestSaveDocument(TestMongo):
 class TestSaveNouns(TestMongo):
     def test(self):
         nouns = ['a', 'b']
-        database.save_nouns(nouns)
+        database.save_phrases(nouns)
         saved_nouns = list(self.db.nouns.find())
         self.assertEqual('a', saved_nouns[0]['text'])
         self.assertEqual('b', saved_nouns[1]['text'])

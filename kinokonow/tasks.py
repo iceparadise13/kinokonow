@@ -25,13 +25,13 @@ def save_tweet(data):
 
 
 @celery.task
-def extract_nouns(tweet):
+def extract_phrases(tweet):
     """
-    形態素解析鯖を使って与えられたツイートから名詞を抽出する
-    ハッシュタグは無条件で名詞として扱う
-    名詞の重複は許可しない
+    形態素解析鯖を使って与えられたツイートからフレーズを抽出する
+    ハッシュタグは無条件でフレーズとして扱う
+    フレーズの重複は許可しない
     :param data: ツイートとハッシュタグのリストのタプル
-    :return: 抽出された名詞のリスト
+    :return: 抽出されたフレーズのリスト
     """
     tweet, hash_tags = filter.pre_ma(tweet)
     host = env.get_ma_host()
@@ -40,13 +40,13 @@ def extract_nouns(tweet):
 
 
 @celery.task
-def save_nouns(nouns):
-    if nouns:
-        database.save_nouns(nouns)
+def save_phrases(phrases):
+    if phrases:
+        database.save_phrases(phrases)
 
 
 def create_noun_extraction_task(tweet):
-    return chain(extract_nouns.s(tweet), save_nouns.s())
+    return chain(extract_phrases.s(tweet), save_phrases.s())
 
 
 @celery.task
