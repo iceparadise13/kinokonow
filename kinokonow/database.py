@@ -13,12 +13,6 @@ def connect():
 db = connect()
 
 
-def convert_tweet_date(tweet_date):
-    """Convert str datetime provided by twitter api to utc datetime object"""
-    dt = datetime.strptime(tweet_date, '%a %b %d %H:%M:%S %z %Y')
-    return (dt - dt.utcoffset()).replace(tzinfo=timezone.utc)
-
-
 def save_phrases(phrases):
     db.phrases.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in phrases])
 
@@ -39,6 +33,12 @@ def get_phrase_frequencies(starting_at):
         {'$group': {'_id': '$text', 'frequency': {'$sum': 1}}}
     ])
     return dict([(c['_id'], c['frequency']) for c in cursor])
+
+
+def convert_tweet_date(tweet_date):
+    """Convert str datetime provided by twitter api to utc datetime object"""
+    dt = datetime.strptime(tweet_date, '%a %b %d %H:%M:%S %z %Y')
+    return (dt - dt.utcoffset()).replace(tzinfo=timezone.utc)
 
 
 def save_tweet(data):
