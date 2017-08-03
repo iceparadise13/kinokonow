@@ -1,7 +1,7 @@
 import logging
 from celery import Celery, chain
 from celery.schedules import crontab
-from kinokonow import database, env, filter, tweet, ma, score, wcloud, log as knlog
+from kinokonow import database, env, filter, tweet, maclient, score, wcloud, log as knlog
 
 
 # wsgiアプリでログをstdoutに出力するのは非推奨らしいのでflaskでこのモジュールをインポートしてはいけない
@@ -34,7 +34,7 @@ def extract_phrases(tweet):
     :return: 抽出されたフレーズのリスト
     """
     tweet, hash_tags = filter.pre_ma(tweet)
-    phrases = hash_tags + ma.extract_phrases_from_ma_server(
+    phrases = hash_tags + maclient.extract_phrases(
         tweet, host=env.get_ma_host(), port=env.get_ma_port())
     return list(set(phrases))
 
