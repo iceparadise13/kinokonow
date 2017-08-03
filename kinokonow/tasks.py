@@ -34,9 +34,9 @@ def extract_phrases(tweet):
     :return: 抽出されたフレーズのリスト
     """
     tweet, hash_tags = filter.pre_ma(tweet)
-    host = env.get_ma_host()
-    port = env.get_ma_port()
-    return list(set(hash_tags + ma.extract_phrases_from_ma_server(tweet, host=host, port=port)))
+    phrases = hash_tags + ma.extract_phrases_from_ma_server(
+        tweet, host=env.get_ma_host(), port=env.get_ma_port())
+    return list(set(phrases))
 
 
 @celery.task
