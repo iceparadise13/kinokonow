@@ -1,7 +1,7 @@
 import logging
 from celery import Celery, chain
 from celery.schedules import crontab
-from kinokonow import database, env, filter, tweet, ma, score, words, log as knlog
+from kinokonow import database, env, filter, tweet, ma, score, word_cloud, log as knlog
 
 
 # wsgiアプリでログをstdoutに出力するのは非推奨らしいのでflaskでこのモジュールをインポートしてはいけない
@@ -57,7 +57,7 @@ def hourly_task():
     if scores:
         # 値が0の要素があるとゼロ除算が起きるので事前に除く
         scores = dict([(k, v) for k, v in scores.items() if v])
-        img = words.generate_word_cloud(scores, font_path='font.ttf')
+        img = word_cloud.generate(scores, font_path='font.ttf')
         tweet.tweet_media(img)
 
 
