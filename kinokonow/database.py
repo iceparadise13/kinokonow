@@ -20,7 +20,7 @@ def convert_tweet_date(tweet_date):
 
 
 def save_phrases(phrases):
-    db.nouns.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in phrases])
+    db.phrases.insert_many([{'text': n, 'created_at': datetime.utcnow()} for n in phrases])
 
 
 def get_documents(since):
@@ -34,7 +34,7 @@ def save_document(document, created_at):
 
 
 def get_noun_frequencies(starting_at):
-    cursor = db.nouns.aggregate([
+    cursor = db.phrases.aggregate([
         {'$match': {'created_at': {'$gte': starting_at}}},
         {'$group': {'_id': '$text', 'frequency': {'$sum': 1}}}
     ])

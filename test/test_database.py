@@ -32,7 +32,7 @@ class TestSaveNouns(TestMongo):
     def test(self):
         nouns = ['a', 'b']
         database.save_phrases(nouns)
-        saved_nouns = list(self.db.nouns.find())
+        saved_nouns = list(self.db.phrases.find())
         self.assertEqual('a', saved_nouns[0]['text'])
         self.assertEqual('b', saved_nouns[1]['text'])
         # assert created_at is close enough
@@ -106,7 +106,7 @@ class TestSaveTweet(TestMongo):
 class TestGetNounFrequencies(TestMongo):
     def test_frequency(self):
         created_at = datetime(2017, 1, 1, 1, 0, 0)
-        self.db.nouns.insert_many([
+        self.db.phrases.insert_many([
             {'text': 'a', 'created_at': created_at},
             {'text': 'b', 'created_at': created_at},
             {'text': 'b', 'created_at': created_at},
@@ -116,7 +116,7 @@ class TestGetNounFrequencies(TestMongo):
         self.assertEqual(expected, result)
 
     def test_starting_at(self):
-        self.db.nouns.insert_many([
+        self.db.phrases.insert_many([
             {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 0)},
             {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
             {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},

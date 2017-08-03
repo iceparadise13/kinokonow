@@ -36,5 +36,5 @@ class TestTfIdf(unittest.TestCase):
 class TestInitialTfIdfDocument(TestMongo):
     def test_initial_tfidf_document_scored_properly(self):
         thirty_minutes_ago = datetime.utcnow() - timedelta(minutes=30)
-        self.db.nouns.insert_many([{'text': 'a', 'created_at': thirty_minutes_ago}])
+        self.db.phrases.insert_many([{'text': 'a', 'created_at': thirty_minutes_ago}])
         self.assertNotEqual(0.0, score.score_key_phrases(save=True)['a'])
