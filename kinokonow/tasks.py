@@ -55,8 +55,6 @@ def hourly_task():
     scores = score.score_key_phrases(save=True)
     logger.info('tfidf scores ' + str(scores))
     if scores:
-        # 値が0の要素があるとゼロ除算が起きるので事前に除く
-        scores = dict([(k, v) for k, v in scores.items() if v])
         img = wcloud.generate(scores, font_path='font.ttf')
         tweet.tweet_media(img)
 
