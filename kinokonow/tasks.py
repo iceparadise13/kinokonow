@@ -55,7 +55,7 @@ def hourly_task():
     scores = score.score_key_phrases(save=True)
     logger.info('tfidf scores ' + str(scores))
     if scores:
-        tweet.tweet_media(wcloud.generate(scores, font_path='font.ttf'))
+        tweet.tweet_image(wcloud.generate(scores, font_path='font.ttf'))
 
 
 @celery.on_after_configure.connect

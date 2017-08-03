@@ -30,7 +30,7 @@ class ImageFileContext(object):
         return self.image_file.close()
 
 
-def tweet_media(img):
+def tweet_image(img):
     api = get_api()
     with ImageFileContext(img) as image_file:
         media_id = api.upload_media(media=image_file)['media_id']
