@@ -21,9 +21,9 @@ def score_key_phrases(save):
     実数のスコアはそのままwordcloudライブラリのクラウド生成メソッドに渡しても問題無い
     """
     now = datetime.utcnow()
-    document = database.get_noun_frequencies(now - timedelta(hours=1))
+    document = database.get_phrase_frequencies(now - timedelta(hours=1))
     if not document:
-        logger.info('No nouns in document')
+        logger.info('No phrases in document')
         return {}
     past_documents = database.get_documents(now - timedelta(days=3))
     scores = tfidf.score(document, past_documents)

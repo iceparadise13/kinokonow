@@ -28,16 +28,16 @@ class TestSaveDocument(TestMongo):
         self.assertTrue(self.db.tfidf_documents.find({'document': json.dumps(document)}).count())
 
 
-class TestSaveNouns(TestMongo):
+class TestSavePhrases(TestMongo):
     def test(self):
-        nouns = ['a', 'b']
-        database.save_phrases(nouns)
-        saved_nouns = list(self.db.phrases.find())
-        self.assertEqual('a', saved_nouns[0]['text'])
-        self.assertEqual('b', saved_nouns[1]['text'])
+        phrasess = ['a', 'b']
+        database.save_phrases(phrasess)
+        saved_phrases = list(self.db.phrases.find())
+        self.assertEqual('a', saved_phrases[0]['text'])
+        self.assertEqual('b', saved_phrases[1]['text'])
         # assert created_at is close enough
-        for i in range(len(nouns)):
-            self.assertLess(saved_nouns[i]['created_at'] - datetime.utcnow(), timedelta(seconds=5))
+        for i in range(len(phrasess)):
+            self.assertLess(saved_phrases[i]['created_at'] - datetime.utcnow(), timedelta(seconds=5))
 
 
 class ConvertTweetTime(unittest.TestCase):
@@ -103,7 +103,7 @@ class TestSaveTweet(TestMongo):
         self.assertNotIn('garbage', self.db.tweets.find()[0])
 
 
-class TestGetNounFrequencies(TestMongo):
+class TestGetPhraseFrequencies(TestMongo):
     def test_frequency(self):
         created_at = datetime(2017, 1, 1, 1, 0, 0)
         self.db.phrases.insert_many([
@@ -112,7 +112,7 @@ class TestGetNounFrequencies(TestMongo):
             {'text': 'b', 'created_at': created_at},
         ])
         expected = {'a': 1, 'b': 2}
-        result = database.get_noun_frequencies(created_at)
+        result = database.get_phrase_frequencies(created_at)
         self.assertEqual(expected, result)
 
     def test_starting_at(self):
@@ -122,7 +122,7 @@ class TestGetNounFrequencies(TestMongo):
             {'text': 'a', 'created_at': datetime(2017, 1, 1, 1, 0, 1)},
         ])
         expected = {'a': 2}
-        result = database.get_noun_frequencies(datetime(2017, 1, 1, 1, 0, 1))
+        result = database.get_phrase_frequencies(datetime(2017, 1, 1, 1, 0, 1))
         self.assertEqual(expected, result)
 
 

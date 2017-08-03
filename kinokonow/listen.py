@@ -84,7 +84,7 @@ if __name__ == '__main__':
                 return
 
             tasks.save_tweet.delay(data)
-            tasks.create_noun_extraction_task(tweet).delay()
+            tasks.create_phrase_extraction_task(tweet).delay()
 
     stream = get_streamer()
     stream.on_success = on_success

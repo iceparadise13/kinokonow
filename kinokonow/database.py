@@ -33,7 +33,7 @@ def save_document(document, created_at):
     return db.tfidf_documents.insert_one({'document': json.dumps(document), 'created_at': created_at})
 
 
-def get_noun_frequencies(starting_at):
+def get_phrase_frequencies(starting_at):
     cursor = db.phrases.aggregate([
         {'$match': {'created_at': {'$gte': starting_at}}},
         {'$group': {'_id': '$text', 'frequency': {'$sum': 1}}}

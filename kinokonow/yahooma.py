@@ -21,7 +21,7 @@ class YahooApi(object):
         return re.findall('<surface>(.+?)</surface>.+?<pos>(.+?)</pos>', resp.content.decode('utf-8'))
 
 
-def extract_nouns(tweet):
+def extract_phrases(tweet):
     """
     与えられたツイートから名詞を抽出する
     :param tweet: ツイート
@@ -33,7 +33,7 @@ def extract_nouns(tweet):
 
 @flask_app.route('/')
 def home():
-    return json.dumps(extract_nouns(request.args.get('tweet')))
+    return json.dumps(extract_phrases(request.args.get('tweet')))
 
 
 if __name__ == '__main__':

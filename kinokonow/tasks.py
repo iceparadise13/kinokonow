@@ -36,7 +36,7 @@ def extract_phrases(tweet):
     tweet, hash_tags = filter.pre_ma(tweet)
     host = env.get_ma_host()
     port = env.get_ma_port()
-    return set(hash_tags + ma.extract_nouns_from_ma_server(tweet, host=host, port=port))
+    return set(hash_tags + ma.extract_phrases_from_ma_server(tweet, host=host, port=port))
 
 
 @celery.task
@@ -45,7 +45,7 @@ def save_phrases(phrases):
         database.save_phrases(phrases)
 
 
-def create_noun_extraction_task(tweet):
+def create_phrase_extraction_task(tweet):
     return chain(extract_phrases.s(tweet), save_phrases.s())
 
 
